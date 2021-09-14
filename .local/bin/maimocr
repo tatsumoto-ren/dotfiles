@@ -1,0 +1,39 @@
+#!/bin/bash
+
+readonly TESSDATA_PREFIX=~/.local/share/capture2text_tessdata
+readonly TESS_LANG=${TESS_LANG:-jpn}
+export TESSDATA_PREFIX
+
+ocr() {
+	# https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html#missing-borders
+	maim -s |
+	convert png:- -alpha off -bordercolor Black -border 10x10 png:- |
+	tesseract stdin stdout \
+		-l "$TESS_LANG" \
+		--tessdata-dir "$TESSDATA_PREFIX" |
+		tr -d ' ' |
+		grep -P '[ｦ-ﾟァ-ヶぁ-ゞＡ-ｚ０-９ｧ-ﾝﾞﾟァ-ンぁ-ん一-龯]+'
+}
+
+notify() {
+	echo "$*"
+	notify-send "Maim OCR" "$*"
+}
+
+main() {
+	if ! [[ -f "$TESSDATA_PREFIX/$TESS_LANG.traineddata" ]]; then
+		notify "No trained data found."
+		exit 1
+	fi
+
+	local -r result=$(ocr)
+
+	if [[ -n $result ]]; then
+		xclip -selection clipboard <<< "$result"
+		notify "Copied."
+	else
+		notify "Failed."
+	fi
+}
+
+main
