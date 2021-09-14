@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Dependencies: imagemagick tesseract maim xclip
+
 readonly TESSDATA_PREFIX=~/.local/share/capture2text_tessdata
 readonly TESS_LANG=${TESS_LANG:-jpn}
 export TESSDATA_PREFIX
