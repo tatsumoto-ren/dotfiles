@@ -9,11 +9,12 @@ export TESSDATA_PREFIX
 ocr() {
 	# https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html#missing-borders
 	maim -s |
-	convert png:- -alpha off -bordercolor Black -border 10x10 png:- |
+	convert png:- -alpha off -bordercolor White -border 10x10 png:- |
 	tesseract stdin stdout \
 		-l "$TESS_LANG" \
 		--tessdata-dir "$TESSDATA_PREFIX" |
 		tr -d ' ' |
+		tr -d '\n' |
 		grep -P '[ｦ-ﾟァ-ヶぁ-ゞＡ-ｚ０-９ｧ-ﾝﾞﾟァ-ンぁ-ん一-龯]+'
 }
 
