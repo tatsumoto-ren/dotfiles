@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+mpv --keep-open=no --force-window=no "$@"
