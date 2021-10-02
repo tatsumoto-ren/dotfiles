@@ -5,6 +5,7 @@
 readonly TESSDATA_PREFIX=~/.local/share/capture2text_tessdata
 readonly TESS_LANG=${TESS_LANG:-jpn}
 export TESSDATA_PREFIX
+export IFS="+"
 
 ocr() {
 	# https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html#missing-borders
@@ -24,10 +25,12 @@ notify() {
 }
 
 main() {
-	if ! [[ -f "$TESSDATA_PREFIX/$TESS_LANG.traineddata" ]]; then
-		notify "No trained data found."
-		exit 1
-	fi
+	for lang in $TESS_LANG; do
+		if ! [[ -f "$TESSDATA_PREFIX/$lang.traineddata" ]]; then
+			notify "No trained data found."
+			exit 1
+		fi
+	done
 
 	local -r result=$(ocr)
 
