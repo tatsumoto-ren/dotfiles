@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Exec=mpv "https://www.news24.jp/"
+Name=日テレNEWS24
+GenericName=NEWS24
+Comment=Watch the news
+Icon=mpv
+Terminal=false
+StartupNotify=true
+Categories=Video;Player;TV;
+StartupWMClass=mpv
