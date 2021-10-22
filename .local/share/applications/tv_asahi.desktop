@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Exec=mpv "https://mov3.co/ja/tvasahi/"
+Name=テレビ朝日
+GenericName=TV Asahi
+Comment=Watch TV
+Icon=mpv
+Terminal=false
+StartupNotify=true
+Categories=Video;Player;TV;
+StartupWMClass=mpv
