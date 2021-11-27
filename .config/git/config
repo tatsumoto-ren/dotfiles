@@ -1,0 +1,69 @@
+# Git configuration file
+
+[user]
+	# User name and email
+	name  =
+	email =
+
+[alias]
+	co   = checkout
+	ci   = commit
+	st   = status
+	s    = status -s
+	br   = branch
+	dfs  = diff --staged
+	type = cat-file -t
+	dump = cat-file -p
+	last = log -1 HEAD
+	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+	lg   = log --graph \
+		--pretty='%Cred%h%Creset \
+		-%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' \
+		--abbrev-commit
+	contributors = shortlog -n -s
+	remotes = remote -v
+
+[core]
+	editor   = nvim
+	autocrlf = false
+	quotePath = false
+
+[push]
+	default = simple
+
+[color]
+	ui = always
+
+[color "diff"]
+	meta       = yellow bold
+	commit     = cyan bold
+	frag       = magenta bold
+	old        = red bold
+	new        = green bold
+	whitespace = red reverse
+
+[color "diff-highlight"]
+	oldNormal    = red bold
+	oldHighlight = red bold 52
+	newNormal    = green bold
+	newHighlight = green bold 22
+
+[color "branch"]
+	current = yellow reverse
+	local   = yellow
+	remote  = green
+
+[color "status"]
+	added     = green
+	changed   = yellow
+	untracked = red
+[rerere]
+	enabled = 1
+[pull]
+	rebase = false
+[diff]
+	submodule = log
+[status]
+	submodulesummary = 1
+[init]
+	defaultBranch = main
