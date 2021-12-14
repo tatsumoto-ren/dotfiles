@@ -1,0 +1,48 @@
+#!/bin/bash
+# shellcheck disable=SC2155
+
+if ifinstalled; then
+	ifinstalled dmenu maim xdotool || exit
+fi
+
+shopt -s expand_aliases
+alias maim='maim --hidecursor --quality 10'
+alias date='date --utc'
+
+readonly filename="$HOME/Pictures/Screenshots/screenshot-$(date '+%F-%H-%M-%S').png"
+
+if [ -z "$1" ]; then
+	readonly command="$(dmenu -i -p 'Screenshot which area?' <<- EOF
+	selected area
+	current window
+	full screen
+	selected area → clipboard
+	current window → clipboard
+	full screen → clipboard
+	selected area → gimp
+	EOF
+	)"
+else
+	readonly command="$1"
+fi
+
+case $command in
+	*area*clipboard)
+		maim -s | xclip -selection clipboard -t image/png ;;
+	*area*gimp)
+		maim -s "$filename" && gimp "$filename"
+		(sleep 60s && rm -- "$filename") &
+		;;
+	*window*clipboard)
+		maim -i "$(xdotool getactivewindow)" | xclip -selection clipboard -t image/png ;;
+	full*clipboard)
+		maim | xclip -selection clipboard -t image/png ;;
+	*area)
+		maim -s "$filename" ;;
+	*window)
+		maim -i "$(xdotool getactivewindow)" "$filename" ;;
+	full*)
+		maim "$filename" ;;
+	*)
+		exit 1 ;;
+esac

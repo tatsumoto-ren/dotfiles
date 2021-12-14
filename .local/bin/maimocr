@@ -1,16 +1,18 @@
 #!/bin/bash
 
-# Dependencies: imagemagick tesseract maim xclip
+if ifinstalled; then
+	ifinstalled maim imagemagick tesseract xclip || exit
+fi
 
-readonly TESSDATA_PREFIX=~/.local/share/capture2text_tessdata
+readonly TESSDATA_PREFIX=${TESSDATA_PREFIX:-~/.local/share/capture2text_tessdata}
 readonly TESS_LANG=${TESS_LANG:-jpn}
 export TESSDATA_PREFIX
 export IFS="+"
 
 ocr() {
 	# https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html#missing-borders
-	maim -s |
-	convert png:- -alpha off -bordercolor White -border 10x10 png:- |
+	maim --select --hidecursor --format=png --quality 1 |
+	convert png:- -monochrome -alpha off -bordercolor White -border 10x10 png:- |
 	tesseract stdin stdout \
 		-l "$TESS_LANG" \
 		--tessdata-dir "$TESSDATA_PREFIX" |
