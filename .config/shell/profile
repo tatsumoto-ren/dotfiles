@@ -1,0 +1,203 @@
+#!/bin/zsh
+
+# https://wiki.archlinux.org/index.php/Zsh
+# http://zsh.sourceforge.net/FAQ/
+# The  personal initialization file, executed for login shells.
+# It is loaded when you login. Read only once.
+# shellcheck disable=SC2155
+
+# Sway startup function
+startsway () {
+	export GDK_BACKEND=wayland
+	export CLUTTER_BACKEND=wayland
+	export XKB_DEFAULT_LAYOUT=us,ru
+	export XKB_DEFAULT_MODEL=pc104
+	export XKB_DEFAULT_VARIANT=altgr-intl,winkeys
+	export XKB_DEFAULT_OPTIONS=grp:win_space_toggle,terminate:ctrl_alt_bksp,caps:escape
+	exec sway
+}
+
+unsetopt PROMPT_SP
+
+# Default programs:
+export WM="i3"
+export STATUSBAR="${WM}blocks"
+export EDITOR="nvim"
+export TERMINAL="alacritty"
+export BROWSER="fingerbox"
+export READER="zathura"
+export FILE="lf"
+
+# ~/ Clean-up:
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XINITRC="${XDG_CONFIG_HOME:-$HOME/.config}/x11/xinitrc"
+#export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority" # This line will break some DMs.
+export NOTMUCH_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/notmuch-config"
+export GTK2_RC_FILES="${XDG_CONFIG_HOME:-$HOME/.config}/gtk-2.0/gtkrc-2.0"
+export LESSHISTFILE="-"
+export WGETRC="${XDG_CONFIG_HOME:-$HOME/.config}/wget/wgetrc"
+export INPUTRC="${XDG_CONFIG_HOME:-$HOME/.config}/shell/inputrc"
+export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
+#export ALSA_CONFIG_PATH="$XDG_CONFIG_HOME/alsa/asoundrc"
+#export GNUPGHOME="${XDG_DATA_HOME:-$HOME/.local/share}/gnupg"
+export WINEPREFIX="${XDG_DATA_HOME:-$HOME/.local/share}/wineprefixes/default"
+export KODI_DATA="${XDG_DATA_HOME:-$HOME/.local/share}/kodi"
+export PASSWORD_STORE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/password-store"
+export TMUX_TMPDIR="$XDG_RUNTIME_DIR"
+export ANDROID_SDK_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/android"
+export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
+export GOPATH="${XDG_DATA_HOME:-$HOME/.local/share}/go"
+export ANSIBLE_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/ansible/ansible.cfg"
+export UNISON="${XDG_DATA_HOME:-$HOME/.local/share}/unison"
+export HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/history"
+export WEECHAT_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/weechat"
+export MBSYNCRC="${XDG_CONFIG_HOME:-$HOME/.config}/mbsync/config"
+export ELECTRUMDIR="${XDG_DATA_HOME:-$HOME/.local/share}/electrum"
+
+# Other program settings:
+export GEM_HOME="$(ruby -e 'puts Gem.user_dir')"
+export LANG="en_US.UTF-8"
+export TERM="xterm-256color"
+export LESS='-F -i -J -M -R -W -x4 -X -z-4' # https://www.topbug.net/blog/2016/09/27/make-gnu-less-more-powerful/
+export DICS="/usr/share/stardict/dic/"
+export SUDO_ASKPASS="$HOME/.local/bin/dmenupass"
+export FZF_DEFAULT_OPTS="--layout=reverse --height 40%"
+export LESS_TERMCAP_mb="$(printf '%b' '[1;31m')"
+export LESS_TERMCAP_md="$(printf '%b' '[1;36m')"
+export LESS_TERMCAP_me="$(printf '%b' '[0m')"
+export LESS_TERMCAP_so="$(printf '%b' '[01;44;33m')"
+export LESS_TERMCAP_se="$(printf '%b' '[0m')"
+export LESS_TERMCAP_us="$(printf '%b' '[1;32m')"
+export LESS_TERMCAP_ue="$(printf '%b' '[0m')"
+export LESSOPEN="| /usr/bin/highlight -O ansi %s 2>/dev/null"
+export MOZ_USE_XINPUT2="1"		# Mozilla smooth scrolling/touchpads.
+export AWT_TOOLKIT="MToolkit wmname LG3D"	# May have to install wmname
+export _JAVA_AWT_WM_NONREPARENTING=1	# Fix for Java applications in dwm
+export TDESKTOP_USE_GTK_FILE_DIALOG=1
+export TESS_LANG=jpn+jpn2+jpn3		# Combine multiple trained data files (for maimocr).
+export TESSDATA_PREFIX=~/.local/share/capture2text_tessdata
+
+# Speed up compile times
+# https://wiki.archlinux.org/index.php/Makepkg#Creating_optimized_packages
+export CFLAGS="-Wall -Wextra -Wpedantic -march=native -O2 -pipe -fstack-protector-strong -fno-plt"
+export CXXFLAGS="$CFLAGS"
+MAKEFLAGS="-j$(($(nproc) + 1)) -l$(nproc)"; export MAKEFLAGS
+
+# Fix QT themes on GTK Desktops
+# Install qt5-styleplugins and set the following environment variable.
+# https://wiki.archlinux.org/index.php/Uniform_look_for_Qt_and_GTK_applications#QGtkStyle
+export QT_QPA_PLATFORMTHEME=gtk2
+
+# Fix QT plugin path for pyqt packages installed with pip.
+export QT_PLUGIN_PATH=/usr/lib/qt/plugins:$(find ~/.local/lib/ -type d -wholename '*/python3*/site-packages/PyQt*/plugins' | paste -s -d :)
+
+# Fix Java programs
+# https://wiki.archlinux.org/index.php/Java_Runtime_Environment_fonts
+export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=gasp'
+
+# This is the list for lf icons:
+export LF_ICONS="di=📁:\
+fi=📃:\
+tw=🤝:\
+ow=📂:\
+ln=⛓:\
+or=❌:\
+ex=🎯:\
+*.txt=✍:\
+*.mom=✍:\
+*.me=✍:\
+*.ms=✍:\
+*.png=🖼:\
+*.webp=🖼:\
+*.ico=🖼:\
+*.jpg=📸:\
+*.jpe=📸:\
+*.jpeg=📸:\
+*.gif=🖼:\
+*.svg=🗺:\
+*.tif=🖼:\
+*.tiff=🖼:\
+*.xcf=🖌:\
+*.html=🌎:\
+*.xml=📰:\
+*.gpg=🔒:\
+*.css=🎨:\
+*.pdf=📚:\
+*.djvu=📚:\
+*.epub=📚:\
+*.csv=📓:\
+*.xlsx=📓:\
+*.tex=📜:\
+*.md=📘:\
+*.r=📊:\
+*.R=📊:\
+*.rmd=📊:\
+*.Rmd=📊:\
+*.m=📊:\
+*.mp3=🎵:\
+*.opus=🎵:\
+*.ogg=🎵:\
+*.m4a=🎵:\
+*.flac=🎼:\
+*.wav=🎼:\
+*.mkv=🎥:\
+*.mp4=🎥:\
+*.webm=🎥:\
+*.mpeg=🎥:\
+*.avi=🎥:\
+*.mov=🎥:\
+*.mpg=🎥:\
+*.wmv=🎥:\
+*.m4b=🎥:\
+*.flv=🎥:\
+*.zip=📦:\
+*.rar=📦:\
+*.7z=📦:\
+*.tar.gz=📦:\
+*.z64=🎮:\
+*.v64=🎮:\
+*.n64=🎮:\
+*.gba=🎮:\
+*.nes=🎮:\
+*.gdi=🎮:\
+*.1=ℹ:\
+*.nfo=ℹ:\
+*.info=ℹ:\
+*.log=📙:\
+*.iso=📀:\
+*.img=📀:\
+*.bib=🎓:\
+*.ged=👪:\
+*.part=💔:\
+*.torrent=🔽:\
+*.jar=♨:\
+*.java=♨:\
+"
+
+if [[ ! -f ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ]]; then
+	shortcuts >/dev/null 2>&1 &
+fi
+
+# Adds `~/.local/bin/` and all subdirectories to $PATH
+if [[ -d "$HOME/.local/bin/" ]]; then
+	PATH="$PATH:${$(find ~/.local/bin -type d -printf %p:)%%:}"
+fi
+if [[ -n $GEM_HOME ]]; then
+	PATH="$PATH:$GEM_HOME/bin"
+fi
+export PATH
+
+# Start graphical server on tty1 if not already running.
+# https://wiki.archlinux.org/index.php/Xinit#Autostart_X_at_login
+if [[ -z "${DISPLAY}" ]] && [[ "${XDG_VTNR}" -eq 1 ]]; then
+	exec startx "$XINITRC"
+fi
+
+if [[ "$(tty)" == "/dev/tty2" ]]; then
+	exec startsway
+fi
+
+# Switch escape and caps if tty and no passwd required:
+sudo -n loadkeys "${XDG_DATA_HOME:-$HOME/.local/share}/larbs/ttymaps.kmap" 2>/dev/null
