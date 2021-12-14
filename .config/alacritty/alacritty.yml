@@ -1,0 +1,41 @@
+# Alacritty config
+# https://github.com/alacritty/alacritty/blob/master/alacritty.yml
+
+# Font
+# 10.5pt == 14px
+font:
+  normal:
+    family: Hack Nerd Font Mono
+  size: 10.5
+
+# Colors (Gruvbox dark)
+# https://github.com/eendroroy/alacritty-theme/blob/master/themes/gruvbox_dark.yaml
+colors:
+  # Default colors
+  primary:
+    # hard contrast: background = '0x1d2021'
+    background: '0x222d32'
+    # soft contrast: background = '0x32302f'
+    foreground: '0xf1fcf9'
+
+  # Normal colors
+  normal:
+    black:   '0x222d32'
+    red:     '0xfb4934'
+    green:   '0x98971a'
+    yellow:  '0xd79921'
+    blue:    '0x83a598'
+    magenta: '0xb16286'
+    cyan:    '0x689d6a'
+    white:   '0xfbf1c7'
+
+  # Bright colors
+  bright:
+    black:   '0x928374'
+    red:     '0xfb4934'
+    green:   '0xb8bb26'
+    yellow:  '0xfabd2f'
+    blue:    '0x83a598'
+    magenta: '0xd3869b'
+    cyan:    '0x8ec07c'
+    white:   '0xebdbb2'
