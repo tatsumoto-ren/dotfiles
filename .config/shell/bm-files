@@ -1,0 +1,43 @@
+# These files automatically update when edited/saved in vim:
+# key	filename
+
+# This file, a list of bookmarked files
+bf	${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-files
+# A list of bookmarked directories similar to this file
+bd	${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs
+# Colors, themes and variables for X11
+cfx	${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources
+
+# These do not update automatically, but on the next new instance of a program:
+
+# vim/neovim config
+cfv	${XDG_CONFIG_HOME:-$HOME/.config}/nvim/init.vim
+# zsh (shell) config
+cfz	$ZDOTDIR/.zshrc
+# aliases used by zsh (and potentially other shells)
+cfa	${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc
+# profile file for login settings for zsh
+cfp	${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile
+# mutt (email client) config
+cfm	${XDG_CONFIG_HOME:-$HOME/.config}/mutt/muttrc
+# newsboat (RSS reader)
+cfn	${XDG_CONFIG_HOME:-$HOME/.config}/newsboat/config
+# RSS urls for newsboat
+cfu	${XDG_CONFIG_HOME:-$HOME/.config}/newsboat/urls
+# ncmpcpp (music player) keybinds file
+cfmb	${XDG_CONFIG_HOME:-$HOME/.config}/ncmpcpp/bindings
+# ncmpcpp (music player) config
+cfmc	${XDG_CONFIG_HOME:-$HOME/.config}/ncmpcpp/config
+# lf (file browser) config
+cfl	${XDG_CONFIG_HOME:-$HOME/.config}/lf/lfrc
+# lf's scope/preview file
+cfL	${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope
+# sxiv (image viewer) key/script handler
+cfX	${XDG_CONFIG_HOME:-$HOME/.config}/sxiv/exec/key-handler
+
+cfx	${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources
+cfi	${XDG_CONFIG_HOME:-$HOME/.config}/i3/config
+cfb	${XDG_CONFIG_HOME:-$HOME/.config}/i3blocks/config
+cft	${XDG_CONFIG_HOME:-$HOME/.config}/termite/config
+cff	${XDG_CONFIG_HOME:-$HOME/.config}/shell/functionrc
+cfal	${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/alacritty.yml

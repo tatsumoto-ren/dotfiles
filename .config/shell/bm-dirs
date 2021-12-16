@@ -1,0 +1,24 @@
+# You can add comments to these files with #
+
+# Home
+D	~/Downloads
+P	~/Pictures
+d	~/Documents
+S	~/Documents/syncthing/Shared
+proj	~/Documents/Projects
+blog	~/Documents/Projects/bashblog/site/blog
+
+# Dotfiles
+cf	~/.config
+cac	~/.cache
+sc	~/.local/bin
+sr	~/.local/share
+rr	~/.local/src
+
+# External drives
+mn	/mnt
+v	/mnt/archive/video
+a	/mnt/archive/audio
+o	/mnt/d/ongoing
+m	/mnt/d/video
+ytdl	/mnt/archive/video/ytdl
