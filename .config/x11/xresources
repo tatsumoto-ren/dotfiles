@@ -1,0 +1,53 @@
+! vim: ft=xdefaults
+! To make changes take effect run xrdb -load $xresouces_path
+! Type xrdb -q to make sure the settings are loaded properly.
+! It is possible to import colors using #include "/path/to/file"
+! * If using gdm, edit the /etc/gdm/Xsession file and remove the -nocpp option
+!   from the command that loads .Xresources ($userresources section)
+! * If using gnome on wayland, uncomment the WaylandEnable=false in
+!   /etc/gdm/custom.conf and then the resources will be loaded.
+
+! Colors
+! Clone https://github.com/chriskempson/base16-xresources.git to get more schemes
+*background:	#222d32
+*foreground:	#ebdbb2
+*cursorColor:	#f1fcf9
+
+! Black + DarkGrey
+*color0:	#222d32
+*color8:	#928374
+! DarkRed + Red
+*color1:	#cc241d
+*color9:	#fb4934
+! DarkGreen + Green
+*color2:	#98971a
+*color10:	#b8bb26
+! DarkYellow + Yellow
+*color3:	#d79921
+*color11:	#fabd2f
+! DarkBlue + Blue
+*color4:	#458588
+*color12:	#83a598
+! DarkMagenta + Magenta
+*color5:	#b16286
+*color13:	#d3869b
+! DarkCyan + Cyan
+*color6:	#689d6a
+*color14:	#8ec07c
+! LightGrey + White
+*color7:	#a89984
+*color15:	#ebdbb2
+
+Xcursor.theme:	Adwaita
+Xcursor.size:	24
+
+! https://wiki.archlinux.org/index.php/Font_configuration
+! Some applications like URxvt ignore fontconfig settings.
+! You can work around this by using ~/.Xresources.
+Xft.antialias:	1
+Xft.autohint:	0
+Xft.dpi:	96
+Xft.hinting:	1
+Xft.hintstyle:	hintslight
+Xft.lcdfilter:	lcddefault
+Xft.rgba:	none

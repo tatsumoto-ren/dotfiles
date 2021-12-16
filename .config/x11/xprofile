@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# This file runs when a DM logs you into a graphical session.
+# If you use startx/xinit like a Chad, this file will also be sourced.
+
+# Fix Gnome Apps Slow  Start due to failing services
+# Add this when you include flatpak in your system
+dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY
+# Set DPI. User may want to use a larger number for larger screens.
+xrandr --dpi 96
+# Speed xrate up
+xset r rate 300 50 &
+# set the background with the `setbg` script
+setbg &
+# run the remaps script, switching caps/esc and more; check it for more info
+remaps &
+# file synchronization
+syncthing -no-browser &
+# backups
+/usr/lib/deja-dup/deja-dup-monitor &
+# Podboat automatic queue and download. Requires entr.
+podentr &
+# Run mailsync periodically
+{ while :; do mailsync; sleep 15m; done; } &
+# Use Xresources colors/settings on startup
+xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources"
+
+# Autostart
+for program in mpd xcompmgr dunst unclutter pipewire; do
+	if ! pidof -s "$program" && command -v "$program"; then
+		setsid -f "$program"
+	fi
+done >/dev/null 2>&1
+
+# Ensure that xrdb has finished running before moving on to start the WM/DE.
+[ -n "$xrdbpid" ] && wait "$xrdbpid"

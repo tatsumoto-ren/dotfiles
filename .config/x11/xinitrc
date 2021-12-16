@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# xinitrc runs automatically when you run startx.
+# https://wiki.archlinux.org/index.php/Xinit#xinitrc
+export GDK_BACKEND=x11
+export XDG_SESSION_TYPE=x11
+
+# Start some nice programs
+if [ -d /etc/X11/xinit/xinitrc.d ]; then
+	for f in /etc/X11/xinit/xinitrc.d/?*.sh; do
+		# shellcheck source=/dev/null
+		[ -x "$f" ] && . "$f"
+	done
+	unset f
+fi
+
+# Fcitx
+# https://wiki.archlinux.org/index.php/Fcitx
+if command -v fcitx5; then
+	readonly fcitx=fcitx5
+elif command -v fcitx; then
+	readonly fcitx=fcitx
+fi
+if [ -n "$fcitx" ]; then
+	# Define the environment variables to register the input method modules.
+	export GTK_IM_MODULE=fcitx
+	export QT_IM_MODULE=fcitx
+	export XMODIFIERS=@im=fcitx
+	setxkbmap -model pc104 \
+		  -layout us \
+		  -variant altgr-intl \
+		  -option terminate:ctrl_alt_bksp,caps:escape
+	"$fcitx" &
+else
+	setxkbmap -model pc104 \
+		  -layout us,ru \
+		  -variant altgr-intl,winkeys \
+		  -option terminate:ctrl_alt_bksp,caps:escape,grp:win_space_toggle
+fi
+
+# There are some small but important commands that need to be run
+# when we start the graphical environment.
+# shellcheck source=/dev/null
+. "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xprofile"
+
+# Your default WM is determined in your `~/.profile` on login.
+# Here we run the proper command to run when the graphical environment starts.
+ssh-agent "${WM:-i3}"
