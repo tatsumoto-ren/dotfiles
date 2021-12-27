@@ -78,6 +78,7 @@ export _JAVA_AWT_WM_NONREPARENTING=1	# Fix for Java applications in dwm
 export TDESKTOP_USE_GTK_FILE_DIALOG=1
 export TESS_LANG=jpn+jpn2+jpn3		# Combine multiple trained data files (for maimocr).
 export TESSDATA_PREFIX=~/.local/share/capture2text_tessdata
+export TS_SLOTS=10 # the maximum number of jobs running at once with task-spooler.
 
 # Speed up compile times
 # https://wiki.archlinux.org/index.php/Makepkg#Creating_optimized_packages
