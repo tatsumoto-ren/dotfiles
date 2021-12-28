@@ -10,13 +10,13 @@ dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XA
 xrandr --dpi 96
 # Speed xrate up
 xset r rate 300 50 &
-# set the background with the `setbg` script
+# Set the background with the `setbg` script
 setbg &
-# run the remaps script, switching caps/esc and more; check it for more info
+# Run the remaps script, switching caps/esc and more; check it for more info
 remaps &
-# file synchronization
+# File synchronization
 syncthing -no-browser &
-# backups
+# Backups. Install deja-dup.
 /usr/lib/deja-dup/deja-dup-monitor &
 # Podboat automatic queue and download. Requires entr.
 podentr &
