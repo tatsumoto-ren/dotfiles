@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# This script is the SUDO_ASKPASS variable, meaning that it will be used as a
+# password prompt if needed.
+
+if pacman -Qq "rofi" >/dev/null; then
+	rofi -dmenu -password -p "$1"
+else
+	dmenu -sb "#d79921" -sf "#1d2021" -nf "#000000" -nb "#000000" -p "$1" <&- && echo
+fi
