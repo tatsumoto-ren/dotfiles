@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Fingerbox is a simple browser launcher initially meant to run Firefox with a fake TZ.
+
+export TZ=UTC
+
+for _brwsr in "$BROWSER" librewolf icecat firefox chromium; do
+	if command -v "$_brwsr" && [ "$_brwsr" != "$(basename "$0")" ]; then
+		exec "$_brwsr" "$@"
+	fi
+done
