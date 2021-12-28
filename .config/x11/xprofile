@@ -21,7 +21,7 @@ syncthing -no-browser &
 # Podboat automatic queue and download. Requires entr.
 podentr &
 # Run mailsync periodically
-{ while :; do mailsync; sleep 15m; done; } &
+{ command -v mailsync && while :; do mailsync; sleep 15m; done; } &
 # Use Xresources colors/settings on startup
 xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources"
 

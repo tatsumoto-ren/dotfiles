@@ -76,15 +76,19 @@ export MOZ_USE_XINPUT2="1"		# Mozilla smooth scrolling/touchpads.
 export AWT_TOOLKIT="MToolkit wmname LG3D"	# May have to install wmname
 export _JAVA_AWT_WM_NONREPARENTING=1	# Fix for Java applications in dwm
 export TDESKTOP_USE_GTK_FILE_DIALOG=1
-export TESS_LANG=jpn+jpn2+jpn3		# Combine multiple trained data files (for maimocr).
-export TESSDATA_PREFIX=~/.local/share/capture2text_tessdata
 export TS_SLOTS=10 # the maximum number of jobs running at once with task-spooler.
+
+# Use capture2text tesseract data instead of default.
+# https://tatsumoto.neocities.org/blog/mining-from-manga.html
+export TESSDATA_PREFIX=~/.local/share/capture2text_tessdata
+# Combine multiple trained data files (for maimocr).
+#export TESS_LANG=jpn+jpn2+jpn3
 
 # Speed up compile times
 # https://wiki.archlinux.org/index.php/Makepkg#Creating_optimized_packages
+MAKEFLAGS="-j$(($(nproc) + 1)) -l$(nproc)"; export MAKEFLAGS
 export CFLAGS="-Wall -Wextra -Wpedantic -march=native -O2 -pipe -fstack-protector-strong -fno-plt"
 export CXXFLAGS="$CFLAGS"
-MAKEFLAGS="-j$(($(nproc) + 1)) -l$(nproc)"; export MAKEFLAGS
 
 # Fix QT themes on GTK Desktops
 # Install qt5-styleplugins and set the following environment variable.
