@@ -1,2 +1,5 @@
 #!/usr/bin/env sh
+
+# When run from qolibri, $1 is guaranteed to be the path to an audio file.
+
 mpv --keep-open=no --force-window=no "$@"
