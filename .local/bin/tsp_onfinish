@@ -1,0 +1,5 @@
+#!/usr/bin/sh
+
+# The arguments passed are: jobid errorlevel output_filename command
+
+notify-send "Job $1 finished with status $2" "$4"
