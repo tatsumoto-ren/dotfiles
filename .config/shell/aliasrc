@@ -6,11 +6,6 @@
 # Use $XINITRC variable if file exists.
 [ -f "$XINITRC" ] && alias startx="startx $XINITRC"
 
-# sudo not required for some system commands
-for command in mount umount sv pacman updatedb su shutdown poweroff reboot ; do
-	alias $command="sudo $command"
-done; unset command
-
 # Verbosity and settings that you pretty much just always are going to want.
 alias \
 	cp="cp -iv" \
@@ -18,33 +13,71 @@ alias \
 	rm="rm -vI" \
 	bc="bc -ql" \
 	mkd="mkdir -pv" \
-	yt="youtube-dl --add-metadata -i" \
-	yta="yt -x -f bestaudio/best" \
-	ffmpeg="ffmpeg -hide_banner"
+	ffmpeg="ffmpeg -hide_banner" \
+	:q="exit" \
+	help="man" \
+	chd='cd -- "$(choose_from_cwds)" && ls -a' \
+	rclone="rclone -v" \
 
 # Colorize commands when possible.
 alias \
 	ls="ls -hN --color=auto --group-directories-first" \
 	grep="grep --color=auto" \
 	diff="diff --color=auto" \
-	ccat="highlight --out-format=ansi"
+	ccat="highlight --out-format=ansi" \
 
-# These common commands are just too long! Abbreviate them.
-alias \
-	ka="killall" \
-	g="git" \
-	trem="transmission-remote" \
-	YT="youtube-viewer" \
-	sdn="shutdown -h now" \
-	e="$EDITOR" \
-	v="$EDITOR" \
-	p="pacman" \
-	xi="sudo xbps-install" \
-	xr="sudo xbps-remove -R" \
-	xq="xbps-query" \
-	z="zathura"
-
+# Other stuff
 alias \
 	magit="nvim -c MagitOnly" \
+	tmux="tmux -f \${XDG_CONFIG_HOME:-\$HOME/.config}/tmux/tmux.conf" \
+	timer='echo "Timer started. Stop with Ctrl-D." && date "+%a, %d %b %H:%M:%S" && time cat && date "+%a, %d %b %H:%M:%S"' \
+	updxrdb="xrdb -merge \${XDG_CONFIG_HOME:-\$HOME/.config}/Xresources" \
+	genpasswd="openssl rand -base64 21" \
+	update-grub="sudo grub-mkconfig -o /boot/grub/grub.cfg" \
+	trim="sudo fstrim -v / && sudo fstrim -v /home" \
+	showpath="echo \$PATH | sed 's/:/\n/g'" \
+	visoodoo="sudo visudo -f /etc/sudoers.d/01_sudoers" \
+	res_screencast="xrandr --output DP1 --primary --mode 1920x1080" \
+	res_normal="xrandr --output DP1 --primary --mode 1920x1200" \
+
+# dotfiles in git
+# https://wiki.archlinux.org/index.php/Dotfiles
+# or use ~/.git/info/exclude
+alias dot='git --git-dir=${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/ --work-tree=$HOME'
+
+# Journal
+alias \
+	journal="journalctl --since '3 day ago'" \
+	errors="journalctl -p err..alert -b -e" \
+
+# Youtube
+alias \
+	yt="youtube-dl --add-metadata -i" \
+	ytautosub="yt --write-auto-sub --sub-lang ja" \
+	yta="yt -x -f bestaudio/best" \
+	mp3dl="yta --audio-quality 1 --audio-format mp3" \
+	ytv="youtube-viewer" \
+
+# Applications
+alias \
+	clock="ncmpcpp -s clock" \
+	visualizer="ncmpcpp -s visualizer" \
+	nb="newsboat" \
+	getmail="offlineimap && notmuch new" \
+	gm="offlineimap && notmuch new" \
+	nf="clear && neofetch" \
+	kakasi_reading="kakasi -i utf8 -o utf8 -u -JH -KH" \
+
+# Pacman / system
+basepac='filesystem gcc-libs glibc bash coreutils file findutils gawk grep procps-ng sed tar gettext pciutils psmisc shadow util-linux bzip2 gzip xz licenses pacman systemd systemd-sysvcompat iputils iproute2'
+
+alias \
+	lsp="pacman -Qett --color=always | less" \
+	notify-pacman-block="pkill -RTMIN+8 i3blocks" \
+	upd="archnews && trizen -Syu && notify-pacman-block" \
+	trimlogs='sudo journalctl --vacuum-size=150M' \
+	pacclean="remorphans && sudo pacman -Sc && trimlogs" \
+	whathaveidone="tail -500 /var/log/pacman.log | grep -i 'installed\|removed\|graded' --color=never" \
+	refl="sudo reflector --verbose --age 12 --protocol https --latest 10 --sort rate --save /etc/pacman.d/mirrorlist" \
+	all_but_base="comm -23 <(pacman -Qetq | sort) <({ pacman -Qgq base-devel ; echo \$basepac | tr ' ' '\n' ;} | sort) | less" \
 	ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" \
-	weath="less -S ${XDG_DATA_HOME:-$HOME/.local/share}/weatherreport" \
