@@ -4,6 +4,6 @@
 [submodule ".config/mpv/scripts/subs2srs"]
 	path = .config/mpv/scripts/subs2srs
 	url = https://github.com/Ajatt-Tools/mpvacious.git
-[submodule "/.config/mpv/scripts/videoclip"]
+[submodule ".config/mpv/scripts/videoclip"]
 	path = .config/mpv/scripts/videoclip
-	url = git@github.com:Ajatt-Tools/videoclip.git
+	url = https://github.com/Ajatt-Tools/videoclip.git
