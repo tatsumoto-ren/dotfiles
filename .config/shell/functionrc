@@ -1,0 +1,75 @@
+#!/bin/bash
+p() { sudo pacman "$@"; notify-pacman-block; }
+see() { du -a ~/.local/bin/* ~/.config/* | awk '{print $2}' | fzf | xargs -r "$EDITOR" ;}
+vf() { find -type f | fzf | xargs -r -I % "$EDITOR" % ;}
+calc(){ awk "BEGIN{ print $* }" ;}
+kitsudown() { curl "$@" | grep -Eo 'subtitles[^"]+\.(srt|ass)' | xargs -n 1 -P 26 -I{} wget --no-clobber 'http://kitsunekko.net/{}' ;}
+cheat() { curl "cheat.sh/$*" ;}
+choose_from_cwds() {
+	for PROCID in $(pgrep "^$(basename "$SHELL")$") $(pgrep '^ranger$') $(pgrep '^lf$'); do
+		readlink -e "/proc/$PROCID/cwd"
+	done | sort -u | dmenu -i -l 5
+}
+
+# Rsync shortcuts
+rsync_a() { rsync -rltv --delete "$@" ;}
+rsync_fat() { rsync_a --modify-window=1 "$@" ;}
+
+# Check the weather. Run 'curl wttr.in/:help' for more options.
+weath()  { curlwttr "${1-$LOCATION}?M$([ "$COLUMNS" -lt 125 ] && echo n)" ;}
+cweath() { curlwttr "${1-$LOCATION}?0M" ;}
+
+# Install an AUR package manually (for Parabola to get AUR access)
+aurinstall() { curl -O "https://aur.archlinux.org/cgit/aur.git/snapshot/$1.tar.gz" && tar -xvf "$1.tar.gz" && cd "$1" && makepkg --noconfirm -si && cd .. && rm -rf "$1" "$1.tar.gz"; }
+
+# Uninstall all packages no longer required as dependencies (orphans)
+remorphans() {
+	local packages=()
+
+	for package in $(pacman -Qdtq); do
+		packages+=("$package")
+	done
+
+	echo "Found ${#packages[*]} orphans."
+	if ! [[ ${#packages[*]} -eq 0 ]]; then
+		sudo pacman -Rns "${packages[@]}"
+	fi
+}
+
+# Readme
+readme() {
+	for readme in {readme,README}.{md,MD,markdown,txt,TXT,mkd}; do
+		if [[ -f "$readme" ]]; then
+			< "$readme"
+		fi
+	done
+}
+
+# Full system backup
+# https://wiki.archlinux.org/index.php/Rsync#Full_system_backup
+backup_everything() {
+	if mount -l | grep -F "/mnt/system_backup"; then
+		sudo rsync -aAXvHS --delete --info=progress2 --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found","/home/*/.thumbnails/*","/home/*/.cache/*","/home/*/.local/share/Trash/*","/home/*/.gvfs","/var/cache/pacman/pkg/*"} / /mnt/system_backup
+	fi
+}
+
+# Test different versions of Anki
+anki_test_install() {
+	local -r version=${1:?No version provided.}
+	local -r dir=~/.local/share/anki_builds/"anki_$version"
+	mkdir -p -- "$dir" && cd -- "$dir" || exit
+	python -m venv pyenv
+	./pyenv/bin/pip3 install --upgrade pip
+	./pyenv/bin/pip3 install --upgrade --pre "aqt==2.1.$version"
+}
+anki_test_run() {
+	local -r dir=~/.local/share/anki_builds
+	if [[ $* ]]; then
+		local -r choice=$*
+	else
+		local -r choice=$(ls -1 "$dir" | dmenu)
+	fi
+	if [[ -n $choice ]]; then
+		cd -- "$dir/$choice" && ./pyenv/bin/anki
+	fi
+}
