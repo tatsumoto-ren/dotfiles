@@ -1,33 +1,48 @@
-# Luke's lf settings
-
 # Basic vars
-set shell bash
-set shellopts '-eu'
+set shell zsh
+set shellopts '-eu:--shwordsplit' # https://github.com/gokcehan/lf/wiki/Tips#split-words-by-default-in-zsh
 set ifs "\n"
 set scrolloff 10
+set info size
+set dircounts
 set icons
 set period 1
-set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
+set previewer ~/.config/lf/scope
+set hiddenfiles ".*:*.aux:*.bbl:*.bcf:*.blg:*.run.xml"
+set hidden true
 
-# Vars that depend on environmental variables
-$lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope"
+cmd on-cd %{{
+	# Sort files by time in certain folders.
+	for d in Downloads Screenshots ongoing; do
+		if [[ $PWD == *"$d"* ]]; then
+			lf -remote "send $id set sortby time"
+		fi
+	done
+}}
 
 # cmds/functions
 cmd open ${{
+    if [[ $f == *'.!qB' ]]; then
+	# Ignore qbittorrent files. lf hangs otherwise.
+	return
+    fi
     case $(file --mime-type "$(readlink -f $f)" -b) in
-	image/vnd.djvu|application/pdf|application/octet-stream|application/postscript) setsid -f zathura $fx >/dev/null 2>&1 ;;
-        text/*) $EDITOR $fx;;
-	image/x-xcf) setsid -f gimp $f >/dev/null 2>&1 ;;
-	image/svg+xml) display -- $f ;;
-	image/*) rotdir $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\|ico\)\(_large\)*$" | setsid -f sxiv -aio 2>/dev/null | lf-select & ;;
-	audio/*) mpv --audio-display=no $f ;;
-	video/*) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
-	application/pdf|application/vnd*|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 ;;
+	text/rtf|application/ms*|application/*office*|application/octet-stream|*opendocument*|*powerpoint*) setsid -f soffice $fx >/dev/null 2>&1 ;;
+	application/vnd*|application/epub*|image/vnd.djvu|application/pdf|application/postscript) setsid -f zathura $fx >/dev/null 2>&1 ;;
+	text/troff) man ./ $fx;;
+	text/*) setsid -f ${VISUAL:-geany} $fx >/dev/null 2>&1 ;;
+	image/x-xcf) setsid -f gimp $fx >/dev/null 2>&1 ;;
+	image/svg+xml) setsid -f display -- $fx ;;
+	image/*) setsid -f lf-select $f ;;
+	audio/*) mpv --audio-display=no --force-window=no $fx ;;
+	video/*) setsid -f mpv $fx -quiet >/dev/null 2>&1 ;;
+	application/x-rar) setsid -f file-roller $fx >/dev/null 2>&1 ;;
 	application/pgp-encrypted) $EDITOR $fx ;;
-        *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
+	*) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>&1; done ;;
     esac
 }}
 
+# https://github.com/gokcehan/lf/wiki/Tips#commandmapping-to-create-new-directories
 cmd mkdir $mkdir -p "$(echo $* | tr ' ' '\ ')"
 
 cmd extract ${{
@@ -52,9 +67,10 @@ cmd moveto ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
 	clear; echo "Move to where?"
-	dest="$(sed -e 's/\s*#.*//' -e '/^$/d' -e 's/^\S*\s*//' ${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs | fzf | sed 's|~|$HOME|')" &&
+	dest="$(listmarks dirs | fzf)" &&
+	[[ -n "$dest" ]] &&
 	for x in $fx; do
-		eval mv -iv \"$x\" \"$dest\"
+		mv -iv \"$x\" \"$dest\"
 	done &&
 	notify-send "🚚 File(s) moved." "File(s) moved to $dest."
 }}
@@ -63,45 +79,121 @@ cmd copyto ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
 	clear; echo "Copy to where?"
-	dest="$(sed -e 's/\s*#.*//' -e '/^$/d' -e 's/^\S*\s*//' ${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs | fzf | sed 's|~|$HOME|')" &&
+	dest="$(listmarks dirs | fzf)" &&
+	[[ -n "$dest" ]] &&
 	for x in $fx; do
-		eval cp -ivr \"$x\" \"$dest\"
+		cp -ivr \"$x\" \"$dest\"
 	done &&
 	notify-send "📋 File(s) copied." "File(s) copies to $dest."
 }}
 
-cmd setbg "$1"
+cmd editfile ${{
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	set -f
+	clear; echo "Edit what file?"
+	filepath="$(listmarks files | fzf)"
+
+	[[ -n "$filepath" ]] && "$EDITOR" "$filepath"
+}}
+
+cmd changedirectory ${{
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	set -f
+	clear; echo "Go to where?"
+	dirpath="$(listmarks dirs | fzf)"
+
+	[[ -n "$dirpath" ]] && lf -remote "send $id cd '$dirpath'"
+}}
+
+cmd quickedit ${{
+	case $f in
+		*.mkv|*.mp4|*.jpg|*.png|*.webp) return;;
+		*) $EDITOR $f;;
+	esac
+}}
+
 cmd bulkrename $vidir
 
 # Bindings
+map e quickedit
+map sn :set sortby natural; set info size
+map c
+map cd changedirectory
+map cl clear
+map cf editfile
+map cs $compiler $f
+map d
+map dd cut
+map dc %du -sh $f
 map <c-f> $lf -remote "send $id select '$(fzf)'"
-map J $lf -remote "send $id cd $(sed -e 's/\s*#.*//' -e '/^$/d' -e 's/^\S*\s*//' ${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs | fzf)"
-map gh
-map g top
 map D delete
 map E extract
 map C copyto
 map M moveto
+map R reload
 map <c-n> push :mkdir<space>
+map mk push :mkdir<space>
+map r push &setsid<space>-f<space><space>$fx<left><left><left><left>
 map <c-r> reload
 map <c-s> set hidden!
 map <enter> shell
 map x $$f
 map X !$f
-map o &mimeopen $f
-map O $mimeopen --ask $f
+map o &mimeopen "$f"
+map O $mimeopen --ask "$f"
+map y
+map yy copy
+map yp $echo -n "$f" | xclip -selection clipboard
+map yn $echo -n "$(basename -- "$f")" | xclip -selection clipboard
+map yf $echo "file://$(readlink -f -- "$f")" | xclip -selection clipboard -target "text/uri-list"
+map S $clear && $SHELL
+map E !atool -x $fx
+map ZG !filename="$(basename -- "$f")" && tar -I 'gzip -9' -cvf "${filename}.tar.gz" -- "$filename"
+map ZD !filename="$(basename -- "$f")" && tar --zstd -cvf "${filename}.tar.zst" -- "$filename"
+map m
+map ms mark-save
+map -x $chmod -x -- $fx
+map +x $chmod +x -- $fx
 
+# Half-moves
+map K half-up
+map J half-down
+
+# New tab
+map <c-t> &i3-msg layout tabbed && setsid -f i3-sensible-terminal -e lf
+map <f-4> &setsid -f i3-sensible-terminal
+
+# Ranger-like moves
+map g/ cd /
+map gM cd /mnt
+map ge cd /etc
+map gp cd /tmp
+map gu cd /usr
+map <insert> push %touch<space>
+map gs $lf -remote "send $id select \"/mnt/archive/audio/$(mpc -f %file% | head -1)\""
+map gr $lf -remote "send $id cd \"/run/media/${USER}\""
+
+# Move to trash
+cmd trash %gio trash -- $fx || trash-put -- $fx
+map D trash
+map <delete> trash
+
+# cd to mountpoint
+map gm $lf -remote "send $id cd '$(stat -c %m "$(pwd)")'"
+
+map cw push A<c-u> # new rename
+map ci push A<a-b><a-b><a-f> # before extention
 map A rename # at the very end
-map c push A<c-u> # new rename
 map I push A<c-a> # at the very beginning
-map i push A<a-b><a-b><a-f> # before extention
 map a push A<a-b> # after extention
-map B bulkrename
-map b $setbg $f
+map b bulkrename
+map B $setbg $f
 
 map <c-e> down
 map <c-y> up
+map <c-w> quit
 map V push :!nvim<space>
+map L &$TERMINAL -e "nvim $fx"
 
 map W $setsid -f $TERMINAL >/dev/null 2>&1
 

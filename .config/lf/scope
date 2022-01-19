@@ -20,14 +20,10 @@ IFS="$(printf '%b_' '\n')"; IFS="${IFS%_}"
 FILE_PATH="${1}"         # Full path of the highlighted file
 HEIGHT="${2}"
 
-#FILE_EXTENSION="${FILE_PATH##*.}"
-#FILE_EXTENSION_LOWER=$(echo ${FILE_EXTENSION} | tr '[:upper:]' '[:lower:]')
-
 # Settings
 HIGHLIGHT_SIZE_MAX=262143  # 256KiB
 HIGHLIGHT_TABWIDTH=8
 HIGHLIGHT_STYLE='pablo'
-
 
 handle_mime() {
     local mimetype="${1}"
@@ -46,12 +42,14 @@ handle_mime() {
             highlight --replace-tabs="${HIGHLIGHT_TABWIDTH}" --out-format="${highlight_format}" \
                 --style="${HIGHLIGHT_STYLE}" --force -- "${FILE_PATH}" ;;
 	application/zip) atool --list -- "${FILE_PATH}" ;;
+        video/* | audio/*|application/octet-stream | *djvu) killall mediainfo; mediainfo "${FILE_PATH}" || exit 1;;
         image/*) chafa --fill=block --symbols=block -c 256 -s 80x"${HEIGHT}" "${FILE_PATH}" || exit 1;;
-        video/* | audio/*|application/octet-stream) mediainfo "${FILE_PATH}" || exit 1;;
         */pdf) pdftotext -l 10 -nopgbrk -q -- "${FILE_PATH}" - ;;
         *opendocument*) odt2txt "${FILE_PATH}" ;;
     esac
 }
+
+[[ ${FILE_PATH} == *'.!qB' ]] && exit
 
 MIMETYPE="$( file --dereference --brief --mime-type -- "${FILE_PATH}" )"
 handle_mime "${MIMETYPE}"
