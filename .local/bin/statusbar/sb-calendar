@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+date '+%b %d (%a)'
+date '+%d.%m'
+
+readonly cal="$(cal -m --color=always | \
+	sed "s/..7m/<b><span color=\"white\">/;\
+	s/..27m/<\/span><\/b>/;s/Su/<span color=\"red\">&<\/span>/;\
+	s/Sa/<span color=\"lightblue\">&<\/span>/")"
+
+case $BLOCK_BUTTON in
+	1)
+		notify-send "$(head -1 <<< "$cal")" "$(tail +2 <<< "$cal")"
+		command -v calcurse && notify-send "Appointments" "$(calcurse -D ~/.config/calcurse -d3)" ;;
+	2)
+		setsid -f i3-sensible-terminal -e 'calcurse -D ~/.config/calcurse' & ;;
+	6)
+		setsid -f i3-sensible-terminal -e "$EDITOR" "$0" ;;
+esac
