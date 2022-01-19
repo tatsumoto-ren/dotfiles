@@ -1,0 +1,11 @@
+--sub-lang 'en,en-US,en-GB,ja,ru'
+--convert-subs ass
+--no-mtime
+--ignore-errors
+--continue
+--add-metadata
+-f 'bestvideo[height<=1080]+bestaudio,best'
+-o '/mnt/archive/video/ytdl/%(upload_date)s-%(title)s.%(ext)s'
+--merge-output-format mp4
+--user-agent "Mozilla/5.0 (Windows NT 10.0; rv:94.0) Gecko/20100101 Firefox/94.0"
+--geo-bypass
