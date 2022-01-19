@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# This file comes with LukeSmithxyz/voidrice.
+# You can link it to /etc/motd by running sudo ln -s ~/.local/bin/unix /etc/motd
+
 #original artwork by http://www.sanderfocus.nl/#/portfolio/tech-heroes
 #converted to shell by #nixers @ irc.unix.chat
 
