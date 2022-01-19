@@ -1,0 +1,51 @@
+#!/usr/bin/python3
+
+class Instance:
+    @staticmethod
+    def get_active_users(d: dict) -> int:
+        try:
+            return d[1]['stats']['usage']['users']['activeMonth']
+        except (TypeError, KeyError):
+            return 0
+
+    @staticmethod
+    def get_uri(d: dict) -> str:
+        uri: str = d[1]['uri']
+
+        if uri.endswith('/'):
+            return uri[:-1]
+        else:
+            return uri
+
+    def __init__(self, d: dict):
+        self.uri = self.get_uri(d)
+        self.act_users = self.get_active_users(d)
+
+
+def json_url() -> str:
+    return 'https://api.invidious.io/instances.json'
+
+
+def rank_instances(j: dict) -> list[Instance]:
+    instances = []
+    for instance in j:
+        instance = Instance(instance)
+        if instance.act_users > 1:
+            instances.append(instance)
+
+    return sorted(instances, key=lambda e: e.act_users)
+
+
+def main():
+    import requests
+    import json
+
+    r = requests.get(json_url(), allow_redirects=False)
+    j = json.loads(r.content)
+
+    for instance in rank_instances(j):
+        print(instance.uri, instance.act_users, sep='\t')
+
+
+if __name__ == '__main__':
+    main()
