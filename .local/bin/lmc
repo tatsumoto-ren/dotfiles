@@ -1,0 +1,16 @@
+#!/bin/sh
+
+STEP="${2:-5}"
+
+case "$1" in
+	toggle-mic) pamixer --default-source --toggle-mute ;;
+	toggle*) pamixer --toggle-mute ;;
+	mute) pamixer --mute ;;
+	unmute) pamixer --unmute ;;
+	up) pamixer --increase "$STEP" ;;
+	down) pamixer --decrease "$STEP" ;;
+	control) pulsemixer ;;
+	*) notify-send -u critical "$(basename -- "$0")" "Unsupported operation: ${1:-empty string}." ;;
+esac >/dev/null
+
+pkill -RTMIN+10 "${STATUSBAR:-i3blocks}" &
