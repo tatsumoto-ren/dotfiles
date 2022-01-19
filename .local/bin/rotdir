@@ -1,0 +1,25 @@
+#!/bin/python
+
+# When I open an image from the file manager in sxiv (the image viewer), I want
+# to be able to press the next/previous keys to key through the rest of the
+# images in the same directory. This script "rotates" the content of a
+# directory based on the first chosen file, so that if I open the 15th image,
+# if I press next, it will go to the 16th etc. Autistic, I know, but this is
+# one of the reasons that sxiv is great for being able to read standard input.
+
+import sys,os,re
+
+if len(sys.argv) < 2:
+    sys.exit('usage: rotdir filename')
+
+def natural_sort(l):
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
+    return sorted(l, key = alphanum_key)
+
+if __name__ == '__main__':
+    base = os.path.basename(''.join(sys.argv[1:]))
+    ls=natural_sort(os.listdir(os.getcwd()))
+    base_index=ls.index(base)
+    result=ls[base_index:] + ls[:base_index]
+    print('\n'.join(result))
