@@ -1,7 +1,10 @@
 #!/bin/sh
 
-# Reads file names from stdin and selects them in lf.
+# View files with sxiv and and select them in lf.
 
+rotdir "${1:?}" |
+grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\|ico\)\(_large\)*$" |
+sxiv -aio 2>/dev/null |
 while read -r file; do
 	[ -z "$file" ] && continue
 	lf -remote "send select \"$file\""
