@@ -1,0 +1,4 @@
+#!/bin/sh
+readonly result=$(curl -H "Accept-Language: ${LANG%_*}" --compressed "https://wttr.in/$*" 2>/dev/null)
+echo "$result" | grep -qi 'sorry\|unknow\|error\|time-out' && exit 1
+echo "$result"
