@@ -1,0 +1,32 @@
+#!/bin/sh
+
+case $BLOCK_BUTTON in
+	1) notify-send "🖥 CPU hogs" "$(ps axch -o cmd:15,%cpu --sort=-%cpu | head)\\n(100% per core)" ;;
+	3) i3-msg -q exec "$TERMINAL -e htop" ;;
+	6) i3-msg -q exec "$TERMINAL -e $EDITOR $0" ;;
+esac
+
+readonly temp="$(eval "${query:?}" | tr -cd '[:digit:].')"
+readonly label="${chip_label:-CPU}"
+[ -z "$temp" ] && exit 1
+
+awk -v temp="$temp" -v label="$label" '
+BEGIN {
+	print label" "temp"°C"
+	if (temp < 60) {
+		print
+		exit
+	}
+
+	# if above 60
+	print label" "temp"°C"
+
+	# color
+	if (temp > 90) {
+		print("#FF0000")
+	} else if (temp > 80) {
+		print("#FFAE00")
+	} else if (temp > 70) {
+		print("#FFF600")
+	}
+}'
