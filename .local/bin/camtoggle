@@ -1,0 +1,12 @@
+#!/bin/sh
+if ! pkill -f /dev/video; then
+	mpv --no-osc \
+	--no-input-default-bindings \
+	--input-conf=/dev/null \
+	--geometry=-0-0 \
+	--autofit=30% \
+	--title="mpvfloat" \
+	--profile=low-latency \
+	--untimed \
+	/dev/video0 || notify-send "Camtoggle" "Failed."
+fi
