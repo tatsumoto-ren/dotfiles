@@ -1,0 +1,28 @@
+#!/bin/bash
+
+archnews() {
+	local -r cached_page=$HOME/.cache/archnews
+	local -r current_page=/tmp/archnews
+
+	curl -s "https://archlinux.org/feeds/news/" -o "$current_page"
+
+	if ! [[ -s $current_page ]]; then
+		echo "Couldn't connect to archlinux.org."
+		return 1
+	fi
+
+	if ! cmp -s "$current_page" "$cached_page"; then
+		echo "*** MANUAL INTERVENTION NEEDED ***"
+		tee "$cached_page" < "$current_page" |
+		xmllint --xpath '//item/title | //item/pubDate' /dev/stdin |
+		paste - - -d '' |
+		sed -r -e 's:<title>([^<]*?)</title><pubDate>([^<]*?)</pubDate>:\2\t\1:g' |
+		sed '3q' | sed 's/&gt;/>/g; s/\s[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\s+0000\s/ - /g'
+
+		xdg-open 'https://www.archlinux.org/news/'
+	fi
+
+	rm -- "$current_page"
+}
+
+archnews
