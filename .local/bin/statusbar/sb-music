@@ -1,19 +1,45 @@
 #!/bin/sh
 
-filter() { mpc | sed "/^volume:/d;s/\\&/&amp;/g;s/\\[paused\\].*/⏸/g;/\\[playing\\].*/d;/^ERROR/Q" | paste -sd ' ' -;}
+filter() {
+	input="$(cat - | sed '/^volume:/d; s/\&/&amp;/g; s/ *$//')"
+	songname="$(echo "$input" | head -1)"
 
-pidof -x sb-mpdup >/dev/null 2>&1 || sb-mpdup >/dev/null 2>&1 &
+	if [ -z "$songname" ]; then
+		echo " Stopped"
+		echo ""
+		echo "#888888"
+		return
+	fi
+
+	if echo "$input" | tail -1 | grep -q 'playing'; then
+		echo " $songname"
+		echo " $songname" | colrm 30
+	else
+		echo "<span color=\"gray\" font_style=\"italic\"> $songname</span>"
+		echo "<span color=\"gray\" font_style=\"italic\">$(echo " $songname" | colrm 30 )</span>"
+	fi
+}
+
+{ pidof -x sb-mpdup || setsid -f sb-mpdup ;} >/dev/null 2>&1 &
 
 case $BLOCK_BUTTON in
-	1) mpc status | filter ; setsid -f "$TERMINAL" -e ncmpcpp ;;  # right click, pause/unpause
-	2) mpc toggle | filter ;;  # right click, pause/unpause
-	3) mpc status | filter ; notify-send "🎵 Music module" "\- Shows mpd song playing.
-- ⏸ when paused.
-- Left click opens ncmpcpp.
-- Middle click pauses.
-- Scroll changes track.";;  # right click, pause/unpause
-	4) mpc prev   | filter ;;  # scroll up, previous
-	5) mpc next   | filter ;;  # scroll down, next
-	6) mpc status | filter ; "$TERMINAL" -e "$EDITOR" "$0" ;;
-	*) mpc status | filter ;;
+	1)	# left click, launch ncmpcpp
+		mpc status | filter ;
+		i3-msg -q exec "i3-sensible-terminal -e ncmpcpp -s playlist" ;;
+
+	3)	# right click, pause/unpause
+		mpc toggle | filter ;;
+
+	4)	# scroll up, previous
+		mpc prev   | filter ;;
+
+	5)	# scroll down, next
+		mpc next   | filter ;;
+
+	6)	# edit
+		mpc status | filter ;
+		i3-msg -q exec "i3-sensible-terminal -e \"$EDITOR -- $0\"" ;;
+
+	*)
+		mpc status | filter ;;
 esac
