@@ -1,7 +1,16 @@
-#show-read-feeds no
+show-read-feeds no
 auto-reload yes
+reload-time 30
+reload-threads 4
+refresh-on-startup yes
+notify-program "/usr/bin/notify-send"
 
-external-url-viewer "urlscan -dc -r 'linkhandler {}'"
+#html-renderer "w3m -dump -T text/html"
+#external-url-viewer "urlscan -dc -r 'linkhandler {}'"
+
+# You can also fetch your rss feeds over tor
+#proxy localhost:9050
+#proxy-type socks5
 
 bind-key j down
 bind-key k up
@@ -30,9 +39,11 @@ color info red black bold
 color article white default bold
 
 browser linkhandler
-macro , open-in-browser
+macro , open-in-browser -- "Open in browser"
+macro i set browser "tsp impd add" ; open-in-browser ; set browser linkhandler -- "Add to Immersion pod"
 macro t set browser "qndl" ; open-in-browser ; set browser linkhandler
 macro a set browser "tsp youtube-dl --add-metadata -xic -f bestaudio/best" ; open-in-browser ; set browser linkhandler
+macro y set browser "tsp youtube-dl --add-metadata -ic" ; open-in-browser ; set browser linkhandler
 macro v set browser "setsid -f mpv" ; open-in-browser ; set browser linkhandler
 macro w set browser "lynx" ; open-in-browser ; set browser linkhandler
 macro d set browser "dmenuhandler" ; open-in-browser ; set browser linkhandler
