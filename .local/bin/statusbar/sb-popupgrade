@@ -1,9 +1,14 @@
 #!/bin/sh
 
+archnews
 printf "Beginning upgrade.\\n"
-
-yay -Syu
-pkill -RTMIN+8 "${STATUSBAR:-dwmblocks}"
-
-printf "\\nUpgrade complete.\\nPress <Enter> to exit window.\\n\\n"
+if pacman -Qq trizen > /dev/null; then
+	trizen -Syu
+elif pacman -Qq paru > /dev/null; then
+	paru -Syu
+else
+	sudo pacman -Syu
+fi
+pkill -RTMIN+8 "${STATUSBAR:-i3blocks}"
+printf '\nUpgrade complete.\nPress <Enter> to exit window.\n\n'
 read -r _
