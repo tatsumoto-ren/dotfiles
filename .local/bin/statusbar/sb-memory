@@ -1,12 +1,65 @@
 #!/bin/sh
 
 case $BLOCK_BUTTON in
-	1) notify-send "🧠 Memory hogs" "$(ps axch -o cmd:15,%mem --sort=-%mem | head)" ;;
-	2) setsid -f "$TERMINAL" -e htop ;;
-	3) notify-send "🧠 Memory module" "\- Shows Memory Used/Total.
+	1) notify-send "Memory hogs" "$(ps axch -o cmd:15,%mem --sort=-%mem | head)" ;;
+	2) notify-send "Memory module" "\- Shows Memory Used/Total.
 - Click to show memory hogs.
 - Middle click to open htop." ;;
-	6) "$TERMINAL" -e "$EDITOR" "$0" ;;
+	3) i3-msg -q exec "$TERMINAL -e htop" ;;
+	6) i3-msg -q exec "$TERMINAL -e $EDITOR $0" ;;
 esac
 
-free --mebi | sed -n '2{p;q}' | awk '{printf ("🧠%2.2fGiB/%2.2fGiB\n", ( $3 / 1024), ($2 / 1024))}'
+TYPE="${BLOCK_INSTANCE:-mem}"
+
+awk -v type="$TYPE" '
+/^MemTotal:/ {
+	mem_total=$2
+}
+/^MemFree:/ {
+	mem_free=$2
+}
+/^Buffers:/ {
+	mem_free+=$2
+}
+/^Cached:/ {
+	mem_free+=$2
+}
+/^SwapTotal:/ {
+	swap_total=$2
+}
+/^SwapFree:/ {
+	swap_free=$2
+}
+END {
+	if (type == "swap") {
+		free=swap_free/1024/1024
+		used=(swap_total-swap_free)/1024/1024
+		total=swap_total/1024/1024
+	} else {
+		free=mem_free/1024/1024
+		used=(mem_total-mem_free)/1024/1024
+		total=mem_total/1024/1024
+	}
+	pct=0
+	if (total > 0) {
+		pct=used/total*100
+	}
+	if (pct < 50) {
+		printf("%s %.f%%\n",toupper(type), pct)
+		printf("\n")
+		exit
+	}
+	# full text
+	printf("%s %.1fG/%.1fG (%.f%%)\n", toupper(type), used, total, pct)
+	# short text
+	printf("%s%.f%%\n", substr(toupper(type),1,1), pct)
+	# color
+	if (pct > 90) {
+		print("#FF0000")
+	} else if (pct > 80) {
+		print("#FFAE00")
+	} else if (pct > 70) {
+		print("#FFF600")
+	}
+}
+' /proc/meminfo
