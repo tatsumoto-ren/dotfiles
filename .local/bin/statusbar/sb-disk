@@ -1,23 +1,41 @@
-#!/bin/sh
+#!/bin/bash
 
 # Status bar module for disk space
-# $1 should be drive mountpoint, otherwise assumed /.
 
-location=${1:-/}
+readonly DIR="${BLOCK_INSTANCE:-/}"
 
-[ -d "$location" ] || exit
+notify_stats() {
+	local -r stats=$(
+		df -hl --output=target,used,size,pcent -x devtmpfs -x tmpfs |
+			sed 's/^\/home.*$/<b><span color=\"white\">&<\/span><\/b>/'
+	)
+	notify-send -t 0 " Disk space" "$stats"
+}
 
 case $BLOCK_BUTTON in
-	1) notify-send "💽 Disk space" "$(df -h --output=target,used,size)" ;;
-	3) notify-send "💽 Disk module" "\- Shows used hard drive space.
-- Click to show all disk info." ;;
+	1) notify_stats ;;
+	3) i3-msg exec "$TERMINAL -e ncdu '$DIR'" &>/dev/null ;;
 	6) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
-case "$location" in
-	"/home"* ) icon="🏠" ;;
-	"/mnt"* ) icon="💾" ;;
-	*) icon="🖥";;
-esac
+df -h "$DIR" --output=avail,pcent,target | awk '
+/[0-9]/ {
+	if ($3 ~ "/home") {
+		dir_icon=""
+	} else {
+		dir_icon=""
+	}
 
-printf "%s: %s\n" "$icon" "$(df -h "$location" | awk ' /[0-9]/ {print $3 "/" $2}')"
+	print $3 " " $1
+	print dir_icon " " $1
+
+	# color
+	if ($2 > 90) {
+		print("#FF0000")
+	} else if ($2 > 80) {
+		print("#FFAE00")
+	} else if ($2 > 70) {
+		print("#FFF600")
+	}
+	exit
+}'
