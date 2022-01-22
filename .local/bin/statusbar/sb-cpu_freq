@@ -1,0 +1,9 @@
+#!/usr/bin/sh -e
+
+grep -F MHz /proc/cpuinfo | cut -d: -f2 | awk '
+{
+	sum+=$0
+}
+END {
+	printf "GHz %.2f\n", sum / FNR / 1000
+}'
