@@ -185,7 +185,8 @@ map cw push A<c-u> # new rename
 map ci push A<a-b><a-b><a-f> # before extention
 map A rename # at the very end
 map I push A<c-a> # at the very beginning
-map a push A<a-b> # after extention
+map i push A<a-b><a-b><a-f> # before extension
+map a push A<a-b> # after extension
 map b bulkrename
 map B $setbg $f
 
