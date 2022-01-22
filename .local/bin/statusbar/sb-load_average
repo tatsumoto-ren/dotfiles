@@ -1,0 +1,13 @@
+#!/usr/bin/bash
+
+notify_hogs() {
+	notify-send "CPU hogs" "$(ps axch -o cmd:15,%cpu --sort=-%cpu | head -25)"
+}
+
+[[ $BLOCK_BUTTON == 1 ]] && notify_hogs
+
+readonly load=$(cut -f1 -d' ' /proc/loadavg)
+
+echo "AVG $load"
+echo " $load"
+awk "-vl=$load" "-vn=$(nproc)" 'BEGIN{if(l>n){exit(33);}}'
