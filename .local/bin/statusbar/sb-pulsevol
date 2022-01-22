@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+# Prints the current volume.
+#
+# Pamixer options:
+# --list-sinks          list the sinks
+# --list-sources        list the sources
+# "instance" field of the block should be "sink 0", "source 1", etc.
+
+instance() { pamixer "${DEVICE[@]}" "$@"; }
+
+mixer() {
+	if command -v pavucontrol &>/dev/null; then
+		i3-msg -q exec pavucontrol
+	else
+		i3-msg -q exec 'i3-sensible-terminal -e pulsemixer'
+	fi
+}
+
+[[ -n "$BLOCK_INSTANCE" ]] && read -r -a DEVICE <<<"--$BLOCK_INSTANCE"
+
+if [[ "$BLOCK_INSTANCE" == *source* ]]; then
+	readonly block_icon=''
+	readonly block_icon_mute=''
+else
+	readonly block_icon=''
+	readonly block_icon_mute=''
+fi
+
+# Handle mouse actions
+case $BLOCK_BUTTON in
+	1) mixer ;;                  # left click, run pavucontrol
+	3) instance --toggle-mute ;; # right click, mute/unmute
+	4) instance --unmute -i 5 ;; # scroll up, increase
+	5) instance --unmute -d 5 ;; # scroll down, decrease
+esac
+
+# Output status
+case $(instance --get-mute) in
+	"1" | "true") echo -e "${block_icon_mute} MUTE\n${block_icon_mute}\n#aaaaaa" ;;
+	"0" | "false") echo "$block_icon $(instance --get-volume)%" ;;
+	*) echo -e 'ERROR\nERR\n#ff0000' ;;
+esac
