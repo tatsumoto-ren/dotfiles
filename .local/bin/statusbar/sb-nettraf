@@ -33,8 +33,9 @@ update() {
 
 readonly rx=$(update /sys/class/net/[ew]*/statistics/rx_bytes)
 readonly tx=$(update /sys/class/net/[ew]*/statistics/tx_bytes)
+readonly in=$(numfmt --to=iec "$rx")
+readonly out=$(numfmt --to=iec "$tx")
 
 if [ "$rx" -ge 0 ] && [ "$tx" -ge 0 ]; then
-	printf -- 'IN %s OUT %s\n'	"$(numfmt --to=iec "$rx")" "$(numfmt --to=iec "$tx")"
-	printf -- ' %s  %s\n'		"$(numfmt --to=iec "$rx")" "$(numfmt --to=iec "$tx")"
+	printf -- 'IN %s OUT %s\n %s  %s\n'	"$in" "$out" "$in" "$out"
 fi

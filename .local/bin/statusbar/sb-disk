@@ -14,8 +14,8 @@ notify_stats() {
 
 case $BLOCK_BUTTON in
 	1) notify_stats ;;
-	3) i3-msg exec "$TERMINAL -e ncdu '$DIR'" &>/dev/null ;;
-	6) "$TERMINAL" -e "$EDITOR" "$0" ;;
+	3) i3-msg -q exec "$TERMINAL -e ncdu '$DIR'" ;;
+	6) i3-msg -q exec "$TERMINAL -e $EDITOR '$0'" ;;
 esac
 
 df -h "$DIR" --output=avail,pcent,target | awk '
