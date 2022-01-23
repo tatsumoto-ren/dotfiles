@@ -1,0 +1,27 @@
+{
+    "layout": "splitv",
+    "percent": 0.5,
+    "type": "con",
+    "nodes": [
+        {
+            "name": "htop",
+            "percent": 0.5,
+            "type": "con",
+            "swallows": [
+                {
+                    "title": "htop$"
+                }
+            ]
+        },
+        {
+            "name": "journalctl",
+            "percent": 0.5,
+            "type": "con",
+            "swallows": [
+                {
+                    "title": "journalctl"
+                }
+            ]
+        }
+    ]
+}
