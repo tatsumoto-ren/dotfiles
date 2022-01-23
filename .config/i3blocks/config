@@ -1,0 +1,84 @@
+## i3blocks config file
+
+# Global properties
+command=~/.local/bin/statusbar/$BLOCK_NAME
+separator_block_width=10
+markup=none
+full_text="  "
+align=left
+color=#f3f4f5
+separator=true
+interval=5
+
+[sb-music]
+interval=once
+signal=11
+markup=pango
+
+[sb-memory]
+separator=false
+interval=10
+
+[sb-memory]
+instance=swap
+interval=15
+
+[sb-disk]
+instance=/home
+interval=30
+
+[sb-nettraf]
+interval=5
+
+[sb-cpu_usage]
+LABEL=CPU
+interval=2
+separator=false
+
+[sb-cpu_freq]
+interval=5
+
+[sb-load_average]
+interval=3
+
+[sb-chip_temp]
+chip_label=CPU
+query=sensors coretemp-isa-0000 | awk '/^Package/ {print $4}'
+interval=5
+
+#[chip_temp]
+#chip_label=GPU
+#query=sensors amdgpu-pci-0300 | awk '/^junction/ {print $2}'
+#interval=7
+
+[sb-pacpackages]
+interval=3600
+signal=8
+
+[sb-pulsevol]
+signal=10
+interval=10
+separator=false
+
+[sb-pulsevol]
+signal=10
+interval=10
+instance=default-source
+
+[sb-weather]
+interval=1800
+command=curlwttr "$LOCATION?format=1" | sed 's/ //' || echo '±?°C'
+
+[sb-calendar]
+interval=30
+separator=false
+
+[sb-time]
+command=date '+%H:%M'
+interval=4
+
+[sb-record]
+command=cat /tmp/recordingicon 2>/dev/null || echo
+interval=once
+signal=9
+background=#6d3d39
