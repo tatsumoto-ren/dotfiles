@@ -12,6 +12,12 @@ This repo is a work in progress.
 * Terminal - alacritty
 * WM - i3 without gaps
 * Launcher - rofi
+* File Manager - lf
+* Image viewer - sxiv
+* Video player - mpv
+* Renaming files - vidir
+* Music - mpd+ncmpcpp
+* Various scripts in `~/.local/bin/`
 
 ## Installation
 
