@@ -125,6 +125,21 @@ audio_anki() {
 	ankiconnect_request() {
 		curl --silent localhost:8765 -X POST -d "${1:?}"
 	}
+	store_file() {
+		local -r path=${1:?}
+		local -r name=${2:?}
+		local request='{
+			"action": "storeMediaFile",
+			"version": 6,
+			"params": {
+				"filename": "<name>",
+				"path": "<path>"
+			}
+		}'
+		request=${request/<name>/$name}
+		request=${request/<path>/$path}
+		ankiconnect_request "$request"
+	}
 	workdir="/tmp/audacity"
 
 	mkdir "$workdir"
@@ -140,22 +155,12 @@ audio_anki() {
 	! ls ./*.mp3 && return
 	cm ftogg
 
-	local audiofiles request bn path
+	local audiofiles bn path
 	for file in ./*.ogg; do
 		bn=$(basename -- "$file")
 		path=$(readlink -f -- "$file")
 		audiofiles="${audiofiles}[sound:$bn]"
-		request='{
-			"action": "storeMediaFile",
-			"version": 6,
-			"params": {
-			    "filename": "<name>",
-			    "path": "<path>"
-			}
-		}'
-		request=${request/<name>/$bn}
-		request=${request/<path>/$path}
-		ankiconnect_request "$request"
+		store_file "$path" "$bn"
 	done
 	rm -rf -- "$workdir"
 	printf "%s" "$audiofiles" | xclip -selection clipboard
@@ -187,8 +192,8 @@ askrecording() {
 }
 
 asktoend() {
-	response=$(printf "No\\nYes" | dmenu -i -p "Recording still active. End recording?") &&
-		[ "$response" = "Yes" ] && killrecording
+	local -r response=$(printf "No\\nYes" | dmenu -i -p "Recording still active. End recording?")
+	[ "$response" = "Yes" ] && killrecording
 }
 
 case "$1" in
