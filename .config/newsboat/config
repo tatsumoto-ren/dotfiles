@@ -39,6 +39,7 @@ color info red black bold
 color article white default bold
 
 browser linkhandler
+# Descriptions are shown when you press "?".
 macro , open-in-browser -- "Open in browser"
 macro i set browser "tsp impd add" ; open-in-browser ; set browser linkhandler -- "Add to Immersion pod"
 macro t set browser "qndl" ; open-in-browser ; set browser linkhandler

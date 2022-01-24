@@ -75,7 +75,7 @@ screens=$(echo "$allposs" | awk '/ connected/ {print $1}')
 # Get user choice including multi-monitor and manual selection:
 chosen=$(printf "%s\\nmulti-monitor\\nmanual selection" "$screens" | dmenu -i -p "Select display arangement:") &&
 case "$chosen" in
-	"manual selection") arandr ; exit ;;
+	"manual selection") arandr ;;
 	"multi-monitor") multimon ;;
 	*) onescreen "$chosen" ;;
 esac

@@ -1,4 +1,6 @@
 let mapleader =","
+set shiftwidth=8
+set tabstop=8
 
 if ! filereadable(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/plug.vim"'))
 	echo "Downloading junegunn/vim-plug to manage plugins..."
@@ -17,6 +19,8 @@ Plug 'vimwiki/vimwiki'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-commentary'
 Plug 'ap/vim-css-color'
+Plug 'davidhalter/jedi-vim'
+Plug 'rhysd/vim-grammarous'
 call plug#end()
 
 set title
@@ -25,6 +29,10 @@ set go=a
 set mouse=a
 set nohlsearch
 set clipboard+=unnamedplus
+set splitbelow
+set splitright
+set colorcolumn=101
+highlight ColorColumn ctermbg=2
 set noshowmode
 set noruler
 set laststatus=0
@@ -125,11 +133,31 @@ set noshowcmd
 	autocmd BufWritePost Xresources,Xdefaults,xresources,xdefaults !xrdb %
 " Recompile dwmblocks on config edit.
 	autocmd BufWritePost ~/.local/src/dwmblocks/config.h !cd ~/.local/src/dwmblocks/; sudo make install && { killall -q dwmblocks;setsid -f dwmblocks }
+" Restart Tor on config edit
+	autocmd BufWritePost /etc/tor/torrc !sudo systemctl restart tor
+" Grammar check
+	map <leader>g :GrammarousCheck<CR>
 
-" Turns off highlighting on the bits of code that are changed, so the line that is changed is highlighted but the actual text that has changed stands out on the line and is readable.
+" Use deoplete.
+" The default binding for vim popup selection is <c-n> , <c-p> besides arrow key.
+" Read some more on :help popupmenu-keys or :help ins-completion
+	let g:python3_host_prog = '/usr/bin/python3'
+	let g:deoplete#enable_at_startup = 1
+	let g:deoplete#enable_ignore_case = 1
+" Complete with words from any opened file
+	let g:context_filetype#same_filetypes = {}
+	let g:context_filetype#same_filetypes._ = '_'
+
+" Turns off highlighting on the bits of code that are changed, so the line that
+" is changed is highlighted but the actual text that has changed stands out on
+" the line and is readable.
 if &diff
     highlight! link DiffText MatchParen
 endif
+
+autocmd FileType python set tabstop=4|set shiftwidth=4|set expandtab
+autocmd FileType javascript set sw=4 ts=4 expandtab
+autocmd FileType html set sw=4 ts=4 expandtab
 
 " Function for toggling the bottom statusbar:
 let s:hidden_all = 1

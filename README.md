@@ -10,9 +10,9 @@ This repo is a work in progress.
 * Distro - Arch Linux
 * Shell - zsh + [zsh-theme-powerlevel10k](https://archlinux.org/packages/community/x86_64/zsh-theme-powerlevel10k/)
 * Terminal - alacritty
-* WM - i3 without gaps
-* Launcher - rofi
-* File Manager - lf
+* WM - [i3-wm](https://archlinux.org/packages/community/x86_64/i3-wm/) (without gaps)
+* Launcher - [rofi](https://archlinux.org/packages/community/x86_64/rofi/)
+* File Manager - [lf](https://github.com/gokcehan/lf)
 * Image viewer - sxiv
 * Video player - mpv
 * Renaming files - vidir
