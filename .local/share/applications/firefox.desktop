@@ -1,0 +1,27 @@
+[Desktop Entry]
+Version=1.0
+Name=Fingerbox / Main profile
+GenericName=Web Browser
+Comment=Browse the Web
+Exec=fingerbox -P Main %u
+Icon=fingerbox
+Terminal=false
+Type=Application
+MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;
+StartupNotify=true
+Categories=Network;WebBrowser;
+Keywords=web;browser;internet;
+Actions=new-window;new-private-window;banking;profile-manager;
+StartupWMClass=Firefox
+
+[Desktop Action new-window]
+Name=New Window
+Exec=fingerbox --new-window %u
+
+[Desktop Action new-private-window]
+Name=New Private Window
+Exec=fingerbox --private-window %u
+
+[Desktop Action profile-manager]
+Name=Profile manager
+Exec=fingerbox -p -no-remote %u
