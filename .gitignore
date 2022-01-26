@@ -1,0 +1,4 @@
+# Local or machine-specific shell aliases
+/.config/shell/localrc
+# Machine-specific icc profiles
+/.local/share/icc
