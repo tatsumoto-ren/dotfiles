@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=Mozc Configuration
+GenericName=Input Method Editor Configuration
+Comment=Configure Mozc
+Exec=/usr/lib/mozc/mozc_tool --mode=config_dialog
+Icon=/usr/share/fcitx/mozc/icon/mozc.png
+Terminal=false
+Type=Application
+StartupNotify=false
+Categories=Settings;
+Keywords=web;browser;internet;
+Actions=new-window;new-private-window;banking;profile-manager;

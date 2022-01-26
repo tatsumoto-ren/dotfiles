@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Neomutt
+GenericName=Mail Client
+Exec=i3-sensible-terminal -e neomutt %u
+Icon=evolution

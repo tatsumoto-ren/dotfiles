@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Link Handler
+Exec=linkhandler %u
+Comment=Feed script a url or file location
+Icon=browser
+Terminal=false
+MimeType=x-scheme-handler/unknown;x-scheme-handler/about;x-scheme-handler/https;x-scheme-handler/http;text/html;
