@@ -226,7 +226,7 @@ bindsym $mod+p			exec --no-startup-id mpc toggle
 bindsym $mod+Shift+p		exec --no-startup-id mpc pause && pauseallmpv
 
 # Open clipboard content with dmenu
-bindsym $mod+Shift+v		exec cabl clip
+bindsym $mod+Shift+v		exec --no-startup-id cabl clip
 
 # Move focus to the parent/child container
 bindsym $mod+a			focus parent
