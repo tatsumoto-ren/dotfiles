@@ -5,6 +5,8 @@
 Configuration files and scripts I use in my computing.
 This repo is a work in progress.
 
+![screenshot](https://user-images.githubusercontent.com/69171671/151655369-699b6e83-e0ef-47e0-986e-be786717c917.png)
+
 ## Programs used
 
 * Distro - Arch Linux
