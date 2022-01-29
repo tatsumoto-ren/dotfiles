@@ -38,7 +38,7 @@ Then relogin.
 
 ## Usage
 
-Use the `dot` command to manage your dotfiles.
+Use the [dot](.config/shell/aliasrc#L46) command to manage your dotfiles.
 For example, `dot status` or `dot add <file>`.
 
 ## Credits
