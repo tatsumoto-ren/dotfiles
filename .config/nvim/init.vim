@@ -160,7 +160,7 @@ autocmd FileType javascript set sw=4 ts=4 expandtab
 autocmd FileType html set sw=4 ts=4 expandtab
 
 " Function for toggling the bottom statusbar:
-let s:hidden_all = 1
+let s:hidden_all = 0
 function! ToggleHiddenAll()
     if s:hidden_all  == 0
         let s:hidden_all = 1
