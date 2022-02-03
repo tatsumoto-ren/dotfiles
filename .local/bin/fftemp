@@ -2,7 +2,6 @@
 
 readonly TZ=UTC
 readonly BROWSER=librewolf
-readonly urls=$@
 readonly fftmpdir=/tmp/firefox-temp
 
 export TZ BROWSER
@@ -12,9 +11,9 @@ echo "Created $fftmpdir directory." || exit 1
 
 if command -v firejail; then
 	firejail --seccomp --private="$fftmpdir" \
-	"$BROWSER" --new-instance --no-remote "${urls[@]}"
+	"$BROWSER" --new-instance --no-remote "$@"
 else
 	echo "Firejail is not installed.">&2 &&
-	"$BROWSER" --new-instance --profile "$fftmpdir" --no-remote "${urls[@]}"
+	"$BROWSER" --new-instance --profile "$fftmpdir" --no-remote "$@"
 fi
 rm -rf "$fftmpdir" && echo "Bye-bye!"
