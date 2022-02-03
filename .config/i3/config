@@ -87,16 +87,6 @@ focus_follows_mouse	yes
 default_border		pixel  3
 default_floating_border	normal 3
 
-# General dropdown window traits. The order can matter.
-for_window [instance="dropdown_*"] floating enable
-for_window [instance="dropdown_*"] move scratchpad
-for_window [instance="dropdown_*"] sticky enable
-for_window [instance="dropdown_*"] scratchpad show
-for_window [instance="dropdown_dropdowncalc"] resize set 800 300
-for_window [instance="dropdown_*"] border pixel 3
-for_window [instance="dropdown_*"] move position center
-
-
 ###############################################################################
 # Autostart
 ###############################################################################
@@ -506,6 +496,18 @@ bindsym $mod+Shift+f			mode "$freeze"
 # Application specific settings.
 # You can obtain WM_WINDOW_ROLE or WM_CLASS with xprop (xorg-xprop)
 ###############################################################################
+
+# Global window icons
+for_window [all] title_window_icon padding 3px
+
+# General dropdown window traits. The order can matter.
+for_window [instance="dropdown_*"] floating enable
+for_window [instance="dropdown_*"] move scratchpad
+for_window [instance="dropdown_*"] sticky enable
+for_window [instance="dropdown_*"] scratchpad show
+for_window [instance="dropdown_dropdowncalc"] resize set 800 300
+for_window [instance="dropdown_*"] border pixel 3
+for_window [instance="dropdown_*"] move position center
 
 # Bindings to make the webcam float and stick.
 for_window [title="mpvfloat"] floating enable
