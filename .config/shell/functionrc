@@ -57,10 +57,12 @@ backup_everything() {
 anki_test_install() {
 	local -r version=${1:?No version provided.}
 	local -r dir=~/.local/share/anki_builds/"anki_$version"
-	mkdir -p -- "$dir" && cd -- "$dir" || exit
-	python -m venv pyenv
-	./pyenv/bin/pip3 install --upgrade pip
-	./pyenv/bin/pip3 install --upgrade --pre "aqt==2.1.$version"
+	(
+		mkdir -p -- "$dir" && cd -- "$dir" || exit
+		python -m venv --system-site-packages pyenv
+		./pyenv/bin/pip3 install --upgrade pip
+		./pyenv/bin/pip3 install --upgrade --pre "aqt==2.1.$version"
+	)
 }
 anki_test_run() {
 	local -r dir=~/.local/share/anki_builds
@@ -70,6 +72,6 @@ anki_test_run() {
 		local -r choice=$(ls -1 "$dir" | dmenu)
 	fi
 	if [[ -n $choice ]]; then
-		cd -- "$dir/$choice" && ./pyenv/bin/anki
+		(cd -- "$dir/$choice" && ./pyenv/bin/anki)
 	fi
 }
