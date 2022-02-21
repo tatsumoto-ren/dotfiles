@@ -12,7 +12,7 @@ This repo is a work in progress.
 * Distro - Arch Linux
 * Shell - zsh + [zsh-theme-powerlevel10k](https://archlinux.org/packages/community/x86_64/zsh-theme-powerlevel10k/)
 * Terminal - alacritty
-* WM - [i3-wm](https://archlinux.org/packages/community/x86_64/i3-wm/) (without gaps)
+* WM - [i3-wm](https://archlinux.org/packages/community/x86_64/i3-wm/). Do not use `i3-gaps`!
 * Launcher - [rofi](https://archlinux.org/packages/community/x86_64/rofi/)
 * File Manager - [lf](https://github.com/gokcehan/lf)
 * Image viewer - sxiv
