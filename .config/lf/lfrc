@@ -70,7 +70,7 @@ cmd moveto ${{
 	dest="$(listmarks dirs | fzf)" &&
 	[[ -n "$dest" ]] &&
 	for x in $fx; do
-		mv -iv \"$x\" \"$dest\"
+		mv -iv -- "$x" "$dest"
 	done &&
 	notify-send "🚚 File(s) moved." "File(s) moved to $dest."
 }}
@@ -82,7 +82,7 @@ cmd copyto ${{
 	dest="$(listmarks dirs | fzf)" &&
 	[[ -n "$dest" ]] &&
 	for x in $fx; do
-		cp -ivr \"$x\" \"$dest\"
+		cp -ivr -- "$x" "$dest"
 	done &&
 	notify-send "📋 File(s) copied." "File(s) copies to $dest."
 }}
