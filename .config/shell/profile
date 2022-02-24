@@ -84,7 +84,7 @@ export TS_ONFINISH=tsp_onfinish	# run by the client after the  queued  job.
 
 # Use capture2text tesseract data instead of default.
 # https://tatsumoto.neocities.org/blog/mining-from-manga.html
-export TESSDATA_PREFIX=~/.local/share/capture2text_tessdata
+#export TESSDATA_PREFIX=~/.local/share/tessdata
 # Combine multiple trained data files (for maimocr).
 #export TESS_LANG=jpn+jpn2+jpn3
 

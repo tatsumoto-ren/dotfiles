@@ -4,8 +4,8 @@ if ifinstalled; then
 	ifinstalled maim imagemagick tesseract xclip || exit
 fi
 
-readonly TESSDATA_PREFIX=${TESSDATA_PREFIX:-~/.local/share/capture2text_tessdata}
-readonly TESS_LANG=${TESS_LANG:-jpn}
+readonly TESSDATA_PREFIX=${TESSDATA_PREFIX:-~/.local/share/tessdata}
+readonly TESS_LANG=${TESS_LANG:-jpn+jpn2+jpn3}
 export TESSDATA_PREFIX
 export IFS="+"
 
@@ -29,8 +29,7 @@ notify() {
 main() {
 	for lang in $TESS_LANG; do
 		if ! [[ -f "$TESSDATA_PREFIX/$lang.traineddata" ]]; then
-			notify "No trained data found."
-			exit 1
+			notify "$lang: No trained data found."
 		fi
 	done
 
@@ -38,7 +37,7 @@ main() {
 
 	if [[ -n $result ]]; then
 		xclip -selection clipboard <<< "$result"
-		notify "Copied."
+		notify "Copied $result."
 	else
 		notify "Failed."
 	fi
