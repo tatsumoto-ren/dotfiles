@@ -1,3 +1,17 @@
+# Note on Image Previews
+# For those wanting image previews, like this system, there are four steps to
+# set it up. These are done automatically for LARBS users, but I will state
+# them here for others doing it manually.
+#
+# 1. ueberzug must be installed.
+# 2. The scope file (~/.config/lf/scope for me), must have a command similar to
+#    mine to generate ueberzug images.
+# 3. A `set cleaner` line as below is a cleaner script.
+# 4. lf should be started through a wrapper script (~/.local/bin/lfub for me)
+#    that creates the environment for ueberzug. This command can be be aliased
+#    in your shellrc (`alias lf="lfub") or if set to a binding, should be
+#    called directly instead of normal lf.
+
 # Basic vars
 set shell zsh
 set shellopts '-eu:--shwordsplit' # https://github.com/gokcehan/lf/wiki/Tips#split-words-by-default-in-zsh
@@ -7,9 +21,11 @@ set info size
 set dircounts
 set icons
 set period 1
-set previewer ~/.config/lf/scope
+set previewer '~/.config/lf/scope'
 set hiddenfiles ".*:*.aux:*.bbl:*.bcf:*.blg:*.run.xml"
 set hidden true
+set ratios 1:2:3
+set cleaner '~/.config/lf/cleaner'
 
 cmd on-cd %{{
 	# Sort files by time in certain folders.
@@ -27,10 +43,11 @@ cmd open ${{
 	return
     fi
     case $(file --mime-type "$(readlink -f $f)" -b) in
+	application/vnd.openxmlformats-officedocument.spreadsheetml.sheet) localc $fx ;;
 	text/rtf|application/ms*|application/*office*|application/octet-stream|*opendocument*|*powerpoint*) setsid -f soffice $fx >/dev/null 2>&1 ;;
 	application/vnd*|application/epub*|image/vnd.djvu|application/pdf|application/postscript) setsid -f zathura $fx >/dev/null 2>&1 ;;
 	text/troff) man ./ $fx;;
-	text/*) setsid -f ${VISUAL:-geany} $fx >/dev/null 2>&1 ;;
+	text/*|application/json|inode/x-empty) setsid -f ${VISUAL:-geany} $fx >/dev/null 2>&1 ;;
 	image/x-xcf) setsid -f gimp $fx >/dev/null 2>&1 ;;
 	image/svg+xml) setsid -f display -- $fx ;;
 	image/*) setsid -f lf-select $f ;;
@@ -182,7 +199,7 @@ map <delete> trash
 map gm $lf -remote "send $id cd '$(stat -c %m "$(pwd)")'"
 
 map cw push A<c-u> # new rename
-map ci push A<a-b><a-b><a-f> # before extention
+map ci push A<a-b><a-b><a-f> # before extension
 map A rename # at the very end
 map I push A<c-a> # at the very beginning
 map i push A<a-b><a-b><a-f> # before extension
@@ -197,6 +214,8 @@ map V push :!nvim<space>
 map L &$TERMINAL -e "nvim $fx"
 
 map W $setsid -f $TERMINAL >/dev/null 2>&1
+
+map Y $printf "%s" "$fx" | xclip -selection clipboard
 
 # Source Bookmarks
 source "~/.config/lf/shortcutrc"

@@ -28,6 +28,7 @@ alias \
 
 # Other stuff
 alias \
+	lf="lfub" \
 	magit="nvim -c MagitOnly" \
 	tmux="tmux -f \${XDG_CONFIG_HOME:-\$HOME/.config}/tmux/tmux.conf" \
 	timer='echo "Timer started. Stop with Ctrl-D." && date "+%a, %d %b %H:%M:%S" && time cat && date "+%a, %d %b %H:%M:%S"' \
