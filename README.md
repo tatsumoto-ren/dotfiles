@@ -19,6 +19,7 @@ This repo is a work in progress.
 * Video player - mpv
 * Renaming files - vidir
 * Music - mpd+ncmpcpp
+* Preview images in terminal - [ueberzug](https://archlinux.org/packages/?name=ueberzug)
 * Various scripts in `~/.local/bin/`
 
 ## Installation
