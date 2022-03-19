@@ -2,3 +2,5 @@
 /.config/shell/localrc
 # Machine-specific icc profiles
 /.local/share/icc
+# Various firefox profiles
+/.local/share/applications/firefox-*
