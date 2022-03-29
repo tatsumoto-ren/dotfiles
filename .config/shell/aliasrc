@@ -19,6 +19,14 @@ alias \
 	chd='cd -- "$(choose_from_cwds)" && ls -a' \
 	rclone="rclone -v" \
 
+# Youtube
+alias \
+	yt="yt-dlp --embed-metadata -i" \
+	ytautosub="yt --write-auto-sub --sub-lang ja" \
+	yta="yt -x -f bestaudio/best" \
+	mp3dl="yta --audio-quality 1 --audio-format mp3" \
+	ytv="youtube-viewer" \
+
 # Colorize commands when possible.
 alias \
 	ls="ls -hN --color=auto --group-directories-first" \
@@ -51,14 +59,6 @@ alias dot='git --git-dir=${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/ --work-tree
 alias \
 	journal="journalctl --since '3 day ago'" \
 	errors="journalctl -p err..alert -b -e" \
-
-# Youtube
-alias \
-	yt="youtube-dl --add-metadata -i" \
-	ytautosub="yt --write-auto-sub --sub-lang ja" \
-	yta="yt -x -f bestaudio/best" \
-	mp3dl="yta --audio-quality 1 --audio-format mp3" \
-	ytv="youtube-viewer" \
 
 # Applications
 alias \
