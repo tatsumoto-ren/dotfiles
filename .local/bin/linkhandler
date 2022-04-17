@@ -21,7 +21,7 @@ url=$(
 			-e "s,https?://(www\.)?(youtube\.com/watch\?v=|youtu\.be/)(.*),$(head -1 "$inv_instances" | cut -f1)/watch?v=\3,g;" \
 			-e 's|https?://(www\.)?reddit\.com/(.*)|https://teddit.net/\2|g;' \
 			-e 's|https?://(www\.)?twitter\.com/(.*)|https://nitter.net/\2|g;' \
-			-e 's|https?://(www\.)?instagram\.com/(.*)|https://bibliogram.snopyta.org/\2|g'
+			-e 's|https?://(www\.)?instagram\.com/(.*)|https://bibliogram.art/\2|g'
 )
 
 case "${url:?}" in

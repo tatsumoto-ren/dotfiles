@@ -31,7 +31,7 @@ while read -r file; do
 		convert "$file" -channel RGB -negate "$file"
 		;;
 	"y")
-		echo "$file" | tr -d '\n' | xclip -selection clipboard &&
+		printf -- "%s" "$file" | tr -d '\n' | xclip -selection clipboard &&
 			notify-send "$file copied to clipboard" &
 		;;
 	"Y")
