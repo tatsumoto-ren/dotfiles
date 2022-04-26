@@ -1,6 +1,16 @@
 #!/usr/bin/python3
 
+import asyncio
+import dataclasses
+
+import httpx
+
+
+@dataclasses.dataclass(frozen=True)
 class Instance:
+    uri: str
+    act_users: int
+
     @staticmethod
     def get_active_users(d: dict) -> int:
         try:
@@ -17,35 +27,60 @@ class Instance:
         else:
             return uri
 
-    def __init__(self, d: dict):
-        self.uri = self.get_uri(d)
-        self.act_users = self.get_active_users(d)
+    @classmethod
+    def from_dict(cls, d: dict):
+        return cls(cls.get_uri(d), cls.get_active_users(d))
+
+
+@dataclasses.dataclass(frozen=True)
+class InstanceAlive:
+    instance: Instance
+    alive: bool
+
+
+def test_video_url(instance_url: str):
+    return '%s/watch?v=%s' % (instance_url, "AO_UNZ13_6E")
 
 
 def json_url() -> str:
     return 'https://api.invidious.io/instances.json'
 
 
-def rank_instances(j: dict) -> list[Instance]:
+async def parse_instances(client: httpx.AsyncClient) -> list[Instance]:
+    response = await client.get(json_url())
     instances = []
-    for instance in j:
-        instance = Instance(instance)
+    for entry in response.json():
+        instance = Instance.from_dict(entry)
         if instance.act_users > 1:
             instances.append(instance)
+    return instances
 
-    return sorted(instances, key=lambda e: e.act_users)
+
+async def test_instance(client: httpx.AsyncClient, instance: Instance) -> InstanceAlive:
+    try:
+        response = await client.get(test_video_url(instance.uri))
+    except (httpx.ConnectTimeout, httpx.ReadTimeout):
+        return InstanceAlive(instance, False)
+    else:
+        return InstanceAlive(instance, response.status_code == 200)
 
 
-def main():
-    import requests
-    import json
+async def filter_alive(client: httpx.AsyncClient, instances: list[Instance]) -> list[Instance]:
+    result = await asyncio.gather(
+        *(test_instance(client, instance) for instance in instances),
+        return_exceptions=True
+    )
+    return [response.instance for response in result if isinstance(response, InstanceAlive) and response.alive]
 
-    r = requests.get(json_url(), allow_redirects=False)
-    j = json.loads(r.content)
 
-    for instance in rank_instances(j):
+async def main():
+    async with httpx.AsyncClient(timeout=5) as client:
+        instances = await parse_instances(client)
+        instances = await filter_alive(client, instances)
+
+    for instance in sorted(instances, key=lambda i: i.act_users):
         print(instance.uri, instance.act_users, sep='\t')
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
