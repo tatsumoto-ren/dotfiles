@@ -9,18 +9,18 @@ This repo is a work in progress.
 
 ## Programs used
 
-* Distro - Arch Linux
+* Distro - [Arch Linux](https://archlinux.org/)
 * Shell - zsh + [zsh-theme-powerlevel10k](https://archlinux.org/packages/community/x86_64/zsh-theme-powerlevel10k/)
-* Terminal - alacritty
+* Terminal - [Alacritty](https://wiki.archlinux.org/title/Alacritty)
 * WM - [i3-wm](https://archlinux.org/packages/community/x86_64/i3-wm/). Do not use `i3-gaps`!
 * Launcher - [rofi](https://archlinux.org/packages/community/x86_64/rofi/)
 * File Manager - [lf](https://github.com/gokcehan/lf)
-* Image viewer - sxiv
-* Video player - mpv
-* Renaming files - vidir
-* Music - mpd+ncmpcpp
+* Image viewer - [sxiv](https://wiki.archlinux.org/title/Sxiv)
+* Video player - [mpv](https://wiki.archlinux.org/title/Mpv)
+* Renaming files - [vidir](https://aur.archlinux.org/packages/vidir)
+* Music - [mpd](https://wiki.archlinux.org/title/Music_Player_Daemon)+[ncmpcpp](https://wiki.archlinux.org/title/Ncmpcpp)
 * Preview images in terminal - [ueberzug](https://archlinux.org/packages/?name=ueberzug)
-* Various scripts in `~/.local/bin/`
+* Various scripts in [~/.local/bin/](.local/bin)
 
 ## Installation
 
