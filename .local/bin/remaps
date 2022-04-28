@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+set -euo pipefail
 
 # This script is called on startup to remap keys.
 
@@ -21,4 +23,6 @@ setxkbmap -option terminate:ctrl_alt_bksp,caps:super,altwin:menu_win
 killall xcape 2>/dev/null ; xcape -e 'Super_L=Escape'
 
 # Turn off caps lock if on since there is no longer a key for it.
-xset -q | grep "Caps Lock:\s*on" && xdotool key Caps_Lock
+if xset -q | grep "Caps Lock:\s*on"; then
+	xdotool key Caps_Lock
+fi
