@@ -28,7 +28,7 @@ xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources"
 # Autostart
 for program in mpd xcompmgr dunst unclutter pipewire; do
 	if ! pidof -s "$program" && command -v "$program"; then
-		setsid -f "$program"
+		"$program" &
 	fi
 done >/dev/null 2>&1
 
