@@ -7,31 +7,32 @@
 # otherwise it opens link in browser.
 
 # If no url given. Opens browser. For using script as $BROWSER.
-[ -z "$*" ] && {
+if [[ -z $1 ]]; then
 	"$BROWSER"
 	exit
-}
+fi
 
-readonly inv_instances=/tmp/inv_instances
-
-[ -f "$inv_instances" ] || rank_invidious_instances >"$inv_instances"
+inv_instances=/tmp/inv_instances
 url=$(
 	echo "$*" |
 		sed -E \
-			-e "s,https?://(www\.)?(youtube\.com/watch\?v=|youtu\.be/)(.*),$(head -1 "$inv_instances" | cut -f1)/watch?v=\3,g;" \
 			-e 's|https?://(www\.)?reddit\.com/(.*)|https://teddit.net/\2|g;' \
 			-e 's|https?://(www\.)?twitter\.com/(.*)|https://nitter.net/\2|g;' \
 			-e 's|https?://(www\.)?instagram\.com/(.*)|https://bibliogram.art/\2|g'
 )
 
 case "${url:?}" in
+*youtube.com/watch* | *youtube.com/playlist* | *youtu.be/*)
+	[[ -f $inv_instances ]] || rank_invidious_instances >"$inv_instances" || exit 1
+	invidious_url="$(head -1 /tmp/inv_instances | cut -f1)/watch?v=$(grep -Po '(?<=/|v=)\w+$' <<<"$url")"
+	setsid -f "$BROWSER" -- "$invidious_url" &
+	;;
 *.mkv | *.webm | *.mp4 | \
 	*hooktube.com* | *bitchute.com/video* | *instagram.com* | *twitter.com* | \
 	*odysee.com* | \
 	*videos.lukesmith.xyz* | \
 	*tiktok.com/* | *streamable.com/* | \
-	*worldstar.com/web/video* | \
-	*youtube.com/watch* | *youtube.com/playlist* | *youtu.be*)
+	*worldstar.com/web/video*)
 	setsid -f trympv "$url" >/dev/null 2>&1 &
 	;;
 *.png | *.jpg | *.jpe | *.jpeg | *.gif | \
