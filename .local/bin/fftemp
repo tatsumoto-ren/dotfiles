@@ -1,7 +1,7 @@
 #!/bin/bash
 
 readonly TZ=UTC
-readonly BROWSER=librewolf
+readonly BROWSER=firefox
 readonly fftmpdir=/tmp/firefox-temp
 
 export TZ BROWSER
@@ -10,7 +10,7 @@ mkdir -p "$fftmpdir" && chmod 700 "$fftmpdir" &&
 echo "Created $fftmpdir directory." || exit 1
 
 if command -v firejail; then
-	firejail --seccomp --private="$fftmpdir" \
+	firejail --seccomp --profile=firefox --private="$fftmpdir" \
 	"$BROWSER" --new-instance --no-remote "$@"
 else
 	echo "Firejail is not installed.">&2 &&

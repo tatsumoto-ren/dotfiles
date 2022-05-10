@@ -67,3 +67,5 @@
 	submodulesummary = 1
 [init]
 	defaultBranch = main
+[commit]
+	gpgsign = false

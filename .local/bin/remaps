@@ -20,7 +20,8 @@ xset s off dpms 0 0 0 m 0 0 r rate 300 50 b off
 setxkbmap -option terminate:ctrl_alt_bksp,caps:super,altwin:menu_win
 
 # When caps lock is pressed only once, treat it as escape.
-killall xcape 2>/dev/null ; xcape -e 'Super_L=Escape'
+killall xcape || true
+xcape -e 'Super_L=Escape'
 
 # Turn off caps lock if on since there is no longer a key for it.
 if xset -q | grep "Caps Lock:\s*on"; then
