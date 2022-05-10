@@ -40,9 +40,13 @@ while read -r file; do
 		;;
 	"d")
 		if gio trash -- "$file" || trash-put -- "$file"; then
-			notify-send "$file moved to trash."
-		elif [ "$(printf -- 'No\nYes' | dmenu -i -p "Really delete $file?")" = "Yes" ]; then
-			rm -- "$file" && notify-send "$file deleted."
+			notify-send "'$file' moved to trash."
+		elif [ -f "$file" ] && [ "$(printf -- 'No\nYes' | dmenu -i -p "Really delete $file?")" = "Yes" ]; then
+			if rm -- "$file"; then
+				notify-send "'$file' deleted."
+			else
+				notify-send --urgency=critical "Error" "'$file' wasn't deleted."
+			fi
 		fi
 		;;
 	"g")
