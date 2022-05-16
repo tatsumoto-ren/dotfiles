@@ -41,7 +41,7 @@ Then relogin.
 
 ## Usage
 
-Use the [dot](.config/shell/aliasrc#L46) command to manage your dotfiles.
+Use the [dot](.config/shell/aliasrc#L56) command to manage your dotfiles.
 For example, `dot status` or `dot add <file>`.
 For more information, see
 [Tracking dotfiles with Git](https://wiki.archlinux.org/title/Dotfiles#Tracking_dotfiles_directly_with_Git).
