@@ -95,9 +95,8 @@ export CFLAGS="-Wall -Wextra -Wpedantic -Wconversion -Wshadow -march=native -O2 
 export CXXFLAGS="$CFLAGS"
 
 # Fix QT themes on GTK Desktops
-# Install qt5-styleplugins and set the following environment variable.
-# https://wiki.archlinux.org/index.php/Uniform_look_for_Qt_and_GTK_applications#QGtkStyle
-export QT_QPA_PLATFORMTHEME=gtk2
+# https://tatsumoto.neocities.org/blog/setting-up-anki.html#gtk-theme
+export QT_QPA_PLATFORMTHEME=qt6ct
 
 # Fix QT plugin path for pyqt packages installed with pip.
 export QT_PLUGIN_PATH=/usr/lib/qt/plugins:$(find ~/.local/lib/ -type d -wholename '*/python3*/site-packages/PyQt*/plugins' | paste -s -d :)
