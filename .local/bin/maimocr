@@ -1,46 +1,69 @@
 #!/bin/bash
 
-if ifinstalled; then
-	ifinstalled maim imagemagick tesseract xclip || exit
-fi
+set -euo pipefail
 
-readonly TESSDATA_PREFIX=${TESSDATA_PREFIX:-~/.local/share/tessdata}
-readonly TESS_LANG=${TESS_LANG:-jpn+jpn2+jpn3}
+readonly TESSDATA_PREFIX=$HOME/.local/share/tessdata
 export TESSDATA_PREFIX
-export IFS="+"
-
-ocr() {
-	# https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html#missing-borders
-	maim --select --hidecursor --format=png --quality 1 |
-	convert png:- -monochrome -alpha off -bordercolor White -border 10x10 png:- |
-	tesseract stdin stdout \
-		-l "$TESS_LANG" \
-		--tessdata-dir "$TESSDATA_PREFIX" |
-		tr -d ' ' |
-		tr -d '\n' |
-		grep -P '[ｦ-ﾟァ-ヶぁ-ゞＡ-ｚ０-９ｧ-ﾝﾞﾟァ-ンぁ-ん一-龯]+'
-}
 
 notify() {
 	echo "$*"
 	notify-send "Maim OCR" "$*"
 }
 
-main() {
-	for lang in $TESS_LANG; do
-		if ! [[ -f "$TESSDATA_PREFIX/$lang.traineddata" ]]; then
-			notify "$lang: No trained data found."
+if_installed() {
+	for x in "$@"; do
+		if ! which "$x" >/dev/null 2>&1 && ! pacman -Qq "$x" >/dev/null 2>&1; then
+			notify "$x must be installed for this function."
+			return 1
 		fi
 	done
+}
 
+download_tessdata() {
+	local -r \
+		zip_url='https://g33k.se/_matrix/media/r0/download/g33k.se/chvDlHzjiXgDEdeGTFnyOExv' \
+		zip_path=$(mktemp /tmp/tesseract_data.XXXXXX)
+
+	curl "$zip_url" --output "$zip_path"
+	unzip -o -j "$zip_path" -d "$TESSDATA_PREFIX"
+	rm -- "$zip_path"
+}
+
+installed_languages() {
+	find "$TESSDATA_PREFIX" -type f -name '*.traineddata' -printf '%f+' | sed 's|\.traineddata||g; s|\+$||'
+}
+
+ocr() {
+	# https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html
+	# https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html#missing-borders
+
+	maim --select --hidecursor --format=png --quality 1 |
+		convert png:- -alpha off -bordercolor White -border 10x10 png:- |
+		tesseract stdin stdout \
+			--tessdata-dir "$TESSDATA_PREFIX" \
+			-l "$(installed_languages)" |
+		tr -d ' ' |
+		tr -d '\n' |
+		grep -P '[ｦ-ﾟァ-ヶぁ-ゞＡ-ｚ０-９ｧ-ﾝﾞﾟァ-ンぁ-ん一-龯]+'
+}
+
+main() {
 	local -r result=$(ocr)
 
 	if [[ -n $result ]]; then
-		xclip -selection clipboard <<< "$result"
+		xclip -selection clipboard <<<"$result"
 		notify "Copied $result."
 	else
 		notify "Failed."
 	fi
 }
 
-main
+if_installed curl unzip maim convert tesseract xclip || exit 1
+
+if [[ -d "$TESSDATA_PREFIX" ]]; then
+	main
+else
+	notify "Couldn't find Tesseract data files. Downloading..."
+	download_tessdata
+	notify "Downloaded Tesseract data. Run this script again to recognize Japanese text."
+fi

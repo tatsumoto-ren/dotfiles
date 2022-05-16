@@ -82,12 +82,6 @@ export TDESKTOP_USE_GTK_FILE_DIALOG=1
 export TS_SLOTS=10		# the maximum number of jobs running at once with task-spooler.
 export TS_ONFINISH=tsp_onfinish	# run by the client after the  queued  job.
 
-# Use capture2text tesseract data instead of default.
-# https://tatsumoto.neocities.org/blog/mining-from-manga.html
-#export TESSDATA_PREFIX=~/.local/share/tessdata
-# Combine multiple trained data files (for maimocr).
-export TESS_LANG=${TESS_LANG:-jpn+jpn2+jpn3+jpn4}
-
 # Speed up compile times
 # https://wiki.archlinux.org/index.php/Makepkg#Creating_optimized_packages
 MAKEFLAGS="-j$(($(nproc) + 1)) -l$(nproc)"; export MAKEFLAGS
