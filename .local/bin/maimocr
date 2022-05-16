@@ -25,6 +25,7 @@ download_tessdata() {
 		zip_path=$(mktemp /tmp/tesseract_data.XXXXXX)
 
 	curl "$zip_url" --output "$zip_path"
+	mkdir -p -- "$TESSDATA_PREFIX"
 	unzip -o -j "$zip_path" -d "$TESSDATA_PREFIX"
 	rm -- "$zip_path"
 }
