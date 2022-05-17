@@ -34,22 +34,25 @@ installed_languages() {
 	find "$TESSDATA_PREFIX" -type f -name '*.traineddata' -printf '%f+' | sed 's|\.traineddata||g; s|\+$||'
 }
 
-ocr() {
-	# https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html
+take_screenshot() {
 	# https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html#missing-borders
-
 	maim --select --hidecursor --format=png --quality 1 |
-		convert png:- -alpha off -bordercolor White -border 10x10 png:- |
-		tesseract stdin stdout \
-			--tessdata-dir "$TESSDATA_PREFIX" \
-			-l "$(installed_languages)" |
+		convert png:- -alpha off -bordercolor White -border 10x10 png:-
+}
+
+tesseract_recognize() {
+	# https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html
+	tesseract stdin stdout \
+		--tessdata-dir "$TESSDATA_PREFIX" \
+		-l "$(installed_languages)" \
+		--psm 1 |
 		tr -d ' ' |
 		tr -d '\n' |
 		grep -P '[ｦ-ﾟァ-ヶぁ-ゞＡ-ｚ０-９ｧ-ﾝﾞﾟァ-ンぁ-ん一-龯]+'
 }
 
 run_ocr() {
-	local -r result=$(ocr)
+	local -r result=$(take_screenshot | tesseract_recognize)
 	if [[ -n $result ]]; then
 		xclip -selection clipboard <<<"$result"
 		notify "Copied $result."
