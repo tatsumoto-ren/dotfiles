@@ -48,9 +48,8 @@ ocr() {
 		grep -P '[ｦ-ﾟァ-ヶぁ-ゞＡ-ｚ０-９ｧ-ﾝﾞﾟァ-ンぁ-ん一-龯]+'
 }
 
-main() {
+run_ocr() {
 	local -r result=$(ocr)
-
 	if [[ -n $result ]]; then
 		xclip -selection clipboard <<<"$result"
 		notify "Copied $result."
@@ -59,12 +58,17 @@ main() {
 	fi
 }
 
-if_installed curl unzip maim convert tesseract xclip || exit 1
+main() {
+	if_installed curl unzip maim convert tesseract xclip || exit 1
 
-if [[ -d "$TESSDATA_PREFIX" ]]; then
-	main
-else
-	notify "Couldn't find Tesseract data files. Downloading..."
-	download_tessdata
-	notify "Downloaded Tesseract data. Run this script again to recognize Japanese text."
-fi
+	if [[ -d $TESSDATA_PREFIX ]]; then
+		run_ocr
+	else
+		notify "Couldn't find Tesseract data files. Downloading..."
+		download_tessdata
+		notify "Downloaded Tesseract data. Run this script again to recognize Japanese text."
+	fi
+
+}
+
+main
