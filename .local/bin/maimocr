@@ -3,7 +3,6 @@
 set -euo pipefail
 
 readonly TESSDATA_PREFIX=$HOME/.local/share/tessdata
-export TESSDATA_PREFIX
 
 notify() {
 	echo "$*"

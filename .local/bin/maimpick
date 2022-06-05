@@ -1,48 +1,79 @@
 #!/bin/bash
-# shellcheck disable=SC2155
 
-if ifinstalled; then
-	ifinstalled dmenu maim xdotool || exit
-fi
+set -euo pipefail
 
-shopt -s expand_aliases
-alias maim='maim --hidecursor --quality 10'
-alias date='date --utc'
+take_screenshot() {
+	maim --hidecursor --format=png --quality 10 "$@"
+}
 
-readonly filename="$HOME/Pictures/Screenshots/screenshot-$(date '+%F-%H-%M-%S').png"
-
-if [ -z "$1" ]; then
-	readonly command="$(dmenu -i -p 'Screenshot which area?' <<- EOF
-	selected area
-	current window
-	full screen
-	selected area → clipboard
-	current window → clipboard
-	full screen → clipboard
-	selected area → gimp
+ask_command() {
+	dmenu -i -p 'Screenshot which area?' <<-EOF
+		selected area
+		current window
+		full screen
+		selected area → clipboard
+		current window → clipboard
+		full screen → clipboard
+		selected area → gimp
 	EOF
-	)"
-else
-	readonly command="$1"
-fi
+}
 
-case $command in
-	*area*clipboard)
-		maim -s | xclip -selection clipboard -t image/png ;;
-	*area*gimp)
-		maim -s "$filename" && gimp "$filename"
-		(sleep 60s && rm -- "$filename") &
-		;;
-	*window*clipboard)
-		maim -i "$(xdotool getactivewindow)" | xclip -selection clipboard -t image/png ;;
-	full*clipboard)
-		maim | xclip -selection clipboard -t image/png ;;
-	*area)
-		maim -s "$filename" ;;
-	*window)
-		maim -i "$(xdotool getactivewindow)" "$filename" ;;
-	full*)
-		maim "$filename" ;;
-	*)
-		exit 1 ;;
-esac
+notify() {
+	echo "$*"
+	notify-send "Maim Pick" "$*"
+}
+
+if_installed() {
+	for x in "$@"; do
+		if ! which "$x" >/dev/null 2>&1 && ! pacman -Qq "$x" >/dev/null 2>&1; then
+			notify "$x must be installed for this function."
+			return 1
+		fi
+	done
+}
+
+main() {
+	if_installed dmenu maim xdotool || exit 1
+
+	local -r screenshot_dir=${MAIM_SCREENSHOTS:-$HOME/Pictures/Screenshots}
+	local -r file_path=$screenshot_dir/screenshot-$(date --utc '+%F-%H-%M-%S').png
+
+	mkdir -p -- "$screenshot_dir"
+
+	if (($# == 0)) || [[ -z $1 ]]; then
+		local -r command=$(ask_command)
+	else
+		local -r command=$1
+	fi
+
+	case $command in
+		*area*clipboard)
+			take_screenshot -s | xclip -selection clipboard -t image/png
+			;;
+		*area*gimp)
+			take_screenshot -s "$file_path" && gimp "$file_path"
+			(sleep 60s && rm -- "$file_path") &
+			;;
+		*window*clipboard)
+			take_screenshot -i "$(xdotool getactivewindow)" | xclip -selection clipboard -t image/png
+			;;
+		full*clipboard)
+			take_screenshot | xclip -selection clipboard -t image/png
+			;;
+		*area)
+			take_screenshot -s "$file_path"
+			;;
+		*window)
+			take_screenshot -i "$(xdotool getactivewindow)" "$file_path"
+			;;
+		full*)
+			take_screenshot "$file_path"
+			;;
+		*)
+			notify "No appropriate action."
+			exit 1
+			;;
+	esac
+}
+
+main "$@"
