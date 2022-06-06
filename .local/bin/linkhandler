@@ -8,15 +8,15 @@ set -euo pipefail
 # if a music file or pdf, it will download,
 # otherwise it opens link in browser.
 
-# If no url given. Opens browser. For using script as $BROWSER.
-if [[ -z ${1-} ]]; then
-	"$BROWSER"
-	exit
+if [ -z "${1-}" ]; then
+	url="$(xclip -o)"
+else
+	url="$1"
 fi
 
 inv_instances=/tmp/inv_instances
 url=$(
-	echo "$*" |
+	echo "$url" |
 		sed -E \
 			-e 's|https?://(www\.)?reddit\.com/(.*)|https://teddit.net/\2|g;' \
 			-e 's|https?://(www\.)?twitter\.com/(.*)|https://nitter.net/\2|g;' \
