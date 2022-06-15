@@ -83,3 +83,4 @@ alias \
 	refl="sudo reflector --verbose --age 12 --protocol https --latest 10 --sort rate --save /etc/pacman.d/mirrorlist" \
 	all_but_base="comm -23 <(pacman -Qetq | sort) <({ pacman -Qgq base-devel ; echo \$basepac | tr ' ' '\n' ;} | sort) | less" \
 	ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" \
+	printsrcinfo="makepkg --printsrcinfo > .SRCINFO" \
