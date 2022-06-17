@@ -142,7 +142,7 @@ map cs $compiler $f
 map d
 map dd cut
 map dc %du -sh $f
-map <c-f> $lf -remote "send $id select '$(fzf)'"
+map <c-f> $lf -remote "send $id select \"$(fzf)\""
 map D delete
 map E extract
 map C copyto
