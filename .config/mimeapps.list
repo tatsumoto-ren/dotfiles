@@ -25,7 +25,7 @@ audio/mpeg=mpv.desktop;audacity.desktop;
 audio/x-opus+ogg=mpv.desktop;audacity.desktop;
 audio/x-wav=mpv.desktop;
 image/avif=firefox.desktop;sxiv.desktop;
-image/gif=sxiv.desktop;mpv.desktop;
+image/gif=sxiv.desktop;gimp.desktop;mpv.desktop;
 image/jpeg=gimp.desktop;sxiv.desktop;
 image/png=gimp.desktop;sxiv.desktop;
 image/svg+xml=gimp.desktop;nvim.desktop;firefox.desktop;geany.desktop;
@@ -51,6 +51,7 @@ x-scheme-handler/magnet=org.qbittorrent.qBittorrent.desktop;
 x-scheme-handler/mailto=neomutt.desktop;thunderbird.desktop;
 x-scheme-handler/tg=telegramdesktop.desktop;
 audio/x-ms-wma=mpv.desktop;
+application/zip=cr3.desktop;org.gnome.FileRoller.desktop;
 
 [Default Applications]
 x-scheme-handler/chrome=linkhandler.desktop;
@@ -81,3 +82,4 @@ video/x-matroska=mpv.desktop;
 inode/directory=lf.desktop;
 audio/x-ms-wma=mpv.desktop
 video/mp4=mpv.desktop
+application/zip=org.gnome.FileRoller.desktop
