@@ -25,7 +25,7 @@ url=$(
 
 case "${url:?}" in
 *youtube.com/* | *youtu.be/*)
-	[[ -f $inv_instances ]] || rank_invidious_instances >"$inv_instances" || exit 1
+	[[ -s $inv_instances ]] || rank_invidious_instances >"$inv_instances" || exit 1
 	invidious_instance=$(head -1 /tmp/inv_instances | cut -f1)
 	invidious_url=$(sed "s,https\?://\(www\.\)\?\(youtube\.com\|youtu\.be\),$invidious_instance,g" <<< "$url")
 	setsid -f "$BROWSER" -- "$invidious_url" &
