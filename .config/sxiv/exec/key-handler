@@ -40,7 +40,7 @@ while read -r file; do
 		;;
 	"d")
 		if gio trash -- "$file" || trash-put -- "$file"; then
-			notify-send "'$file' moved to trash."
+			notify-send "'$file' moved to trash." &
 		elif [ -f "$file" ] && [ "$(printf -- 'No\nYes' | dmenu -i -p "Really delete $file?")" = "Yes" ]; then
 			if rm -- "$file"; then
 				notify-send "'$file' deleted."
