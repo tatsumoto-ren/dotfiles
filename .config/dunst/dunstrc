@@ -31,7 +31,7 @@
     # Notice: default height of the i3bar is 21 pixels.
     width = 320
     origin = top-right
-    offset = 0x20
+    offset = 0x21
 
     # Show how many messages are currently hidden (because of geometry).
     indicate_hidden = yes

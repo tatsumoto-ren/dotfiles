@@ -84,3 +84,4 @@ alias \
 	all_but_base="comm -23 <(pacman -Qetq | sort) <({ pacman -Qgq base-devel ; echo \$basepac | tr ' ' '\n' ;} | sort) | less" \
 	ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" \
 	printsrcinfo="makepkg --printsrcinfo > .SRCINFO" \
+	unlockme='faillock --user "$USER" --reset' \
