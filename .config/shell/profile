@@ -179,7 +179,7 @@ ex=🎯:\
 "
 
 if [[ ! -f ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ]]; then
-	shortcuts >/dev/null 2>&1 &
+	setsid shortcuts >/dev/null 2>&1
 fi
 
 # Adds `~/.local/bin/` and all subdirectories to $PATH

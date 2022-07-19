@@ -5,6 +5,7 @@ vf() { find -type f | fzf | xargs -r -I % "$EDITOR" % ;}
 calc(){ awk "BEGIN{ print $* }" ;}
 kitsudown() { curl "$@" | grep -Eo 'subtitles[^"]+\.(srt|ass)' | xargs -n 1 -P 26 -I{} wget --no-clobber 'http://kitsunekko.net/{}' ;}
 cheat() { curl "cheat.sh/$*" ;}
+se() { cd ~/.local/bin; $EDITOR $(fzf) ;}
 choose_from_cwds() {
 	for PROCID in $(pgrep "^$(basename "$SHELL")$") $(pgrep '^ranger$') $(pgrep '^lf$'); do
 		readlink -e "/proc/$PROCID/cwd"
