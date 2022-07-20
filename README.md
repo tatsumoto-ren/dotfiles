@@ -3,7 +3,6 @@
 > https://tatsumoto.neocities.org/
 
 Configuration files and scripts I use in my computing.
-This repo is a work in progress.
 
 ![screenshot](https://user-images.githubusercontent.com/69171671/151655369-699b6e83-e0ef-47e0-986e-be786717c917.png)
 
@@ -13,6 +12,7 @@ This repo is a work in progress.
 * Shell - zsh + [zsh-theme-powerlevel10k](https://archlinux.org/packages/community/x86_64/zsh-theme-powerlevel10k/)
 * Terminal - [Alacritty](https://wiki.archlinux.org/title/Alacritty)
 * WM - [i3-wm](https://archlinux.org/packages/community/x86_64/i3-wm/). Do not use `i3-gaps`!
+* Status bar - [i3blocks](https://archlinux.org/packages/community/x86_64/i3blocks/)
 * Launcher - [rofi](https://archlinux.org/packages/community/x86_64/rofi/)
 * File Manager - [lf](https://github.com/gokcehan/lf)
 * Image viewer - [sxiv](https://wiki.archlinux.org/title/Sxiv)
@@ -20,6 +20,7 @@ This repo is a work in progress.
 * Renaming files - [vidir](https://aur.archlinux.org/packages/vidir)
 * Music - [mpd](https://wiki.archlinux.org/title/Music_Player_Daemon)+[ncmpcpp](https://wiki.archlinux.org/title/Ncmpcpp)
 * Preview images in terminal - [ueberzug](https://archlinux.org/packages/?name=ueberzug)
+* RSS reader - [newsboat](https://wiki.archlinux.org/title/Newsboat)
 * Various scripts in [~/.local/bin/](.local/bin)
 
 ## Installation
