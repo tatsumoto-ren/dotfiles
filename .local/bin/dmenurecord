@@ -126,8 +126,7 @@ audio_anki() {
 		curl --silent localhost:8765 -X POST -d "${1:?}"
 	}
 	store_file() {
-		local -r path=${1:?}
-		local -r name=${2:?}
+		local -r path=${1:?} name=${2:?}
 		local request='{
 			"action": "storeMediaFile",
 			"version": 6,

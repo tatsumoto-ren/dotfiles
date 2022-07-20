@@ -52,6 +52,7 @@ x-scheme-handler/mailto=neomutt.desktop;thunderbird.desktop;
 x-scheme-handler/tg=telegramdesktop.desktop;
 audio/x-ms-wma=mpv.desktop;
 application/zip=cr3.desktop;org.gnome.FileRoller.desktop;
+application/rtf=libreoffice-writer.desktop;
 
 [Default Applications]
 x-scheme-handler/chrome=linkhandler.desktop;
