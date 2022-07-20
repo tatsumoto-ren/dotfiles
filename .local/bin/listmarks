@@ -1,5 +1,16 @@
 #!/bin/bash
 
+set -euo pipefail
+
+urldecode() {
+    local url
+    url=$(cut -f1 -d' ')
+    url=${url//file:\/\//}
+    url=${url//+/ }
+    url=${url//%/\\x}
+    printf -- '%b\n' "$url"
+}
+
 if [[ $* =~ ^(dirs|files)$ ]]; then
 	sed \
 		-e 's/\s*#.*$//' \
@@ -9,4 +20,7 @@ if [[ $* =~ ^(dirs|files)$ ]]; then
 	while read -r line; do
 		eval "echo $line"
 	done
-fi
+	if [[ $* == dirs ]]; then
+		urldecode < "${XDG_CONFIG_HOME:-$HOME/.config}/gtk-3.0/bookmarks"
+	fi
+fi | sort -u
