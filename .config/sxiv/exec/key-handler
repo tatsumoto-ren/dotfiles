@@ -10,13 +10,13 @@ while read -r file; do
 		;;
 	"c")
 		[ -z "$destdir" ] && destdir="$(listmarks dirs | dmenu -l 20 -i -p "Copy file(s) to where?")"
-		[ ! -d "$destdir" ] && notify-send "$destdir is not a directory, cancelled." && exit
-		cp -- "$file" "$destdir" && notify-send -i "$destdir/${file##*/}" "${file##*/} copied to $destdir." &
+		[ ! -d "$destdir" ] && notify-send "${0##*/}" "$destdir is not a directory, cancelled." && exit
+		cp -- "$file" "$destdir" && notify-send -i "$destdir/${file##*/}" "${0##*/}" "${file##*/} copied to $destdir." &
 		;;
 	"m")
 		[ -z "$destdir" ] && destdir="$(listmarks dirs | dmenu -l 20 -i -p "Move file(s) to where?")"
 		[ ! -d "$destdir" ] && notify-send "$destdir is not a directory, cancelled." && exit
-		mv -- "$file" "$destdir" && notify-send -i "$destdir/${file##*/}" "${file##*/} moved to $destdir." &
+		mv -- "$file" "$destdir" && notify-send -i "$destdir/${file##*/}" "${0##*/}" "${file##*/} moved to $destdir." &
 		;;
 	"r")
 		convert -rotate 90 "$file" "$file"
@@ -40,10 +40,10 @@ while read -r file; do
 		;;
 	"d")
 		if gio trash -- "$file" || trash-put -- "$file"; then
-			notify-send "'${file##*/}' moved to trash." &
+			notify-send "${0##*/}" "${file##*/} moved to trash." &
 		elif [ -f "$file" ] && [ "$(printf -- 'No\nYes' | dmenu -i -p "Really delete $file?")" = "Yes" ]; then
 			if rm -- "$file"; then
-				notify-send "'$file' deleted." &
+				notify-send "${0##*/}" "${file##*/} deleted." &
 			else
 				notify-send --urgency=critical "Error" "'$file' wasn't deleted." &
 			fi
@@ -56,7 +56,7 @@ while read -r file; do
 		notify-send "File information" "$(mediainfo -- "$file")"
 		;;
 	*)
-		notify-send "sxiv" "$1 is not bound."
+		notify-send "${0##*/}" "$1 is not bound."
 		;;
 	esac
 done
