@@ -11,12 +11,12 @@ while read -r file; do
 	"c")
 		[ -z "$destdir" ] && destdir="$(listmarks dirs | dmenu -l 20 -i -p "Copy file(s) to where?")"
 		[ ! -d "$destdir" ] && notify-send "$destdir is not a directory, cancelled." && exit
-		cp -- "$file" "$destdir" && notify-send -i "$(readlink -f "$file")" "$file copied to $destdir." &
+		cp -- "$file" "$destdir" && notify-send -i "$destdir/${file##*/}" "${file##*/} copied to $destdir." &
 		;;
 	"m")
 		[ -z "$destdir" ] && destdir="$(listmarks dirs | dmenu -l 20 -i -p "Move file(s) to where?")"
 		[ ! -d "$destdir" ] && notify-send "$destdir is not a directory, cancelled." && exit
-		mv -- "$file" "$destdir" && notify-send -i "$(readlink -f "$file")" "$file moved to $destdir." &
+		mv -- "$file" "$destdir" && notify-send -i "$destdir/${file##*/}" "${file##*/} moved to $destdir." &
 		;;
 	"r")
 		convert -rotate 90 "$file" "$file"
@@ -40,12 +40,12 @@ while read -r file; do
 		;;
 	"d")
 		if gio trash -- "$file" || trash-put -- "$file"; then
-			notify-send "'$file' moved to trash." &
+			notify-send "'${file##*/}' moved to trash." &
 		elif [ -f "$file" ] && [ "$(printf -- 'No\nYes' | dmenu -i -p "Really delete $file?")" = "Yes" ]; then
 			if rm -- "$file"; then
-				notify-send "'$file' deleted."
+				notify-send "'$file' deleted." &
 			else
-				notify-send --urgency=critical "Error" "'$file' wasn't deleted."
+				notify-send --urgency=critical "Error" "'$file' wasn't deleted." &
 			fi
 		fi
 		;;
