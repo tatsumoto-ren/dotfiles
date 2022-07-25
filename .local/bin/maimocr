@@ -21,12 +21,16 @@ if_installed() {
 download_tessdata() {
 	local -r \
 		zip_url='https://g33k.se/_matrix/media/r0/download/g33k.se/chvDlHzjiXgDEdeGTFnyOExv' \
-		zip_path=$(mktemp /tmp/tesseract_data.XXXXXX)
+		zip_path=$(mktemp /tmp/tesseract_data.XXXXXX) \
+		osd_path=/usr/share/tessdata/osd.traineddata
 
 	curl "$zip_url" --output "$zip_path"
 	mkdir -p -- "$TESSDATA_PREFIX"
 	unzip -o -j "$zip_path" -d "$TESSDATA_PREFIX"
 	rm -- "$zip_path"
+	if [[ -f $osd_path ]] && ! [[ -f $TESSDATA_PREFIX/${osd_path##*/} ]]; then
+		cp -- "$osd_path" "$TESSDATA_PREFIX"
+	fi
 }
 
 installed_languages() {
