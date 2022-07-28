@@ -71,7 +71,7 @@ alias \
 	kakasi_reading="kakasi -i utf8 -o utf8 -u -JH -KH" \
 
 # Pacman / system
-basepac='filesystem gcc-libs glibc bash coreutils file findutils gawk grep procps-ng sed tar gettext pciutils psmisc shadow util-linux bzip2 gzip xz licenses pacman systemd systemd-sysvcompat iputils iproute2'
+basepac='bash bzip2 coreutils file filesystem findutils gawk gcc-libs gettext glibc grep gzip iproute2 iputils licenses pacman pciutils procps-ng psmisc sed shadow systemd systemd-sysvcompat tar util-linux xz'
 
 alias \
 	lsp="pacman -Qett --color=always | less" \
