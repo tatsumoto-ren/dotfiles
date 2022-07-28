@@ -1,62 +1,99 @@
 #!/bin/sh
 
-while read -r file; do
-	case "$1" in
-	"w")
-		setbg "$file" &
-		;;
-	"W")
-		cwebp "$file" -sns 100 -sharp_yuv -f 100 -pass 10 -af -mt -m 6 -o "${file%.*}.webp" &
-		;;
-	"c")
-		[ -z "$destdir" ] && destdir="$(listmarks dirs | dmenu -l 20 -i -p "Copy file(s) to where?")"
-		[ ! -d "$destdir" ] && notify-send "${0##*/}" "$destdir is not a directory, cancelled." && exit
-		cp -- "$file" "$destdir" && notify-send -i "$destdir/${file##*/}" "${0##*/}" "${file##*/} copied to $destdir." &
-		;;
-	"m")
-		[ -z "$destdir" ] && destdir="$(listmarks dirs | dmenu -l 20 -i -p "Move file(s) to where?")"
-		[ ! -d "$destdir" ] && notify-send "$destdir is not a directory, cancelled." && exit
-		mv -- "$file" "$destdir" && notify-send -i "$destdir/${file##*/}" "${0##*/}" "${file##*/} moved to $destdir." &
-		;;
-	"r")
-		convert -rotate 90 "$file" "$file"
-		;;
-	"R")
-		convert -rotate -90 "$file" "$file"
-		;;
-	"f")
-		convert -flop "$file" "$file"
-		;;
-	"I")
-		convert "$file" -channel RGB -negate "$file"
-		;;
-	"y")
-		printf -- "%s" "$file" | tr -d '\n' | xclip -selection clipboard &&
-			notify-send "$file copied to clipboard" &
-		;;
-	"Y")
-		readlink -f -- "$file" | tr -d '\n' | xclip -selection clipboard &&
-			notify-send "$(readlink -f -- "$file") copied to clipboard" &
-		;;
-	"d")
-		if gio trash -- "$file" || trash-put -- "$file"; then
-			notify-send "${0##*/}" "${file##*/} moved to trash." &
-		elif [ -f "$file" ] && [ "$(printf -- 'No\nYes' | dmenu -i -p "Really delete $file?")" = "Yes" ]; then
-			if rm -- "$file"; then
-				notify-send "${0##*/}" "${file##*/} deleted." &
-			else
-				notify-send --urgency=critical "Error" "'$file' wasn't deleted." &
-			fi
+delete_file() {
+	if gio trash -- "$file" || trash-put -- "$file"; then
+		echo "🗑️ '${file##*/}' moved to trash."
+	elif [ -f "$file" ] && [ "$(printf -- 'No\nYes' | dmenu -i -p "Really delete '$file'?")" = "Yes" ]; then
+		if rm -- "$file"; then
+			echo "☑️ '${file##*/}' deleted." &
+		else
+			echo "❌ '${file##*/}' wasn't deleted."
 		fi
-		;;
-	"g")
-		ifinstalled gimp && setsid -f gimp "$file"
-		;;
-	"i")
-		notify-send "File information" "$(mediainfo -- "$file")"
-		;;
-	*)
-		notify-send "${0##*/}" "$1 is not bound."
-		;;
-	esac
-done
+	fi
+}
+
+copy_file() {
+	if cp -- "$file" "$destdir"; then
+		echo "✅ '${file##*/}' copied to $destdir."
+	else
+		echo "❌ '${file##*/}' wasn't copied to $destdir."
+	fi
+}
+
+move_file() {
+	if mv -- "$file" "$destdir"; then
+		echo "✅ '${file##*/}' moved to $destdir."
+	else
+		echo "❌ '${file##*/}' wasn't moved to $destdir."
+	fi
+}
+
+ask_dir() {
+	destdir="$(listmarks dirs | dmenu -l 20 -i -p "$1 file(s) to where?")"
+	[ ! -d "$destdir" ] && notify-send "${0##*/}" "$destdir is not a directory, cancelled." && exit
+}
+
+notify_do() {
+	result=$(while read -r file; do "$@"; done)
+	notify-send "${0##*/}" "$result" &
+}
+
+first_file() {
+	while read -r file; do echo "$file"; return; done
+}
+
+case "$1" in
+"d")
+	notify_do delete_file
+	;;
+"c")
+	ask_dir Copy
+	notify_do copy_file
+	;;
+"m")
+	ask_dir Move
+	notify_do move_file
+	;;
+"i")
+	notify-send -t 0 "File information" "$(mediainfo -- "$(first_file)")"
+	;;
+"w")
+	setbg "$(first_file)"
+	;;
+"W")
+	file=$(first_file)
+	cwebp "$file" -sns 100 -sharp_yuv -f 100 -pass 10 -af -mt -m 6 -o "${file%.*}.webp" &
+	;;
+"r")
+	file=$(first_file)
+	convert -rotate 90 "$file" "$file"
+	;;
+"R")
+	file=$(first_file)
+	convert -rotate -90 "$file" "$file"
+	;;
+"f")
+	file=$(first_file)
+	convert -flop "$file" "$file"
+	;;
+"I")
+	file=$(first_file)
+	convert "$file" -channel RGB -negate "$file"
+	;;
+"y")
+	file=$(first_file)
+	printf -- "%s" "$file" | tr -d '\n' | xclip -selection clipboard &&
+		notify-send -i "$file" "$file copied to clipboard" &
+	;;
+"Y")
+	file=$(first_file)
+	readlink -f -- "$file" | tr -d '\n' | xclip -selection clipboard &&
+		notify-send -i "$file" "${0##*/}" "$(readlink -f -- "$file") copied to clipboard" &
+	;;
+"g")
+	ifinstalled gimp && setsid -f gimp "$(first_file)"
+	;;
+*)
+	notify-send "${0##*/}" "$1 is not bound." &
+	;;
+esac
