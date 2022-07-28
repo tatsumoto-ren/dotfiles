@@ -97,7 +97,7 @@ exec --no-startup-id	i3-msg 'workspace $ws9;\
 				append_layout ~/.config/i3/ws9.json;\
 				workspace $ws1;'
 
-exec --no-startup-id	redshift
+exec --no-startup-id	redshift -l $(curl -s 'https://location.services.mozilla.com/v1/geolocate?key=geoclue' | sed -rn 's/^.*"lat": *([0-9.]+), *"lng": *([0-9.]+).*$/\1:\2/p')
 exec --no-startup-id	xcalib -v -o $monitor1 ~/.local/share/icc/main_monitor.icc
 exec --no-startup-id	thunar --daemon
 exec --no-startup-id	pgrep NetworkManager && nm-applet
