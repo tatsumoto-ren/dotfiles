@@ -14,7 +14,8 @@ else
 	url="$1"
 fi
 
-inv_instances=/tmp/inv_instances
+readonly INV_INSTANCES=${INV_INSTANCES:-/tmp/inv_instances}
+
 url=$(
 	echo "$url" |
 		sed -E \
@@ -25,8 +26,8 @@ url=$(
 
 case "${url:?}" in
 *youtube.com/* | *youtu.be/*)
-	[[ -s $inv_instances ]] || rank_invidious_instances >"$inv_instances" || exit 1
-	invidious_instance=$(head -1 /tmp/inv_instances | cut -f1)
+	[[ -s $INV_INSTANCES ]] || rank-invidious-instances >"$INV_INSTANCES" || exit 1
+	invidious_instance=$(head -1 "$INV_INSTANCES" | cut -f1)
 	invidious_url=$(sed "s,https\?://\(www\.\)\?\(youtube\.com\|youtu\.be\),$invidious_instance,g" <<< "$url")
 	setsid -f "$BROWSER" -- "$invidious_url" &
 	;;
