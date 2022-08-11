@@ -15,6 +15,7 @@ else
 fi
 
 readonly INV_INSTANCES=${INV_INSTANCES:-/tmp/inv_instances}
+readonly NITTER_INSTANCES=${NITTER_INSTANCES:-/tmp/nitter_instances}
 
 url=$(
 	echo "$url" |
@@ -25,6 +26,12 @@ url=$(
 )
 
 case "${url:?}" in
+*twitter.com/*)
+	[[ -s $NITTER_INSTANCES ]] || rank-nitter-instances >"$NITTER_INSTANCES" || exit 1
+	nitter_instance=$(head -5 "$NITTER_INSTANCES" | cut -f1 | shuf -n1)
+	nitter_url=$(sed -E "s,(https?://)?(www\.)?(twitter\.com),$nitter_instance,g" <<< "$url")
+	setsid -f "$BROWSER" -- "$nitter_url" &
+	;;
 *youtube.com/* | *youtu.be/*)
 	[[ -s $INV_INSTANCES ]] || rank-invidious-instances >"$INV_INSTANCES" || exit 1
 	invidious_instance=$(head -1 "$INV_INSTANCES" | cut -f1)

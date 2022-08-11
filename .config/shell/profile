@@ -77,6 +77,7 @@ export AWT_TOOLKIT="MToolkit wmname LG3D"	# May have to install wmname
 export _JAVA_AWT_WM_NONREPARENTING=1	# Fix for Java applications in dwm
 export TDESKTOP_USE_GTK_FILE_DIALOG=1
 export INV_INSTANCES=/tmp/inv_instances
+export NITTER_INSTANCES=/tmp/nitter_instances
 
 # TSP settings
 # https://aur.archlinux.org/packages/task-spooler/

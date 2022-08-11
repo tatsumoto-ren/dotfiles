@@ -22,8 +22,9 @@ syncthing -no-browser &
 podentr &
 # Run mailsync periodically
 { command -v mailsync && while :; do mailsync; sleep 15m; done; } &
-# Rank invidious instances
+# Rank invidious and nitter instances
 rank-invidious-instances >"${INV_INSTANCES:-/tmp/inv_instances}" &
+rank-nitter-instances >"${NITTER_INSTANCES:-/tmp/nitter_instances}" &
 # Use Xresources colors/settings on startup
 xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources"
 

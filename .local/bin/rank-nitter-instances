@@ -1,0 +1,34 @@
+#!/usr/bin/python3
+
+from typing import NamedTuple
+
+
+def json_url():
+    return 'https://raw.githubusercontent.com/xnaas/nitter-instances/master/history/summary.json'
+
+
+class Instance(NamedTuple):
+    url: str
+    rank: tuple[float, ...]
+
+    @classmethod
+    def from_json(cls, json: dict[str, str]):
+        rank = tuple(map(
+            lambda val: float(val.replace('%', '')),
+            (json["uptimeDay"], json["uptimeWeek"], json["uptimeMonth"], json["uptimeYear"],)
+        ))
+        return cls(url=json['url'], rank=rank,)
+
+
+def main():
+    import requests
+
+    with requests.session() as s:
+        content: list[dict] = s.get(json_url(), timeout=10).json()
+
+    for instance in sorted(map(Instance.from_json, content), key=lambda item: item.rank, reverse=True):
+        print(instance.url, *instance.rank, sep='\t')
+
+
+if __name__ == '__main__':
+    main()
