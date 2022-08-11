@@ -17,14 +17,6 @@ fi
 readonly INV_INSTANCES=${INV_INSTANCES:-/tmp/inv_instances}
 readonly NITTER_INSTANCES=${NITTER_INSTANCES:-/tmp/nitter_instances}
 
-url=$(
-	echo "$url" |
-		sed -E \
-			-e 's|https?://(www\.)?reddit\.com/(.*)|https://teddit.net/\2|g;' \
-			-e 's|https?://(www\.)?twitter\.com/(.*)|https://nitter.net/\2|g;' \
-			-e 's|https?://(www\.)?instagram\.com/(.*)|https://bibliogram.art/\2|g'
-)
-
 case "${url:?}" in
 *twitter.com/*)
 	[[ -s $NITTER_INSTANCES ]] || rank-nitter-instances >"$NITTER_INSTANCES" || exit 1
@@ -35,8 +27,14 @@ case "${url:?}" in
 *youtube.com/* | *youtu.be/*)
 	[[ -s $INV_INSTANCES ]] || rank-invidious-instances >"$INV_INSTANCES" || exit 1
 	invidious_instance=$(head -1 "$INV_INSTANCES" | cut -f1)
-	invidious_url=$(sed "s,https\?://\(www\.\)\?\(youtube\.com\|youtu\.be\),$invidious_instance,g" <<< "$url")
+	invidious_url=$(sed -E "s,(https?://)?(www\.)?(youtube\.com|youtu\.be),$invidious_instance,g" <<< "$url")
 	setsid -f "$BROWSER" -- "$invidious_url" &
+	;;
+*reddit.com/*)
+	setsid -f "$BROWSER" -- "${url//reddit.com/teddit.net}" &
+	;;
+*instagram.com/*)
+	setsid -f "$BROWSER" -- "${url//instagram.com/bibliogram.art}" &
 	;;
 *.mkv | *.webm | *.mp4 | \
 	*hooktube.com* | *bitchute.com/video* | *instagram.com* | *twitter.com* | \
