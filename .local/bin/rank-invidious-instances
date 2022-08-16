@@ -1,39 +1,45 @@
 #!/usr/bin/python3
 
 import asyncio
-import dataclasses
+import time
+from typing import NamedTuple, Collection
 
 import httpx
 
 
-@dataclasses.dataclass(frozen=True)
-class Instance:
-    uri: str
-    act_users: int
+class Instance(NamedTuple):
+    url: str
+    health_percent: float
+    active_month: int
 
     @staticmethod
-    def get_active_users(d: dict) -> int:
+    def get_active_users(d: list) -> int:
         try:
-            return d[1]['stats']['usage']['users']['activeMonth']
-        except (TypeError, KeyError):
+            return int(d[1]['stats']['usage']['users']['activeMonth'])
+        except (ValueError, TypeError, KeyError):
+            return 0
+
+    @classmethod
+    def get_health(cls, d: list) -> float:
+        try:
+            return float(d[1]['monitor']['30dRatio']['ratio'])
+        except (ValueError, TypeError, KeyError):
             return 0
 
     @staticmethod
-    def get_uri(d: dict) -> str:
-        uri: str = d[1]['uri']
-
-        if uri.endswith('/'):
-            return uri[:-1]
-        else:
-            return uri
+    def get_uri(d: list) -> str:
+        return str(d[1]['uri']).rstrip('/')
 
     @classmethod
-    def from_dict(cls, d: dict):
-        return cls(cls.get_uri(d), cls.get_active_users(d))
+    def from_json(cls, d: list):
+        return cls(
+            url=cls.get_uri(d),
+            health_percent=cls.get_health(d),
+            active_month=cls.get_active_users(d),
+        )
 
 
-@dataclasses.dataclass(frozen=True)
-class InstanceAlive:
+class InstanceAlive(NamedTuple):
     instance: Instance
     alive: bool
 
@@ -50,36 +56,39 @@ async def parse_instances(client: httpx.AsyncClient) -> list[Instance]:
     response = await client.get(json_url())
     instances = []
     for entry in response.json():
-        instance = Instance.from_dict(entry)
-        if instance.act_users > 1:
+        instance = Instance.from_json(entry)
+        if instance.active_month > 1:
             instances.append(instance)
     return instances
 
 
 async def test_instance(client: httpx.AsyncClient, instance: Instance) -> InstanceAlive:
     try:
-        response = await client.get(test_video_url(instance.uri))
+        response = await client.get(test_video_url(instance.url))
     except (httpx.ConnectTimeout, httpx.ReadTimeout):
-        return InstanceAlive(instance, False)
+        return InstanceAlive(instance, False, )
     else:
-        return InstanceAlive(instance, response.status_code == 200)
+        return InstanceAlive(instance, response.status_code == 200 and 'Invidious' in response.text, )
 
 
 async def filter_alive(client: httpx.AsyncClient, instances: list[Instance]) -> list[Instance]:
-    result = await asyncio.gather(
+    result: Collection[InstanceAlive] = await asyncio.gather(
         *(test_instance(client, instance) for instance in instances),
         return_exceptions=True
     )
-    return [response.instance for response in result if isinstance(response, InstanceAlive) and response.alive]
+    return [
+        response.instance
+        for response in result
+        if isinstance(response, InstanceAlive) and response.alive
+    ]
 
 
 async def main():
     async with httpx.AsyncClient(timeout=5) as client:
-        instances = await parse_instances(client)
-        instances = await filter_alive(client, instances)
+        instances = await filter_alive(client, await parse_instances(client))
 
-    for instance in sorted(instances, key=lambda i: i.act_users):
-        print(instance.uri, instance.act_users, sep='\t')
+    for instance in sorted(instances, key=lambda ins: (-ins.health_percent, ins.active_month)):
+        print(*instance, sep='\t')
 
 
 if __name__ == '__main__':
