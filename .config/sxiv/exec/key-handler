@@ -30,7 +30,8 @@ move_file() {
 
 ask_dir() {
 	destdir="$(listmarks dirs | dmenu -l 20 -i -p "$1 file(s) to where?")"
-	[ ! -d "$destdir" ] && notify-send "${0##*/}" "$destdir is not a directory, cancelled." && exit
+	[ -z "$destdir" ] && notify-send "${0##*/}" "Nothing selected, cancelled." && exit
+	[ ! -d "$destdir" ] && notify-send "${0##*/}" "'$destdir' is not a directory, cancelled." && exit
 }
 
 notify_do() {
