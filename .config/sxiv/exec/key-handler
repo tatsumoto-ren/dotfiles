@@ -36,7 +36,7 @@ ask_dir() {
 
 notify_do() {
 	result=$(while read -r file; do "$@"; done)
-	notify-send "${0##*/}" "$result" &
+	notify-send "${0##*/} processed $(echo "$result" | wc -l) files" "$result" &
 }
 
 first_file() {
