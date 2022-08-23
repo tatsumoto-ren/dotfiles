@@ -15,10 +15,10 @@ configuration {
 	kb-mode-complete:       "";
 
 	/* Vim-like bindings */
-	kb-row-up:              "Control+k,Up,Control+p,ISO_Left_Tab";
+	kb-row-up:              "Control+k,Up,Control+p";
 	kb-row-down:            "Control+j,Down,Control+n";
 	kb-mode-next:           "Control+l,Shift+Right,Control+Tab";
-	kb-mode-previous:       "Control+h,Shift+Left,Control+ISO_Left_Tab";
+	kb-mode-previous:       "Control+h,Shift+Left";
 }
 
 * {
