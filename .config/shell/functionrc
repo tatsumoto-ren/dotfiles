@@ -1,7 +1,7 @@
 #!/bin/bash
 p() { sudo pacman "$@"; notify-pacman-block; }
-see() { cd ~/.local/bin; $EDITOR $(fzf) ;}
-vf() { find -type f | fzf | xargs -r -I % "$EDITOR" % ;}
+see() { cd ~/.local/bin && $EDITOR "$(fzf)" ;}
+vf() { find . -type f | fzf | xargs -r -I % "$EDITOR" % ;}
 calc(){ awk "BEGIN{ print $* }" ;}
 kitsudown() { curl "$@" | grep -Eo 'subtitles[^"]+\.(srt|ass)' | xargs -n 1 -P 26 -I{} wget --no-clobber 'http://kitsunekko.net/{}' ;}
 cheat() { curl "cheat.sh/$*" ;}
@@ -9,6 +9,14 @@ choose_from_cwds() {
 	for PROCID in $(pgrep "^$(basename "$SHELL")$") $(pgrep '^ranger$') $(pgrep '^lf$'); do
 		readlink -e "/proc/$PROCID/cwd"
 	done | sort -u | dmenu -i -l 5
+}
+
+massrename() {
+	for file in ./*; do
+		if [[ -f $file ]]; then
+			mv -n -- "$file" ./"$RANDOM.${file##*.}"
+		fi
+	done
 }
 
 # Rsync shortcuts
@@ -40,7 +48,7 @@ remorphans() {
 readme() {
 	for readme in {readme,README}.{md,MD,markdown,txt,TXT,mkd}; do
 		if [[ -f "$readme" ]]; then
-			< "$readme"
+			less "$readme"
 		fi
 	done
 }
@@ -69,7 +77,7 @@ anki_test_run() {
 	if [[ $* ]]; then
 		local -r choice=$*
 	else
-		local -r choice=$(ls -1 "$dir" | dmenu)
+		local -r choice=$(find "$dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | dmenu)
 	fi
 	if [[ -n $choice ]]; then
 		(cd -- "$dir/$choice" && ./pyenv/bin/anki)
