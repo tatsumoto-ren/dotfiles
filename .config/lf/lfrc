@@ -68,13 +68,14 @@ cmd open ${{
 # https://github.com/gokcehan/lf/wiki/Tips#commandmapping-to-create-new-directories
 cmd mkdir $mkdir -p "$(echo $* | tr ' ' '\ ')"
 
-cmd extract ${{
-	clear; tput cup $(($(tput lines)/3)); tput bold
-	set -f
-	printf "%s\n\t" "$fx"
-	printf "extract?[y/N]"
-	read ans
-	[ $ans = "y" ] && aunpack $fx
+cmd extract !{{
+	if [[ $(file -b --mime-type -- "$f") == application/* ]]; then
+		clear
+		set -f
+		aunpack -D -- "$f"
+	else
+		echo "Not an archive."
+	fi
 }}
 
 cmd delete ${{
@@ -170,7 +171,6 @@ map yp $echo -n "$f" | xclip -selection clipboard
 map yn $echo -n "$(basename -- "$f")" | xclip -selection clipboard
 map yf $echo "file://$(readlink -f -- "$f")" | xclip -selection clipboard -target "text/uri-list"
 map S $clear && $SHELL
-map E !atool -x $fx
 map ZG !filename="$(basename -- "$f")" && tar -I 'gzip -9' -cvf "${filename}.tar.gz" -- "$filename"
 map ZD !filename="$(basename -- "$f")" && tar --zstd -cvf "${filename}.tar.zst" -- "$filename"
 map m
