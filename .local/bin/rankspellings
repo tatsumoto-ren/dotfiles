@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# Ranks passed Japanese words by frequency
+# by searching each word on Japanese versions of Google or Yahoo
+# and counting the number of results.
+# Used to find the most common spelling of a word.
+#
+# Search Google: rankspellings -g 蝲蛄 蜊蛄 躄蟹
+# Search Yahoo:  rankspellings -y 蝲蛄 蜊蛄 躄蟹
+
+set -euo pipefail
+
+fv=$(pacman -Si firefox | grep -Po '^Version[^:]*: *\K\d+')
+readonly fv
+
+fetch_google() {
+	# Additional headers reduce the probability of Google thinking this is a bot and rejecting it.
+	curl -s \
+		-H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:$fv.0) Gecko/20100101 Firefox/$fv.0" \
+		-H 'Host: www.google.co.jp' \
+		-H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' \
+		-H 'Accept-Language: ja-JP,ja;q=0.5' \
+		-H 'Accept-Encoding: gzip' \
+		-H 'Alt-Used: www.google.co.jp' \
+		-H 'Upgrade-Insecure-Requests: 1' \
+		-H 'Sec-Fetch-Dest: document' \
+		-H 'Sec-Fetch-Mode: navigate' \
+		-H 'Sec-Fetch-Site: same-origin' \
+		-H 'Sec-Fetch-User: ?1' \
+		-H 'Referer: https://www.google.co.jp/' \
+		--get \
+		--data-urlencode "q=\"$1\"" \
+		--data-urlencode "hl=ja" \
+		--data-urlencode "lr=lang_ja" \
+		'https://www.google.co.jp/search' |
+		gzip -d |
+		grep -Po '約 *\K[0-9,]+(?= *件)' |
+		tr -d ','
+}
+
+fetch_yahoo() {
+	# Additional headers reduce the probability of Yahoo thinking this is a bot and rejecting it.
+	curl -s \
+		-H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:$fv.0) Gecko/20100101 Firefox/$fv.0" \
+		-H 'Host: search.yahoo.co.jp' \
+		-H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' \
+		-H 'Accept-Language: ja-JP,ja;q=0.5' \
+		-H 'Accept-Encoding: gzip' \
+		-H 'Upgrade-Insecure-Requests: 1' \
+		-H 'Sec-Fetch-Dest: document' \
+		-H 'Sec-Fetch-Mode: navigate' \
+		-H 'Sec-Fetch-Site: same-site' \
+		-H 'Sec-Fetch-User: ?1' \
+		-H 'Referer: https://www.yahoo.co.jp/' \
+		--get \
+		--data-urlencode "p=\"$1\"" \
+		'https://search.yahoo.co.jp/search' |
+		gzip -d |
+		grep -Po '約(<!-- -->)?\K[0-9,]+(?=(<!-- -->)?件)' |
+		tr -d ','
+}
+
+for arg; do
+	case $arg in
+	-g | --google) readonly fetch_freq=fetch_google ;;
+	-y | --yahoo) readonly fetch_freq=fetch_yahoo ;;
+	*) words+=("$arg") ;;
+	esac
+done
+
+if [[ -n $fetch_freq ]]; then
+	for word in "${words[@]}"; do
+		printf -- '%s\t%s\n' "$word" "$("$fetch_freq" "$word")" &
+	done
+	wait
+fi | sort -r -t $'\t' -g -k 2
