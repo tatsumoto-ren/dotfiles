@@ -54,6 +54,7 @@ fetch_yahoo() {
 		-H 'Referer: https://www.yahoo.co.jp/' \
 		--get \
 		--data-urlencode "p=\"$1\"" \
+		--data-urlencode "fl=2" \
 		'https://search.yahoo.co.jp/search' |
 		gzip -d |
 		grep -Po '約(<!-- -->)?\K[0-9,]+(?=(<!-- -->)?件)' |
