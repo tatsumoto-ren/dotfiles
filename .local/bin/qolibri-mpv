@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 # This script is used to play qolibri's audio and copy the file to clipboard.
 # set 'qolibri-mpv' in Qolibri: Settings > Options > External Program
@@ -6,7 +6,7 @@
 # When run from Qolibri, $1 is guaranteed to be the path to an audio file.
 
 readonly file_path=${1:?}
-readonly tmp_file_path=/tmp/$(basename -- "${file_path%.*}.ogg")
+readonly tmp_file_path=/tmp/qolibri-$RANDOM.ogg
 readonly bitrate=32k
 
 to_opus() {
