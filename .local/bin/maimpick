@@ -7,7 +7,7 @@ take_screenshot() {
 }
 
 ask_command() {
-	dmenu -i -p 'Screenshot which area?' <<-EOF
+	dmenu -l 30 -i -p 'Screenshot which area?' <<-EOF
 		selected area
 		current window
 		full screen

@@ -168,7 +168,7 @@ audio_anki() {
 
 askrecording() {
 	local -r choice=$(
-		cat <<-EOF | dmenu -l 10 -i -p "Select recording style:"
+		cat <<-EOF | dmenu -l 30 -i -p "Select recording style:"
 			screencast
 			video
 			video selected

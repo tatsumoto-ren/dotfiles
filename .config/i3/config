@@ -56,7 +56,7 @@ set $dmenu		exec dmenu_run
 
 # dmenu, with .desktop files:
 # -i means match menu items case insensitively
-set $dmenu_desktop	exec i3-dmenu-desktop --dmenu="dmenu -i -fn 'Hack-9'"
+set $dmenu_desktop	exec i3-dmenu-desktop --dmenu="dmenu -i -l 30 -fn 'Hack-9'"
 
 # Rofi, with .desktop files:
 set $rofi_desktop	exec rofi -show drun
