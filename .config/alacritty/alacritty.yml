@@ -5,7 +5,10 @@
 # 10.5pt == 14px
 font:
   normal:
-    family: Hack Nerd Font Mono
+    # Note: I use fontconfig to display additional CJK and PowerLine characters.
+    # ~/.config/fontconfig/conf.d/20-symbols.conf
+    #family: Hack Nerd Font Mono
+    family: Hack
   size: 10.5
 
 # Colors (Gruvbox dark)
