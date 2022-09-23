@@ -4,19 +4,22 @@
 # transmitted (TX) since the previous time this script ran. So if run every
 # second, gives network traffic per second.
 
-case "$BLOCK_BUTTON" in
-	1)
-		readonly local_info="Local: $(sb-local_ipaddr | head -1)"
-		readonly public_info="$(curl -s 'ifconfig.co/json' | sed -n 's/\"//g;s/,$//g;s/^ *//g;2s/ip/Public/p;4s/^c/C/p;7s/region_name/City/p;')"
-		notify-send " Connection info" "$local_info\\n$public_info" ;;
-	2)
-		setsid -f "$TERMINAL" -e bmon ;;
-	6)
-		"$TERMINAL" -e "$EDITOR" "$0" ;;
-esac
-
 readonly cache_fol="/tmp/${0##*/}"
 mkdir -p "$cache_fol"
+
+local_info() {
+	sb-local_ipaddr | head -1
+}
+
+public_info() {
+	curl -s 'https://ifconfig.co/json' | sed -n \
+		-e 's/\"//g;' \
+		-e 's/,$//g;' \
+		-e 's/^ *//g;' \
+		-e '2s/ip/Public/p;' \
+		-e '4s/^c/C/p;' \
+		-e '7s/region_name/City/p;'
+}
 
 update() {
 	local sum=0 old=0
@@ -30,6 +33,15 @@ update() {
 	printf -- '%d\n' "$sum" > "$cache_file"
 	printf -- '%d\n' "$(( (sum - old) / ${interval:-1} ))"
 }
+
+case "$BLOCK_BUTTON" in
+	1)
+		notify-send " Connection info" "$(local_info)\\n$(public_info)" &;;
+	2)
+		setsid -f "$TERMINAL" -e bmon &;;
+	6)
+		"$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
 
 readonly rx=$(update /sys/class/net/[ew]*/statistics/rx_bytes)
 readonly tx=$(update /sys/class/net/[ew]*/statistics/tx_bytes)
