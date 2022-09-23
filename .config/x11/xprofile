@@ -8,8 +8,6 @@
 dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY
 # Set DPI. User may want to use a larger number for larger screens.
 xrandr --dpi 96
-# Speed xrate up
-xset r rate 300 50 &
 # Set the background with the `setbg` script
 setbg &
 # Run the remaps script, switching caps/esc and more; check it for more info

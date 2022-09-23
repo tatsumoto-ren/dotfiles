@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -euo pipefail
-
 # This script is called on startup to remap keys.
 
 # 1. Power saving behaviour of monitors when the computer is not in use
@@ -14,7 +12,12 @@ set -euo pipefail
 # Mouse:	xset m accel_mult[/accel_div] [threshold]
 # Autorepeat:	xset r rate delay [rate]
 # TIP: The q option gives you information on the current settings.
-xset s off dpms 0 0 0 m 0 0 r rate 300 50 b off
+xset \
+	s off \
+	dpms 0 0 0 \
+	m 0 0 \
+	r rate 300 50 \
+	b off
 
 # Map the caps lock key to super, and map the menu key to right super.
 setxkbmap -option terminate:ctrl_alt_bksp,caps:super,altwin:menu_win
