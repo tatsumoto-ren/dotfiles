@@ -12,11 +12,6 @@
 # Basic Definitions
 ###############################################################################
 
-# Monitors
-# You can get the names of your outputs by running: xrandr -q
-set $monitor1	"DP1"
-set $monitor2	"HDMI3"
-
 # Mod1 = 'Alt', Mod4 = 'strange wiggly flag' key
 set $alt		Mod1
 set $super		Mod4
@@ -98,7 +93,6 @@ exec --no-startup-id	i3-msg 'workspace $ws9;\
 				workspace $ws1;'
 
 exec --no-startup-id	redshift -l $(curl -s 'https://location.services.mozilla.com/v1/geolocate?key=geoclue' | sed -rn 's/^.*"lat": *([0-9.]+), *"lng": *([0-9.]+).*$/\1:\2/p')
-exec --no-startup-id	xcalib -v -o $monitor1 ~/.local/share/icc/main_monitor.icc
 exec --no-startup-id	thunar --daemon
 exec --no-startup-id	pgrep NetworkManager && nm-applet
 exec --no-startup-id	$term --title htop -e htop
@@ -273,15 +267,6 @@ bindsym $mod+slash		split vertical ;; exec $term
 bindsym $mod+Shift+slash	kill
 bindsym $mod+backslash		workspace back_and_forth
 bindsym $mod+g			workspace prev
-
-# Workspace Monitors
-workspace $ws1		output $monitor1
-workspace $ws2		output $monitor1
-workspace $ws3		output $monitor1
-workspace $ws4		output $monitor1
-workspace $ws5		output $monitor1
-workspace $ws9		output $monitor2
-workspace $ws10		output $monitor2
 
 # switch to workspace
 bindsym $mod+1		workspace $ws1
@@ -498,23 +483,28 @@ bindsym $mod+Shift+f			mode "$freeze"
 # You can obtain WM_WINDOW_ROLE or WM_CLASS with xprop (xorg-xprop)
 ###############################################################################
 
+# Override for windows that don't respect "default_border" and "default_floating_border"
+for_window [all]				border pixel 3
+for_window [tiling]				border pixel 3
+for_window [floating]				border normal 3
+
 # Global window icons
-for_window [all] title_window_icon padding 3px
+for_window [all]				title_window_icon padding 3px
 
 # General dropdown window traits. The order can matter.
-for_window [instance="dropdown_*"] floating enable
-for_window [instance="dropdown_*"] move scratchpad
-for_window [instance="dropdown_*"] sticky enable
-for_window [instance="dropdown_*"] scratchpad show
-for_window [instance="dropdown_dropdowncalc"] resize set 800 300
-for_window [instance="dropdown_*"] border pixel 3
-for_window [instance="dropdown_*"] move position center
+for_window [instance="dropdown_*"]		floating enable
+for_window [instance="dropdown_*"]		move scratchpad
+for_window [instance="dropdown_*"]		sticky enable
+for_window [instance="dropdown_*"]		scratchpad show
+for_window [instance="dropdown_dropdowncalc"]	resize set 800 300
+for_window [instance="dropdown_*"]		border pixel 3
+for_window [instance="dropdown_*"]		move position center
 
 # Bindings to make the webcam float and stick.
-for_window [title="mpvfloat"] floating enable
-for_window [title="mpvfloat"] sticky enable
-for_window [title="mpvfloat"] border pixel 0
-no_focus [title="mpvfloat"]
+for_window [title="mpvfloat"]			floating enable
+for_window [title="mpvfloat"]			sticky enable
+for_window [title="mpvfloat"]			border pixel 0
+no_focus   [title="mpvfloat"]
 
 # For window rules
 for_window [class="Dconf-editor"]		focus
@@ -567,7 +557,7 @@ assign [class="Gimp"]			$ws5
 bindsym Ctrl+space			exec dunstctl close
 bindsym Ctrl+Shift+space		exec dunstctl close-all
 bindsym Ctrl+grave			exec dunstctl history-pop
-bindsym Ctrl+Shift+Period		exec dunstctl context
+bindsym Ctrl+Shift+period		exec dunstctl context
 
 ###############################################################################
 # Extra XF86 Keys
@@ -665,3 +655,10 @@ bindsym XF86TouchpadToggle	exec --no-startup-id toggletouchpad
 ##bindsym XF86Save		exec
 ##bindsym XF86Battery		exec
 ##bindsym XF86Bluetooth		exec
+
+###############################################################################
+# Include directive
+# Load machine-specific configs.
+###############################################################################
+
+include ~/.config/i3/$(uname -n).conf
