@@ -1,6 +1,6 @@
 [Added Associations]
 application/epub+zip=org.pwmt.zathura.desktop;
-application/json=codium.desktop;nvim.desktop;geany.desktop;
+application/json=geany.desktop;codium.desktop;nvim.desktop;
 application/ogg=mpv.desktop;
 application/pdf=libreoffice-draw.desktop;org.pwmt.zathura.desktop;
 application/postscript=org.pwmt.zathura.desktop;geany.desktop;
@@ -34,7 +34,7 @@ inode/directory=lf.desktop;thunar.desktop;
 inode/mount-point=lf.desktop;thunar.desktop;
 text/css=geany.desktop;codium.desktop;nvim.desktop;
 text/csv=codium.desktop;nvim.desktop;libreoffice-calc.desktop;geany.desktop;
-text/html=geany.desktop;codium.desktop;firefox.desktop;linkhandler.desktop;
+text/html=firefox.desktop;geany.desktop;codium.desktop;linkhandler.desktop;
 text/markdown=geany.desktop;
 text/plain=geany.desktop;nvim.desktop;
 text/tab-separated-values=libreoffice-calc.desktop;geany.desktop;
