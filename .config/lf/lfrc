@@ -72,7 +72,11 @@ cmd extract !{{
 	if [[ $(file -b --mime-type -- "$f") == application/* ]]; then
 		clear
 		set -f
-		aunpack -D -- "$f"
+		tmp_file=$(mktemp -- /tmp/aunpack.XXXXXXXXXX)
+		aunpack -D --save-outdir="$tmp_file" -- "$f"
+		out_dir=$(cat -- "$tmp_file")
+		rm -- "$tmp_file"
+		[[ -d $out_dir ]] && find "$out_dir" -type f -exec chmod -x -- {} \;
 	else
 		echo "Not an archive."
 	fi
