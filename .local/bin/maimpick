@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+readonly anki_image_field=${MAIMPICK_ANKI_FIELD:-Image}
+
 take_screenshot() {
 	maim --hidecursor --format=png --quality 10 "$@"
 }
@@ -15,6 +17,7 @@ ask_command() {
 		current window → clipboard
 		full screen → clipboard
 		selected area → gimp
+		selected area → Anki
 	EOF
 }
 
@@ -36,6 +39,72 @@ xclip_png() {
 	xclip -selection clipboard -t image/png
 }
 
+cleanup_after() {
+	{ sleep "${1:?Delay is not set.}" && rm -- "${2:?File path is not set.}"; } &
+}
+
+ankiconnect_request() {
+	curl --silent localhost:8765 -X POST -d "${1:?}"
+}
+
+anki_last_note_id() {
+	ankiconnect_request '{
+		"action": "findNotes",
+		"version": 6,
+		"params": {
+			"query": "added:2"
+		}
+	}' | grep -Po '\[\K[0-9, ]+(?=\])' | sed 's|, |\n|g' | sort -g | tail -1
+}
+
+anki_store() {
+	local -r path=${1:?} name=${2:?}
+	local request='{
+		"action": "storeMediaFile",
+		"version": 6,
+		"params": {
+			"filename": "<NAME>",
+			"path": "<PATH>"
+		}
+	}'
+	request=${request//<NAME>/$name}
+	request=${request//<PATH>/$path}
+	ankiconnect_request "$request"
+}
+
+anki_update_note() {
+	local -r note_id=${1:?} field=${2:?} new_content=${3//\"/\\\"}
+	local request='{
+		"action": "updateNoteFields",
+		"version": 6,
+		"params": {
+			"note": {
+				"id": <NOTE_ID>,
+				"fields": {
+					"<FIELD>": "<NEW_CONTENT>"
+				}
+			}
+		}
+	}'
+	request=${request//<NOTE_ID>/$note_id}
+	request=${request//<FIELD>/$field}
+	request=${request//<NEW_CONTENT>/$new_content}
+	ankiconnect_request "$request"
+}
+
+anki_note_content() {
+	local -r note_id=${1:?} field=${2:?}
+	local request='{
+		"action": "notesInfo",
+		"version": 6,
+		"params": {
+			"notes": [<NOTE_ID>]
+		}
+	}'
+	ankiconnect_request "${request/<NOTE_ID>/$note_id}" |
+		grep -Po "\"$field\":\s*{\"value\":\s*\"\K.*?(?=\",)"
+}
+
 main() {
 	if_installed dmenu maim xdotool || exit 1
 
@@ -51,32 +120,42 @@ main() {
 	fi
 
 	case $command in
-		*area*clipboard)
-			take_screenshot -s | xclip_png
-			;;
-		*area*gimp)
-			take_screenshot -s "$file_path" && gimp "$file_path"
-			(sleep 60s && rm -- "$file_path") &
-			;;
-		*window*clipboard)
-			take_screenshot -i "$(xdotool getactivewindow)" | xclip_png
-			;;
-		full*clipboard)
-			take_screenshot | xclip_png
-			;;
-		*area)
-			take_screenshot -s "$file_path"
-			;;
-		*window)
-			take_screenshot -i "$(xdotool getactivewindow)" "$file_path"
-			;;
-		full*)
-			take_screenshot "$file_path"
-			;;
-		*)
-			notify "No appropriate action."
-			exit 1
-			;;
+	*area*clipboard)
+		take_screenshot -s | xclip_png
+		;;
+	*area*gimp)
+		take_screenshot -s "$file_path"
+		gimp "$file_path"
+		cleanup_after "60s" "$file_path"
+		;;
+	*area*Anki)
+		take_screenshot -s "$file_path"
+		anki_store "$file_path" "$(basename -- "$file_path")"
+		local -r last_note_id=$(anki_last_note_id)
+		local -r prev_content=$(anki_note_content "$last_note_id" "$anki_image_field")
+		local -r new_content="<img src=\"$(basename -- "$file_path")\">"
+		anki_update_note "$last_note_id" "$anki_image_field" "${prev_content}${new_content}"
+		cleanup_after "3s" "$file_path"
+		;;
+	*window*clipboard)
+		take_screenshot -i "$(xdotool getactivewindow)" | xclip_png
+		;;
+	full*clipboard)
+		take_screenshot | xclip_png
+		;;
+	*area)
+		take_screenshot -s "$file_path"
+		;;
+	*window)
+		take_screenshot -i "$(xdotool getactivewindow)" "$file_path"
+		;;
+	full*)
+		take_screenshot "$file_path"
+		;;
+	*)
+		notify "No appropriate action."
+		exit 1
+		;;
 	esac
 }
 
