@@ -610,8 +610,10 @@ bindsym XF86Eject		exec dmenuumount
 bindsym XF86Reload		restart
 bindsym XF86TouchpadOn		exec --no-startup-id synclient TouchpadOff=0
 bindsym XF86TouchpadOff		exec --no-startup-id synclient TouchpadOff=1
-bindsym XF86MonBrightnessDown	exec --no-startup-id xbacklight -dec 15
-bindsym XF86MonBrightnessUp	exec --no-startup-id xbacklight -inc 15
+bindsym XF86MonBrightnessDown	exec --no-startup-id xbacklight -dec 5
+bindsym XF86MonBrightnessUp	exec --no-startup-id xbacklight -inc 5
+bindsym Shift+XF86MonBrightnessDown	exec --no-startup-id xbacklight -dec 1
+bindsym Shift+XF86MonBrightnessUp	exec --no-startup-id xbacklight -inc 1
 bindsym XF86TouchpadToggle	exec --no-startup-id toggletouchpad
 #bindsym XF86KbdBrightnessDown	exec
 #bindsym XF86KbdBrightnessUp	exec
