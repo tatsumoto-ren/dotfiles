@@ -76,6 +76,8 @@ separator=false
 [sb-time]
 command=date '+%H:%M'
 interval=4
+separator=false
+separator_block_width=5
 
 [sb-record]
 command=cat /tmp/recordingicon 2>/dev/null || echo
