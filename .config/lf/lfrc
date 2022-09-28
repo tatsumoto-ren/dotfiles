@@ -22,6 +22,7 @@ set dircounts
 set icons
 set period 1
 set previewer '~/.config/lf/scope'
+set autoquit on
 set hiddenfiles ".*:*.aux:*.bbl:*.bcf:*.blg:*.run.xml"
 set hidden true
 set ratios 1:2:3
