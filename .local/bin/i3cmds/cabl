@@ -1,0 +1,327 @@
+#!/usr/bin/env bash
+
+# Cabl for AJATTers.
+# Original concept: https://odysee.com/@Luke:7/plumbing-in-linux-la-plan-9-from-bell:e
+
+# Dependencies are xclip and xorg-xprop.
+# qrencode required for qrcode generation.
+# groff/zathura required for man pages.
+
+readonly tmp_dir=/tmp/cabl && mkdir -p -- "$tmp_dir"
+readonly BROWSER=${BROWSER:-xdg-open}
+
+__strip() {
+	sed 's/^ *//; s/ *$//;'
+}
+
+# If you run `cabl clip`, reads from the clipboard instead.
+if [[ $1 == clip* ]]; then
+	search_text="$(xclip -o -selection clipboard | __strip)"
+else
+	search_text="$(xclip -o | __strip)"
+fi
+readonly search_text
+
+# Guess search locale
+if echo "$search_text" | grep -q '[А-Яа-я]'; then
+	readonly locale=ru
+elif echo "$search_text" | grep -q '[A-Za-z]'; then
+	readonly locale=en
+else
+	readonly locale=ja
+fi
+
+__anki_store_file() {
+	local -r path=${1:?}
+	local -r name=${2:?}
+	local request='{
+		"action": "storeMediaFile",
+		"version": 6,
+		"params": {
+			"filename": "<name>",
+			"path": "<path>"
+		}
+	}'
+	request=${request/<name>/$name}
+	request=${request/<path>/$path}
+	curl localhost:8765 -X POST -d "$request"
+}
+
+__convert_to_opus() {
+	local -r input=${1:?} output=${2:?} bitrate=32k
+	ffmpeg -vn -nostdin -hide_banner -loglevel fatal -y -i "$input" \
+		-map_metadata -1 -acodec libopus -ac 1 -ab "$bitrate" -af silenceremove=1:0:-50dB \
+		-vbr on -compression_level 10 -application voip "$output"
+}
+
+if [[ $locale == ja ]]; then
+	longman() { "$BROWSER" "https://www.ldoceonline.com/search/japanese-english/direct/?q=$*"; }
+	aozorasearch() { "$BROWSER" "https://myokoym.net/aozorasearch/search?word=$*"; }
+	forvo() { "$BROWSER" "https://forvo.com/search/$*/"; }
+	webliosentences() { "$BROWSER" "https://ejje.weblio.jp/sentence/content/$*"; }
+	captionpop() { "$BROWSER" "https://www.captionpop.com/search?nl=en&tl=ja&filter=target&q=$*"; }
+	weblio() { "$BROWSER" "https://www.weblio.jp/content/$*"; }
+	kotobank() { "$BROWSER" "https://kotobank.jp/gs/?q=$*"; }
+	sakuraparis() { "$BROWSER" "https://sakura-paris.org/dict/%E5%BA%83%E8%BE%9E%E8%8B%91/prefix/$*"; }
+	reverso() { "$BROWSER" "https://context.reverso.net/translation/japanese-english/$*"; }
+	qolibri() { unset -f qolibri && qolibri "$@"; }
+	pronunciation() {
+		local -r searchterm="$*" format="ogg"
+
+		local_pronunciations "$searchterm" && return
+
+		get_forvo_audio_url() {
+			local -r searchterm="${*:?}"
+			local -r play_field=$([[ ${format:?} == 'mp3' ]] && echo 2 || echo 3)
+			curl -s "https://forvo.com/search/$searchterm/ja" |
+				grep -oP -m 1 "(?<=Play\()[^)>]+(?=\))" |
+				cut -d, -f"$play_field" |
+				tr -d \' |
+				base64 -d |
+				sed "s|^|https://audio00.forvo.com/$format/|"
+		}
+
+		pronunciation_forvo() {
+			local -r searchterm="$*"
+			local -r filename="forvo_${searchterm}.${format}"
+			local -r audio_url=$(get_forvo_audio_url "$searchterm")
+
+			[[ -n "$audio_url" ]] &&
+				curl "$audio_url" -s -L -o "$tmp_dir/tmp_$filename" &&
+				__convert_to_opus "$tmp_dir/tmp_$filename" "$tmp_dir/$filename" &&
+				__anki_store_file "$tmp_dir/$filename" "$filename" >/dev/null &&
+				echo "[sound:$filename]"
+		}
+
+		local -r audiofiles="$(pronunciation_forvo "$searchterm")"
+		if [ -z "$audiofiles" ]; then
+			notify-send "${0##*/} - ${FUNCNAME[0]}" "Couldn't find anything matching $searchterm."
+			return 1
+		else
+			echo -n "$audiofiles" | xclip -selection clipboard
+			notify-send "${0##*/} - ${FUNCNAME[0]}" "File(s) added successfully."
+		fi
+	}
+	youglish() { "$BROWSER" "https://youglish.com/pronounce/$*/japanese"; }
+	youreijp() { "$BROWSER" "http://yourei.jp/$*"; }
+	gooexamples() { "$BROWSER" "https://dictionary.goo.ne.jp/word/$*/example/"; }
+	massif() { "$BROWSER" "https://massif.la/ja/search?q=$*"; }
+	simplytranslate() { "$BROWSER" "https://simplytranslate.org/?engine=google&text=$*&sl=ja&tl=en"; }
+	mostcommonspelling() {
+		# rankspellings is an external script from my dotfiles.
+		IFS='▼▽ ,.・、。' read -r -a args <<<"$*"
+		if [[ ${#args[@]} -ge 0 ]]; then
+			result=$(rankspellings -g "${args[@]}")
+			echo "$result" | cut -f1 | head -1 | tr -d '\n' | xclip -selection clipboard
+			notify-send "${0##*/} - ${FUNCNAME[0]}" "$result" &
+		fi
+	}
+	furiganainfo() { "$BROWSER" "https://furigana.info/w/$*"; }
+else
+	thesaurus() { "$BROWSER" "https://www.thesaurus.com/browse/$*"; }
+	elsa() { "$BROWSER" "https://elsaspeak.com/en/learn-english/how-to-pronounce/$*"; }
+	reverso() { "$BROWSER" "https://context.reverso.net/translation/english-japanese/$*"; }
+	hippo() { "$BROWSER" "https://www.wordhippo.com/what-is/another-word-for/$*.html"; }
+	longman() { "$BROWSER" "https://www.ldoceonline.com/dictionary/$*"; }
+	lexico() { "$BROWSER" "https://www.lexico.com/en/definition/$*"; }
+	cambridge() { "$BROWSER" "https://dictionary.cambridge.org/us/dictionary/english/$*"; }
+	macmillandictionary() { "$BROWSER" "https://www.macmillandictionary.com/us/dictionary/american/$*"; }
+	merriam_webster() { "$BROWSER" "https://www.merriam-webster.com/dictionary/$*"; }
+	youglish() { "$BROWSER" "https://youglish.com/pronounce/$*/english/us"; }
+	pronunciation() {
+		local -r searchterm="$*"
+		[[ -z "$searchterm" ]] && exit
+		cd -- "$tmp_dir" || exit 1
+
+		# Download pronunciations and convert them to opus/ogg
+		{
+			curl -Ls "https://www.macmillandictionary.com/us/dictionary/american/${searchterm// /-}" |
+				grep -o 'https://www\.macmillandictionary\.com/media/american/us_pron/.\+\.mp3'
+			curl -Ls "https://dictionary.cambridge.org/us/dictionary/english/${searchterm}" |
+				grep -o '[^"]*/us_pron[^"]*\.mp3' |
+				sed 's,^,https://dictionary.cambridge.org,'
+		} | while IFS= read -r link; do
+			curl -O "$link"
+		done
+
+		for file in ./*.mp3; do
+			__convert_to_opus "$file" "${file%.*}.ogg"
+		done
+
+		# Format each filename and move files to the collection
+		local audiofiles="" filepath
+		for file in ./*.ogg; do
+			__anki_store_file "$(readlink -f -- "$file")" "$(basename -- "$file")"
+			audiofiles="${audiofiles}[sound:$(basename -- "$file")]"
+		done
+
+		if [[ -z "$audiofiles" ]]; then
+			notify-send "${0##*/} - ${FUNCNAME[0]}" "Couldn't find anything matching $searchterm."
+			return 1
+		else
+			echo -n "$audiofiles" | xclip -selection clipboard
+			notify-send "${0##*/} - ${FUNCNAME[0]}" "File(s) added successfully."
+		fi
+	}
+fi
+
+jisho() {
+	# Search words containing the kanji if length == 1.
+	# Otherwise search just the word.
+	if [[ "${#1}" == 1 ]]; then
+		"$BROWSER" "https://jisho.org/search?keyword=*$**"
+	else
+		"$BROWSER" "https://jisho.org/search?keyword=$*"
+	fi
+}
+
+clip() { cabl clip; }
+
+ankisearch() {
+	local -r request='{
+		"action": "guiBrowse",
+		"version": 6,
+		"params": {
+			"query": "<query>"
+		}
+	}'
+	curl 'localhost:8765' -X POST -d "${request/<query>/${*//\"/\\\"}}"
+}
+sankaku() {
+	"$BROWSER" "https://chan.sankakucomplex.com/post/index?tags=$* order:popular"
+}
+sankaku_solo() {
+	"$BROWSER" "https://chan.sankakucomplex.com/post/index?tags=$* order:popular solo rating:safe"
+}
+nyaasearch() {
+	"$BROWSER" "https://nyaa.iss.ink/?q=$*"
+}
+duckduckgo() {
+	"$BROWSER" "https://duckduckgo.com/?q=$*&kp=-2&kl=jp-jp"
+}
+bravesearch() {
+	"$BROWSER" "https://search.brave.com/search?q=$*"
+}
+duckimages() {
+	"$BROWSER" "https://duckduckgo.com/?q=$*&iax=images&ia=images&kp=-2&kl=jp-jp"
+}
+braveimages() {
+	"$BROWSER" "https://search.brave.com/images?q=$*"
+}
+googleimages() {
+	"$BROWSER" "https://www.google.co.jp/search?q=$*&tbm=isch"
+}
+wikipedia() {
+	"$BROWSER" "https://wikiless.org/w/index.php?search=$*&lang=$locale#firstHeading"
+}
+wiktionary() {
+	"$BROWSER" "https://${locale}.wiktionary.org/wiki/$*"
+}
+maps() {
+	"$BROWSER" "https://www.openstreetmap.org/search?query=$*"
+}
+packages() {
+	"$BROWSER" "https://archlinux.org/packages/?q=$*" "https://aur.archlinux.org/packages?K=$*"
+}
+
+# Download a streamable video through Tor
+# Enable tor - sudo systemctl start tor
+echo "$search_text" | grep -Fq "streamable.com" &&
+	streamable() { tsp yt-dlp --proxy 'socks5://127.0.0.1:9050/' -f best "$@"; }
+
+# Batch-download all streamable and catbox videos from a thread on 4chan
+if echo "$search_text" | grep -Pq 'boards\.4chan(nel)?\.org'; then
+	download_4chan_media() {
+		cd -- ~/Downloads/ || exit 1
+		local -r page=$(curl -s "$*" | sed 's,<wbr>,,g')
+
+		grep -Po 'https?://streamable\.com/[a-z0-9]+' <<<"$page" |
+			xargs -I{} tsp yt-dlp --proxy 'socks5://127.0.0.1:9050/' -f best "{}"
+
+		grep -Po 'https?://[a-z]+\.catbox\.moe/[a-z0-9]+\.[a-z0-9]{1,5}' <<<"$page" |
+			xargs -I{} tsp curl -LO "{}"
+	}
+	download_4chan_images() {
+		local -r thread=$*
+		local -r html=$(curl -Ls "$thread")
+		local -r title=$(echo "$html" | grep -Po '<title>\K.*(?=</title>)' | sed 's,/,,g')
+		local -r folder=$HOME/Pictures/$title
+		mkdir -p -- "$folder" && cd -- "$folder" || return 1
+		echo "$html" |
+			grep -Po '\w+\.4cdn\.org/\w{1,3}/\d+\.(jpg|png|webp)' |
+			sort -u |
+			xargs -I{} tsp curl -LO "{}"
+	}
+fi
+
+man -k "^$search_text$" >/dev/null &&
+	manual() { man -Tpdf "$search_text" | zathura -; }
+
+echo "$search_text" | grep -q "^.*@.*\.[A-Za-z]\+$" &&
+	email() { xdg-email "$@"; }
+
+command -v qrencode >/dev/null &&
+	qrcode() {
+		local -r img_path=/tmp/qr.png
+		qrencode "$@" -s 10 -o "$img_path" &&
+			xclip -sel c -target image/png "$img_path" && xdg-open "$img_path"
+	}
+
+if echo "$search_text" | grep -q "/watch?v=\|invidious\|youtube\.com\|youtu\.be\|twitch\.tv/video"; then
+	youtubedl() { tsp yt-dlp --add-metadata --write-sub -ic "$@"; }
+	audiodl() {
+		tsp yt-dlp \
+			--add-metadata -ic \
+			-x \
+			-f bestaudio/best \
+			-o '/mnt/archive/audio/ytdl/%(upload_date)s-%(title)s.%(ext)s' "$@"
+	}
+	mpv() { unset -f mpv && setsid -f mpv "$*"; }
+	add_to_impd() { impd add "$*"; }
+fi
+
+echo "$search_text" | grep -q "instagram\.com\|nitter\|bitchute\.com\|worldstar\.com/web/video\|twitter\.com/" &&
+	youtubedl() { tsp yt-dlp --add-metadata -ic "$@"; }
+
+if echo "$search_text" | grep -q "^.*\.[A-Za-z]\+.*"; then
+	gotourl() { "$BROWSER" "$@"; }
+	download() { cd ~/Downloads/ && tsp curl -LO "$@"; }
+	linkhandler() { unset -f linkhandler && linkhandler "$@"; }
+fi
+
+if [[ $search_text =~ twitter\.com/[^/]*/status/ ]]; then
+	download() {
+		local url=${*/twitter.com/nitter.pussthecat.org}
+		cd -- ~/Downloads/ &&
+			curl -s "$url" |
+			grep -F '<meta property="og:image"' |
+				grep -Po 'https?://[^"]*' |
+				xargs -I{} tsp curl -LO "{}"
+	}
+fi
+
+__ask_action() {
+	declare -F | awk '!/ __.+$/ {gsub("_", " ", $3); print $3}' |
+		dmenu -p "Plumb ${search_text:0:30} to?" -i -l 50
+}
+
+__main() {
+	local pid func
+
+	if [[ -z "$search_text" ]]; then
+		echo "Clipboard is empty." >&2 && exit 1
+	fi
+
+	pid=$(xprop -id "$(xprop -root | awk '/_NET_ACTIVE_WINDOW\(WINDOW\)/{print $NF}')" | grep -m 1 PID | cut -d " " -f 3)
+	pid=$(pstree -lpA "$pid" | tail -n 1 | awk -F'---' '{print $NF}' | sed -re 's/[^0-9]//g')
+	cd -- "$(readlink -- "/proc/$pid/cwd")" || exit
+	[[ -f "$search_text" ]] && xdg-open "$search_text" && exit
+	[[ -d "$search_text" ]] && "i3-sensible-terminal" "$search_text" && exit
+
+	if [[ -n ${func:=$(__ask_action)} ]]; then
+		"${func// /_}" "$search_text"
+	fi
+	rm -rf -- "$tmp_dir"
+}
+
+__main
