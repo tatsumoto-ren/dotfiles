@@ -121,9 +121,8 @@ else
 	thesaurus() { "$BROWSER" "https://www.thesaurus.com/browse/$*"; }
 	elsa() { "$BROWSER" "https://elsaspeak.com/en/learn-english/how-to-pronounce/$*"; }
 	reverso() { "$BROWSER" "https://context.reverso.net/translation/english-japanese/$*"; }
-	hippo() { "$BROWSER" "https://www.wordhippo.com/what-is/another-word-for/$*.html"; }
+	another_word_for() { "$BROWSER" "https://www.wordhippo.com/what-is/another-word-for/$*.html"; }
 	longman() { "$BROWSER" "https://www.ldoceonline.com/dictionary/$*"; }
-	lexico() { "$BROWSER" "https://www.lexico.com/en/definition/$*"; }
 	cambridge() { "$BROWSER" "https://dictionary.cambridge.org/us/dictionary/english/$*"; }
 	macmillandictionary() { "$BROWSER" "https://www.macmillandictionary.com/us/dictionary/american/$*"; }
 	merriam_webster() { "$BROWSER" "https://www.merriam-webster.com/dictionary/$*"; }
