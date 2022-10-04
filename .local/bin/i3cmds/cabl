@@ -148,7 +148,7 @@ else
 		done
 
 		# Format each filename and move files to the collection
-		local audiofiles="" filepath
+		local audiofiles="" file
 		for file in ./*.ogg; do
 			__anki_store_file "$(readlink -f -- "$file")" "$(basename -- "$file")"
 			audiofiles="${audiofiles}[sound:$(basename -- "$file")]"
@@ -245,11 +245,19 @@ if echo "$search_text" | grep -Pq 'boards\.4chan(nel)?\.org'; then
 		local -r html=$(curl -Ls "$thread")
 		local -r title=$(echo "$html" | grep -Po '<title>\K.*(?=</title>)' | sed 's,/,,g')
 		local -r folder=$HOME/Pictures/$title
-		mkdir -p -- "$folder" && cd -- "$folder" || return 1
-		echo "$html" |
+		local -r urls=$(echo "$html" |
 			grep -Po '\w+\.4cdn\.org/\w{1,3}/\d+\.(jpg|png|webp)' |
 			sort -u |
-			xargs -I{} tsp curl -LO "{}"
+			awk '{ printf "url = \"%s\"\n-LO\n", $1 }')
+		mkdir -p -- "$folder" && cd -- "$folder" || return 1
+		tsp curl \
+			--parallel \
+			--parallel-immediate \
+			--parallel-max 50 \
+			-w '%{url} %{exitcode}\n' \
+			--connect-timeout 10 --max-time 60 \
+			--retry 2 \
+			--config <(echo "$urls")
 	}
 fi
 

@@ -171,7 +171,6 @@ askrecording() {
 		cat <<-EOF | dmenu -l 30 -i -p "Select recording style:"
 			screencast
 			video
-			video selected
 			audio
 			audio+add to anki
 			webcam
@@ -181,9 +180,9 @@ askrecording() {
 	)
 	case "$choice" in
 		'screencast') screencast ;;
+		'video') video ;;
 		'audio') audio ;;
 		'audio+add to anki') audio_anki ;;
-		'video') video ;;
 		'webcam') webcam ;;
 		'webcam (hi-def)') webcamhidef ;;
 		'selected area') selected_area ;;

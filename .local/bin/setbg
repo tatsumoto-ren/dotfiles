@@ -19,7 +19,7 @@ die() {
 }
 
 if [ -d "$1" ]; then
-	readonly givenpath="$(find "$1" -type f -iregex '.*.\(jpg\|jpeg\|png\|gif\)' | shuf -n 1)"
+	readonly givenpath="$(find "$1" -type f -iregex '.*\.\(jpg\|jpeg\|png\|gif\)' | shuf -n 1)"
 else
 	readonly givenpath="$1"
 fi
