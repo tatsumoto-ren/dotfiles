@@ -167,10 +167,7 @@ bar {
 bindsym $mod+Return 		exec $term
 bindsym $mod+Shift+Return	exec --no-startup-id samedir
 
-bindsym $mod+Escape		workspace prev
-bindsym $mod+Shift+Escape	exec prompt "Exit i3?" "i3 exit"
 
-bindsym $mod+grave		exec dmenuunicode
 
 # Porn mode
 bindsym $mod+Shift+Delete	exec lmc mute ; \
@@ -220,9 +217,6 @@ bindsym $mod+Shift+a		focus child
 # Toggle window border
 bindsym $mod+Shift+w		border toggle
 
-# Exit i3 (logs you out of your X session, unless different session is running)
-bindsym $mod+Shift+e		exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'killall lxsession || i3-msg exit'"
-
 # Resize bindings
 bindsym $mod+Shift+i		resize grow   height 10 px or 10 ppt
 bindsym $mod+Shift+o		resize grow   width  10 px or 10 ppt
@@ -247,6 +241,8 @@ bindsym $mod+Shift+b		floating toggle; sticky toggle; exec --no-startup-id hover
 bindsym $mod+n			exec $term -e newsboat && pkill -RTMIN+6 i3blocks
 bindsym $mod+Shift+n		floating toggle; sticky toggle; exec --no-startup-id hover right
 
+bindsym $mod+grave		exec dmenuunicode
+
 # Workspace Bindings
 bindsym $mod+Home		workspace $ws1
 bindsym $mod+Shift+Home		move container to workspace $ws1
@@ -267,6 +263,7 @@ bindsym $mod+slash		split vertical ;; exec $term
 bindsym $mod+Shift+slash	kill
 bindsym $mod+backslash		workspace back_and_forth
 bindsym $mod+g			workspace prev
+bindsym $mod+Escape		workspace prev
 
 # switch to workspace
 bindsym $mod+1		workspace $ws1
@@ -575,8 +572,9 @@ bindsym Shift+XF86AudioRaiseVolume	exec lmc up 10
 bindsym Control+XF86AudioRaiseVolume	exec lmc up 1
 
 # Power
-bindsym XF86PowerOff		exec prompt "Shutdown computer?" "poweroff"
-bindsym XF86Suspend		exec $locker_command && systemctl suspend
+bindsym XF86PowerOff		exec i3-nagbar -t warning -m "Shutdown computer?" -B Yes poweroff
+bindsym XF86Reload		exec i3-nagbar -t warning -m "Restart computer?" -B Yes restart
+bindsym XF86Suspend		exec i3-nagbar -t warning -m "Suspend computer?" -B Yes "$locker_command && systemctl suspend"
 bindsym XF86ScreenSaver         exec $locker_command
 
 # Launch applications
@@ -607,7 +605,6 @@ bindsym XF86AudioMedia		exec $term -e ncmpcpp
 # Other
 bindsym XF86WLAN		exec nm-connection-editor
 bindsym XF86Eject		exec dmenuumount
-bindsym XF86Reload		restart
 bindsym XF86TouchpadOn		exec --no-startup-id synclient TouchpadOff=0
 bindsym XF86TouchpadOff		exec --no-startup-id synclient TouchpadOff=1
 bindsym XF86MonBrightnessDown	exec --no-startup-id xbacklight -dec 5
