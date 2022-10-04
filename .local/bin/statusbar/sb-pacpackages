@@ -25,5 +25,5 @@ printf -- "UPD ";
 if [ -n "$BLOCK_BUTTON" ]; then
 	wc -l < "$cache_file"
 else
-	checkupdates | tee "$cache_file" | wc -l
+	checkupdates | tee "$cache_file" | wc -l || echo "?"
 fi
