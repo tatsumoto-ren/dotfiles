@@ -165,7 +165,7 @@ bar {
 # Start a terminal
 # i3-sensible-terminal launches $TERMINAL with fallbacks
 bindsym $mod+Return 		exec $term
-bindsym $mod+Shift+Return	exec --no-startup-id samedir
+bindsym $mod+Shift+Return	exec --no-startup-id sd
 
 
 
