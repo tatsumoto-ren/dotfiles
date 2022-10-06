@@ -80,7 +80,7 @@ alias \
 	trimlogs='sudo journalctl --vacuum-size=150M' \
 	pacclean="remorphans && sudo pacman -Sc && trimlogs" \
 	whathaveidone="tail -500 /var/log/pacman.log | grep -i 'installed\|removed\|graded' --color=never" \
-	refl='sudo reflector --download-timeout 60 --threads 4 --verbose --age 12 --latest 100 --fastest 10 --sort rate --country "$(curl -Ls "ifconfig.co/country")" --save /etc/pacman.d/mirrorlist' \
+	refl='sudo reflector --protocol http,https --download-timeout 60 --threads 4 --verbose --age 12 --latest 100 --fastest 10 --sort rate --country "$(curl -Ls "ifconfig.co/country")" --save /etc/pacman.d/mirrorlist' \
 	all_but_base="comm -23 <(pacman -Qetq | sort) <({ pacman -Qgq base-devel ; echo \$basepac | tr ' ' '\n' ;} | sort) | less" \
 	ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" \
 	printsrcinfo="makepkg --printsrcinfo > .SRCINFO" \
