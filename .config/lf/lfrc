@@ -225,8 +225,11 @@ map V push :!nvim<space>
 map L &$TERMINAL -e "nvim $fx"
 
 map W $setsid -f $TERMINAL >/dev/null 2>&1
-
 map Y $printf "%s" "$fx" | xclip -selection clipboard
+
+# Move history
+map H jump-prev
+map L jump-next
 
 # Source Bookmarks
 source "~/.config/lf/shortcutrc"
