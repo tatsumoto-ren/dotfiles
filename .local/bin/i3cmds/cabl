@@ -56,9 +56,9 @@ __convert_to_opus() {
 
 if [[ $locale == ja ]]; then
 	longman() { "$BROWSER" "https://www.ldoceonline.com/search/japanese-english/direct/?q=$*"; }
-	aozorasearch() { "$BROWSER" "https://myokoym.net/aozorasearch/search?word=$*"; }
+	aozora_search() { "$BROWSER" "https://myokoym.net/aozorasearch/search?word=$*"; }
 	forvo() { "$BROWSER" "https://forvo.com/search/$*/"; }
-	webliosentences() { "$BROWSER" "https://ejje.weblio.jp/sentence/content/$*"; }
+	weblio_sentences() { "$BROWSER" "https://ejje.weblio.jp/sentence/content/$*"; }
 	captionpop() { "$BROWSER" "https://www.captionpop.com/search?nl=en&tl=ja&filter=target&q=$*"; }
 	weblio() { "$BROWSER" "https://www.weblio.jp/content/$*"; }
 	kotobank() { "$BROWSER" "https://kotobank.jp/gs/?q=$*"; }
@@ -107,7 +107,7 @@ if [[ $locale == ja ]]; then
 	gooexamples() { "$BROWSER" "https://dictionary.goo.ne.jp/word/$*/example/"; }
 	massif() { "$BROWSER" "https://massif.la/ja/search?q=$*"; }
 	simplytranslate() { "$BROWSER" "https://simplytranslate.org/?engine=google&text=$*&sl=ja&tl=en"; }
-	mostcommonspelling() {
+	most_common_spelling() {
 		# rankspellings is an external script from my dotfiles.
 		IFS='▼▽ ,.・、。' read -r -a args <<<"$*"
 		if [[ ${#args[@]} -ge 0 ]]; then
@@ -192,22 +192,22 @@ sankaku() {
 sankaku_solo() {
 	"$BROWSER" "https://chan.sankakucomplex.com/post/index?tags=$* order:popular solo rating:safe"
 }
-nyaasearch() {
+nyaa_search() {
 	"$BROWSER" "https://nyaa.iss.ink/?q=$*"
 }
 duckduckgo() {
 	"$BROWSER" "https://duckduckgo.com/?q=$*&kp=-2&kl=jp-jp"
 }
-bravesearch() {
+brave_search() {
 	"$BROWSER" "https://search.brave.com/search?q=$*"
 }
-duckimages() {
+duckduckgo_images() {
 	"$BROWSER" "https://duckduckgo.com/?q=$*&iax=images&ia=images&kp=-2&kl=jp-jp"
 }
-braveimages() {
+brave_images() {
 	"$BROWSER" "https://search.brave.com/images?q=$*"
 }
-googleimages() {
+google_images() {
 	"$BROWSER" "https://www.google.co.jp/search?q=$*&tbm=isch"
 }
 wikipedia() {
