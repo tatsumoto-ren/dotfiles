@@ -47,11 +47,12 @@ case "${url:?}" in
 *.png | *.jpg | *.jpe | *.jpeg | *.gif | \
 	*.pdf | *.cbz | *.cbr | \
 	*matrix/media/*/download/*)
-	filename="$HOME/Downloads/$(echo "$url" | sed 's/.*\///; s/%20/ /g')"
-	curl -sL -- "$url" >"$filename"
-	new_filename="${filename%.*}.$(file --mime-type --brief "$filename" | cut -d/ -f2)"
-	mv -- "$filename" "$new_filename"
-	setsid -f xdg-open "$new_filename" >/dev/null 2>&1 &
+	filename=$(echo "$url" | sed 's|.*/||; s|%20| |g')
+	dl_file_path=$HOME/Downloads/$(mktemp -- "${filename%.*}.XXXXXX")
+	curl -sL -- "$url" -o "$dl_file_path"
+	new_file_path="${dl_file_path%.*}.$(file --mime-type --brief "$dl_file_path" | cut -d/ -f2)"
+	mv -n -- "$dl_file_path" "$new_file_path"
+	setsid -f xdg-open "$new_file_path" >/dev/null 2>&1 &
 	;;
 *.mp3 | *.flac | *.opus | *.mp3?source*)
 	qndl "$1" 'curl -LO' >/dev/null 2>&1
