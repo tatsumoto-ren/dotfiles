@@ -2,9 +2,9 @@
 
 archnews
 printf "Beginning upgrade.\\n"
-if pacman -Qq trizen > /dev/null; then
+if pacman -Qq trizen >/dev/null; then
 	trizen -Syu
-elif pacman -Qq paru > /dev/null; then
+elif pacman -Qq paru >/dev/null; then
 	paru -Syu
 else
 	sudo pacman -Syu

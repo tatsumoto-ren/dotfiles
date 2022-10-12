@@ -16,30 +16,33 @@ filter() {
 		echo " $songname" | colrm 30
 	else
 		echo "<span color=\"gray\" font_style=\"italic\"> $songname</span>"
-		echo "<span color=\"gray\" font_style=\"italic\">$(echo " $songname" | colrm 30 )</span>"
+		echo "<span color=\"gray\" font_style=\"italic\">$(echo " $songname" | colrm 30)</span>"
 	fi
 }
 
-{ pidof -x sb-mpdup || setsid -f sb-mpdup ;} >/dev/null 2>&1 &
+{ pidof -x sb-mpdup || setsid -f sb-mpdup; } >/dev/null 2>&1 &
 
 case $BLOCK_BUTTON in
-	1)	# left click, launch ncmpcpp
-		mpc status | filter ;
-		i3-msg -q exec "i3-sensible-terminal -e ncmpcpp -s playlist" ;;
+1) # left click, launch ncmpcpp
+	mpc status | filter
+	i3-msg -q exec "i3-sensible-terminal -e ncmpcpp -s playlist"
+	;;
 
-	3)	# right click, pause/unpause
-		mpc toggle | filter ;;
+3) # right click, pause/unpause
+	mpc toggle | filter ;;
 
-	4)	# scroll up, previous
-		mpc prev   | filter ;;
+4) # scroll up, previous
+	mpc prev | filter ;;
 
-	5)	# scroll down, next
-		mpc next   | filter ;;
+5) # scroll down, next
+	mpc next | filter ;;
 
-	6)	# edit
-		mpc status | filter ;
-		i3-msg -q exec "i3-sensible-terminal -e \"$EDITOR -- $0\"" ;;
+6) # edit
+	mpc status | filter
+	i3-msg -q exec "i3-sensible-terminal -e \"$EDITOR -- $0\""
+	;;
 
-	*)
-		mpc status | filter ;;
+*)
+	mpc status | filter
+	;;
 esac

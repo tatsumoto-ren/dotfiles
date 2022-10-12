@@ -1,11 +1,11 @@
 #!/bin/sh
 
-pgrep -x mpd   || mpd					# Start mpd
-command -v mpc || exit					# Exit if no mpc
+pgrep -x mpd || mpd    # Start mpd
+command -v mpc || exit # Exit if no mpc
 
 # This loop will update the mpd statusbar module whenever a command changes the
 # music player's status. mpd must be running on X's start for this to work.
 
-while : ; do
+while :; do
 	mpc idle && pkill -RTMIN+11 "${STATUSBAR:-i3blocks}" || break
 done

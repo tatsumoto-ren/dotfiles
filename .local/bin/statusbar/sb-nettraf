@@ -25,22 +25,25 @@ update() {
 	local sum=0 old=0
 	local -r cache_file="${cache_fol}/${1##*/}"
 	for arg; do
-		read -r i < "$arg"
-		sum=$(( sum + i ))
+		read -r i <"$arg"
+		sum=$((sum + i))
 	done
 	unset arg
-	[ -f "$cache_file" ] && read -r old < "$cache_file" || old=0
-	printf -- '%d\n' "$sum" > "$cache_file"
-	printf -- '%d\n' "$(( (sum - old) / ${interval:-1} ))"
+	[ -f "$cache_file" ] && read -r old <"$cache_file" || old=0
+	printf -- '%d\n' "$sum" >"$cache_file"
+	printf -- '%d\n' "$(((sum - old) / ${interval:-1}))"
 }
 
 case "$BLOCK_BUTTON" in
-	1)
-		notify-send " Connection info" "$(local_info)\\n$(public_info)" &;;
-	2)
-		setsid -f "$TERMINAL" -e bmon &;;
-	6)
-		"$TERMINAL" -e "$EDITOR" "$0" ;;
+1)
+	notify-send " Connection info" "$(local_info)\\n$(public_info)" &
+	;;
+2)
+	setsid -f "$TERMINAL" -e bmon &
+	;;
+6)
+	"$TERMINAL" -e "$EDITOR" "$0"
+	;;
 esac
 
 readonly rx=$(update /sys/class/net/[ew]*/statistics/rx_bytes)
@@ -49,5 +52,5 @@ readonly in=$(numfmt --to=iec "$rx")
 readonly out=$(numfmt --to=iec "$tx")
 
 if [ "$rx" -ge 0 ] && [ "$tx" -ge 0 ]; then
-	printf -- 'IN %s OUT %s\n %s  %s\n'	"$in" "$out" "$in" "$out"
+	printf -- 'IN %s OUT %s\n %s  %s\n' "$in" "$out" "$in" "$out"
 fi

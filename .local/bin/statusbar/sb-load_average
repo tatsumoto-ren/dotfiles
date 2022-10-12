@@ -4,7 +4,9 @@ notify_hogs() {
 	notify-send "CPU hogs" "$(ps axch -o cmd:15,%cpu --sort=-%cpu | head -25)"
 }
 
-[[ $BLOCK_BUTTON == 1 ]] && notify_hogs
+if [[ $BLOCK_BUTTON == 1 ]]; then
+	notify_hogs
+fi
 
 readonly load=$(cut -f1 -d' ' /proc/loadavg)
 

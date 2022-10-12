@@ -1,9 +1,9 @@
 #!/bin/sh
 
 case $BLOCK_BUTTON in
-	1) notify-send "🖥 CPU hogs" "$(ps axch -o cmd:15,%cpu --sort=-%cpu | head)\\n(100% per core)" ;;
-	3) i3-msg -q exec "$TERMINAL -e htop" ;;
-	6) i3-msg -q exec "$TERMINAL -e $EDITOR $0" ;;
+1) notify-send "🖥 CPU hogs" "$(ps axch -o cmd:15,%cpu --sort=-%cpu | head)\\n(100% per core)" ;;
+3) i3-msg -q exec "$TERMINAL -e htop" ;;
+6) i3-msg -q exec "$TERMINAL -e $EDITOR $0" ;;
 esac
 
 readonly temp="$(eval "${query:?}" | tr -cd '[:digit:].')"

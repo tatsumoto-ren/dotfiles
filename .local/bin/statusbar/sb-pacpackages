@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Displays number of upgradeable packages.
 # When clicked, it will run an upgrade via pacman.
@@ -15,15 +15,15 @@ print_cache() {
 }
 
 case $BLOCK_BUTTON in
-	1) notify-send "Upgradeable packages" "$(print_cache)" ;;
-	3) i3-msg -q exec "$TERMINAL -e sb-popupgrade" ;;
-	6) i3-msg -q exec "$TERMINAL -e $EDITOR '$0'" ;;
+1) notify-send "Upgradeable packages" "$(print_cache)" &;;
+3) i3-msg -q exec "$TERMINAL -e sb-popupgrade" ;;
+6) i3-msg -q exec "$TERMINAL -e $EDITOR '$0'" ;;
 esac
 
-printf -- "UPD ";
+printf -- "UPD "
 
-if [ -n "$BLOCK_BUTTON" ]; then
-	wc -l < "$cache_file"
+if [[ -n $BLOCK_BUTTON ]]; then
+	wc -l <"$cache_file"
 else
 	checkupdates | tee "$cache_file" | wc -l || echo "?"
 fi
