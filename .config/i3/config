@@ -107,7 +107,7 @@ exec --no-startup-id	transformers_ocr listen
 
 # Set Xresources colors:
 set_from_resource $black	color0  #222D32
-set_from_resource $darkgrey	color8  #465463
+set_from_resource $darkgray	color8  #465463
 set_from_resource $darkred	color1  #DB86BA
 set_from_resource $red		color9  #D04E9D
 set_from_resource $darkgreen	color2  #74DD91
@@ -124,11 +124,11 @@ set_from_resource $lightgray	color7  #F1FCF9
 set_from_resource $white	color15 #E0E5E5
 
 #                       BORDER		BACKGROUND	TEXT		INDICATOR       CHILD_BORDER
-client.focused		$blue		$blue		$black		$darkmagenta	$blue
+client.focused		$blue		$blue		$black		$white		$blue
 client.unfocused	$black		$black		$white		$darkblue	$black
-client.focused_inactive	$darkgrey	$darkgrey	$white		$darkblue	$darkgrey
-client.urgent		$darkred	$darkred	$darkgrey	$darkred	$darkred
-client.background	$darkgrey
+client.focused_inactive	$darkgray	$darkgray	$white		$darkblue	$darkgray
+client.urgent		$darkred	$darkred	$darkgray	$darkred	$darkred
+client.background	$darkgray
 
 ###############################################################################
 # status bar
@@ -144,7 +144,7 @@ bar {
 		#                  border      background text
 		focused_workspace  $blue       $blue      $black
 		active_workspace   $lightgray  $lightgray $black
-		inactive_workspace $black      $darkgrey  $black
+		inactive_workspace $black      $darkgray  $black
 		urgent_workspace   $red        $red       $black
 		binding_mode       $yellow     $yellow    $black
 	}
