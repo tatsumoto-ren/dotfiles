@@ -22,6 +22,7 @@ Configuration files and scripts I use in my computing.
 * Preview images in terminal - [ueberzug](https://archlinux.org/packages/?name=ueberzug)
 * RSS reader - [newsboat](https://wiki.archlinux.org/title/Newsboat)
 * Various scripts in [~/.local/bin/](.local/bin)
+* Handy [aliases](.config/shell/aliasrc) and [functions](.config/shell/functionrc)
 
 ## Installation
 
