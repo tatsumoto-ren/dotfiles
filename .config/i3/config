@@ -57,9 +57,6 @@ set $dmenu_desktop	exec i3-dmenu-desktop --dmenu="dmenu -i -l 30 -fn 'Hack-9'"
 set $rofi_desktop	exec rofi -show drun
 set $rofi_desktop_alt	exec i3-dmenu-desktop --dmenu='rofi -dmenu -i'
 
-# Locker: i3lock settings
-set $locker_command	mpc pause && i3lock -e -f -c 1d2021 && xset dpms force off
-
 # Drag floating windows by holding down $mod and left mouse button.
 # Resize them with right mouse button + $mod.
 # Despite the name, also works for non-floating windows.
@@ -436,18 +433,19 @@ mode $mode_resize {
 bindsym $mod+r		mode $mode_resize
 
 # Logout menu
-set $mode_system     [L]OCK    LOG[O]UT    [S]USPEND    [R]EBOOT    [P]OWEROFF
-mode "$mode_system" {
-	bindsym l exec --no-startup-id $locker_command, mode "default"
-	bindsym o exec --no-startup-id i3-msg exit, mode "default"
-	bindsym s exec --no-startup-id $locker_command && systemctl suspend, mode "default"
-	bindsym r exec --no-startup-id systemctl reboot, mode "default"
-	bindsym p exec --no-startup-id systemctl poweroff, mode "default"
-	#bindsym h exec --no-startup-id $locker_command && systemctl hibernate, mode "default"
+set $mode_system   [L]OCK   LOG[O]UT   [S]USPEND   [R]EBOOT   [P]OWEROFF   RESTART[I]3
 
-	# Reload/Restart i3
-	bindsym i		reload
-	bindsym Shift+i		restart
+mode "$mode_system" {
+	bindsym l exec --no-startup-id sysact lock, mode "default"
+	bindsym s exec --no-startup-id sysact suspend, mode "default"
+	bindsym r exec --no-startup-id sysact reboot, mode "default"
+	bindsym p exec --no-startup-id sysact poweroff, mode "default"
+	#bindsym h exec --no-startup-id sysact hibernate, mode "default"
+
+	# Exit/Reload/Restart i3
+	bindsym o		exit, mode "default"
+	bindsym i		reload, mode "default"
+	bindsym Shift+i		restart, mode "default"
 
 	# Back to normal: Enter or Escape
 	bindsym Return mode "default"
@@ -576,10 +574,10 @@ bindsym Shift+XF86AudioRaiseVolume	exec lmc up 10
 bindsym Control+XF86AudioRaiseVolume	exec lmc up 1
 
 # Power
-bindsym XF86PowerOff		exec i3-nagbar -t warning -m "Shutdown computer?" -B Yes poweroff
-bindsym XF86Reload		exec i3-nagbar -t warning -m "Restart computer?" -B Yes restart
-bindsym XF86Suspend		exec i3-nagbar -t warning -m "Suspend computer?" -B Yes "$locker_command && systemctl suspend"
-bindsym XF86ScreenSaver         exec $locker_command
+bindsym XF86PowerOff		exec i3-nagbar -t warning -m "Shutdown computer?" -B Yes "sysact poweroff"
+bindsym XF86Reload		exec i3-nagbar -t warning -m "Restart computer?" -B Yes "sysact reboot"
+bindsym XF86Suspend		exec i3-nagbar -t warning -m "Suspend computer?" -B Yes "sysact suspend"
+bindsym XF86ScreenSaver         exec sysact lock
 
 # Launch applications
 bindsym XF86Calculator		exec $calc

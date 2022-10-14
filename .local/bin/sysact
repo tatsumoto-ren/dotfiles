@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# A dmenu wrapper script for system functions.
+
+find_ctl() {
+	case $(readlink -f /sbin/init) in
+	*systemd*) echo systemctl ;;
+	*) echo loginctl ;;
+	esac
+}
+
+ask_action() {
+	cat <<-EOF | dmenu -l 30 -i -p "Action:"
+		🔒 lock screen
+		🚪 leave ${WM:-i3}
+		♻️ renew ${WM:-i3}
+		🔃 reboot
+		🖥️ shutdown
+		💤 sleep
+		🐻 hibernate
+		📺 display off
+	EOF
+}
+
+background_color() {
+	{
+		xrdb -query -all | awk -F'#' '/background:|color0:/{print $2; exit;}'
+		echo 1d2021
+	} | head -1
+}
+
+display_off() {
+	xset dpms force off
+}
+
+lock_screen() {
+	mpc pause || true
+	i3lock -e -f -c "$(background_color)"
+	display_off
+}
+
+main() {
+	local -r ctl=$(find_ctl)
+	local -r action=${*:-$(ask_action)}
+
+	case $action in
+	*lock*)
+		lock_screen
+		;;
+	*leave*)
+		i3-msg -q exit || kill -TERM "$(pgrep -u "$USER" "\bdwm$")"
+		;;
+	*renew*)
+		i3-msg -q restart || kill -HUP "$(pgrep -u "$USER" "\bdwm$")"
+		;;
+	*hibernate*)
+		lock_screen
+		$ctl hibernate
+		;;
+	*sleep* | *suspend*)
+		lock_screen
+		$ctl suspend
+		;;
+	*reboot*)
+		$ctl reboot -i
+		;;
+	*shutdown* | *poweroff*)
+		$ctl poweroff -i
+		;;
+	*'display off'*)
+		display_off
+		;;
+	*)
+		exit 1
+		;;
+	esac
+}
+
+main "$@"
