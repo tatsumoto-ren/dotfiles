@@ -7,3 +7,9 @@
 [submodule ".config/mpv/scripts/videoclip"]
 	path = .config/mpv/scripts/videoclip
 	url = https://github.com/Ajatt-Tools/videoclip.git
+[submodule ".config/mpv/scripts/autosubsync"]
+	path = .config/mpv/scripts/autosubsync
+	url = https://github.com/Ajatt-Tools/autosubsync-mpv.git
+[submodule ".config/mpv/scripts/sub-transition"]
+	path = .config/mpv/scripts/sub-transition
+	url = https://github.com/Ajatt-Tools/sub-transition.git

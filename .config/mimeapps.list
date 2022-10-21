@@ -84,3 +84,6 @@ inode/directory=lf.desktop;
 audio/x-ms-wma=mpv.desktop
 video/mp4=mpv.desktop
 application/zip=org.gnome.FileRoller.desktop
+application/x-xdg-protocol-tg=telegramdesktop.desktop
+x-scheme-handler/tg=telegramdesktop.desktop
+audio/mpeg=mpv.desktop

@@ -80,12 +80,17 @@ selected_area() {
 
 video() {
 	ffmpeg \
+		-an \
 		-f x11grab \
 		-s "$(screen_resolution)" \
 		-i "$DISPLAY" \
 		-c:v libx264 \
 		-qp 0 \
 		-r 30 \
+		-pix_fmt yuv420p \
+		-vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" \
+		-movflags +faststart \
+		-profile:v baseline \
 		"$HOME/video-$(timestamp).mkv" &
 	echo $! >/tmp/recordingpid
 	updateicon "⏺️"
