@@ -26,7 +26,7 @@ def main():
     with requests.session() as s:
         content: list[dict] = s.get(json_url(), timeout=10).json()
 
-    for instance in sorted(map(Instance.from_json, content), key=lambda item: item.rank, reverse=True):
+    for instance in sorted(map(Instance.from_json, content), key=lambda item: (*item.rank, -len(item.url)), reverse=True):
         print(instance.url, *instance.rank, sep='\t')
 
 
