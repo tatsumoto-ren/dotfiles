@@ -16,12 +16,12 @@ fi
 
 # Fcitx
 # https://wiki.archlinux.org/index.php/Fcitx
-if command -v fcitx5; then
-	readonly fcitx=fcitx5
-elif command -v fcitx; then
-	readonly fcitx=fcitx
-fi
-if [ -n "$fcitx" ]; then
+find_fcitx() {
+	for cmd in fcitx5 fcitx; do
+		command -v "$cmd" && return
+	done
+}
+if [ -n "${fcitx:=$(find_fcitx)}" ]; then
 	# Define the environment variables to register the input method modules.
 	export GTK_IM_MODULE=fcitx
 	export QT_IM_MODULE=fcitx
@@ -30,7 +30,7 @@ if [ -n "$fcitx" ]; then
 		  -layout us \
 		  -variant altgr-intl \
 		  -option terminate:ctrl_alt_bksp,caps:escape
-	"$fcitx" &
+	"$fcitx" -dr &
 else
 	setxkbmap -model pc104 \
 		  -layout us,ru \
