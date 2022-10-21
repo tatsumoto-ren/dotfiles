@@ -530,22 +530,23 @@ for_window [title="Preferences$"]		floating enable
 for_window [title="WebP viewer"]		floating enable, move position center
 for_window [window_role="GtkFileChooserDialog"] resize set 800 600
 for_window [window_role="GtkFileChooserDialog"] move position center
+for_window [class="(?i)anki" title="^Card Types for "]			floating disable
 
 # Assign workspaces to programs
 assign [class="Thunderbird"]		$ws1
-assign [class="QtCreator"]   		$ws3
 assign [class="(?i)anki"]   		$ws2
 assign [class="pycharm"]		$ws3
+assign [class="QtCreator"]   		$ws3
 assign [class="Eclipse"]   		$ws3
 assign [class="VirtualBox"]  		$ws5
+assign [title="GIMP Startup"]		$ws5
+assign [class="Gimp"]			$ws5
 assign [class="(?i)Bleachbit"]		$ws7
 assign [class="Dconf-editor"]		$ws7
 assign [class="disks"]			$ws7
 assign [class="GParted"]		$ws7
 assign [class="qBittorrent"]		$ws8
 assign [class="Transmission"]		$ws8
-assign [title="GIMP Startup"]		$ws5
-assign [class="Gimp"]			$ws5
 
 ###############################################################################
 # Dunst
