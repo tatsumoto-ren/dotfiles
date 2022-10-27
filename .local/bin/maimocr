@@ -61,6 +61,7 @@ run_ocr() {
 		notify "Copied $result."
 	else
 		notify "Failed."
+		return 1
 	fi
 }
 
@@ -74,7 +75,6 @@ main() {
 		download_tessdata
 		notify "Downloaded Tesseract data. Run this script again to recognize Japanese text."
 	fi
-
 }
 
 main
