@@ -73,7 +73,7 @@ if [[ $locale == ja ]]; then
 		get_forvo_audio_url() {
 			local -r searchterm="${*:?}"
 			local -r play_field=$([[ ${format:?} == 'mp3' ]] && echo 2 || echo 3)
-			curl -s "https://forvo.com/search/$searchterm/ja" |
+			curl -Ls "https://forvo.com/search/$searchterm/ja" |
 				grep -oP -m 1 "(?<=Play\()[^)>]+(?=\))" |
 				cut -d, -f"$play_field" |
 				tr -d \' |
@@ -136,7 +136,8 @@ else
 		{
 			curl -Ls "https://www.macmillandictionary.com/us/dictionary/american/${searchterm// /-}" |
 				grep -o 'https://www\.macmillandictionary\.com/media/american/us_pron/.\+\.mp3'
-			curl -Ls "https://dictionary.cambridge.org/us/dictionary/english/${searchterm}" |
+
+			curl -Ls "https://dictionary.cambridge.org/us/dictionary/english/${searchterm// /-}" |
 				grep -o '[^"]*/us_pron[^"]*\.mp3' |
 				sed 's,^,https://dictionary.cambridge.org,'
 		} | while IFS= read -r link; do
