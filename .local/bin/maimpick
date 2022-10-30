@@ -10,16 +10,16 @@ take_screenshot() {
 
 ask_command() {
 	dmenu -l 30 -i -p 'Screenshot which area?' <<-EOF
-		current window
-		current window → clipboard
-		full screen
-		full screen → clipboard
 		selected area
 		selected area → clipboard
 		selected area → gimp
 		selected area → Anki
 		selected area → Tesseract OCR
 		selected area → Transformers OCR
+		current window
+		current window → clipboard
+		full screen
+		full screen → clipboard
 	EOF
 }
 
