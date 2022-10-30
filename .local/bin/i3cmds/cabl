@@ -148,10 +148,12 @@ else
 		done
 
 		# Format each filename and move files to the collection
-		local audiofiles="" file
+		local audiofiles="" file=""
 		for file in ./*.ogg; do
-			__anki_store_file "$(readlink -f -- "$file")" "$(basename -- "$file")"
-			audiofiles="${audiofiles}[sound:$(basename -- "$file")]"
+			if [[ -s $file ]]; then
+				__anki_store_file "$(readlink -f -- "$file")" "$(basename -- "$file")"
+				audiofiles="${audiofiles}[sound:$(basename -- "$file")]"
+			fi
 		done
 
 		if [[ -z "$audiofiles" ]]; then
