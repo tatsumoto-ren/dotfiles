@@ -12,9 +12,13 @@ choose_from_cwds() {
 }
 
 massrename() {
+	local new=""
 	for file in ./*; do
 		if [[ -f $file ]]; then
-			mv -n -- "$file" ./"$RANDOM.${file##*.}"
+			while [[ -z $new ]] || [[ -f $new ]]; do
+				new=$(date '+%s')$(shuf -i 100-999 -n 1).${file##*.}
+			done
+			mv -n -- "$file" "$new"
 		fi
 	done
 }
