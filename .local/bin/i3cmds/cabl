@@ -95,11 +95,11 @@ if [[ $locale == ja ]]; then
 
 		local -r audiofiles="$(pronunciation_forvo "$searchterm")"
 		if [ -z "$audiofiles" ]; then
-			notify-send "${0##*/} - ${FUNCNAME[0]}" "Couldn't find anything matching $searchterm."
+			notify-send "${0##*/} - ${FUNCNAME[0]}" "Couldn't find anything matching $searchterm." &
 			return 1
 		else
 			echo -n "$audiofiles" | xclip -selection clipboard
-			notify-send "${0##*/} - ${FUNCNAME[0]}" "File(s) added successfully."
+			notify-send "${0##*/} - ${FUNCNAME[0]}" "File(s) added to Anki collection. Codes are copied to the clipboard." &
 		fi
 	}
 	youglish() { "$BROWSER" "https://youglish.com/pronounce/$*/japanese"; }
@@ -158,11 +158,11 @@ else
 		done
 
 		if [[ -z "$audiofiles" ]]; then
-			notify-send "${0##*/} - ${FUNCNAME[0]}" "Couldn't find anything matching $searchterm."
+			notify-send "${0##*/} - ${FUNCNAME[0]}" "Couldn't find anything matching $searchterm." &
 			return 1
 		else
 			echo -n "$audiofiles" | xclip -selection clipboard
-			notify-send "${0##*/} - ${FUNCNAME[0]}" "File(s) added successfully."
+			notify-send "${0##*/} - ${FUNCNAME[0]}" "File(s) added to Anki collection. Codes are copied to the clipboard." &
 		fi
 	}
 fi
@@ -187,7 +187,9 @@ ankisearch() {
 			"query": "<query>"
 		}
 	}'
-	curl 'localhost:8765' -X POST -d "${request/<query>/${*//\"/\\\"}}"
+	local query=${*//\"/\\\"}
+	query=${query//$'\n'/ }
+	curl 'localhost:8765' -X POST -d "${request/<query>/$query}"
 }
 sankaku() {
 	"$BROWSER" "https://chan.sankakucomplex.com/post/index?tags=$* order:popular"
