@@ -2,7 +2,7 @@
 
 # A dmenu wrapper script for system functions.
 
-find_ctl() {
+ctl() {
 	case $(readlink -f /sbin/init) in
 	*systemd*) echo systemctl ;;
 	*) echo loginctl ;;
@@ -40,10 +40,7 @@ lock_screen() {
 }
 
 main() {
-	local -r ctl=$(find_ctl)
-	local -r action=${*:-$(ask_action)}
-
-	case $action in
+	case ${*:-$(ask_action)} in
 	*lock*)
 		lock_screen
 		;;
@@ -55,17 +52,17 @@ main() {
 		;;
 	*hibernate*)
 		lock_screen
-		$ctl hibernate
+		$(ctl) hibernate
 		;;
 	*sleep* | *suspend*)
 		lock_screen
-		$ctl suspend
+		$(ctl) suspend
 		;;
 	*reboot*)
-		$ctl reboot -i
+		$(ctl) reboot -i
 		;;
 	*shutdown* | *poweroff*)
-		$ctl poweroff -i
+		$(ctl) poweroff -i
 		;;
 	*'display off'*)
 		display_off
