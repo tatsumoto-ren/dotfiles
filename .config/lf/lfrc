@@ -46,14 +46,14 @@ cmd open ${{
     case $(file --mime-type "$(readlink -f $f)" -b) in
 	application/vnd.openxmlformats-officedocument.spreadsheetml.sheet) localc $fx ;;
 	text/rtf|application/ms*|application/*office*|application/octet-stream|*opendocument*|*powerpoint*|application/vnd.ms*) setsid -f soffice $fx >/dev/null 2>&1 ;;
-	application/vnd*|application/epub*|image/vnd.djvu|application/pdf|application/postscript) setsid -f zathura $fx >/dev/null 2>&1 ;;
+	application/vnd.djvu|application/epub*|image/vnd.djvu|application/pdf|application/postscript) setsid -f zathura $fx >/dev/null 2>&1 ;;
 	text/troff) man ./ $fx;;
 	text/*|application/json|inode/x-empty) setsid -f ${VISUAL:-geany} $fx >/dev/null 2>&1 ;;
 	image/x-xcf) setsid -f gimp $fx >/dev/null 2>&1 ;;
 	image/svg+xml) setsid -f display -- $fx ;;
 	image/*) setsid -f lf-select $f ;;
 	audio/*) mpv --audio-display=no --force-window=no $fx ;;
-	video/*) setsid -f mpv $fx -quiet >/dev/null 2>&1 ;;
+	video/*|application/vnd.rn-realmedia) setsid -f mpv $fx -quiet >/dev/null 2>&1 ;;
 	application/x-rar) setsid -f file-roller $fx >/dev/null 2>&1 ;;
 	application/pgp-encrypted) $EDITOR $fx ;;
 	application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text) setsid -f lowriter $fx >/dev/null 2>&1 ;;
