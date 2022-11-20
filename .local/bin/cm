@@ -2,40 +2,64 @@
 
 # A collection of media editing scripts
 
-readonly anki_username=$(xdotool search --class 'anki' |
-			xargs -I{} xdotool getwindowname {} |
-			grep -oP '^(.+)(?= - Anki$)')
 # if set globally, respect the values
-readonly OPUS_Q="${OPUS_Q:-32k}"
-readonly WEBP_Q="${WEBP_Q:-5}"
-readonly WEBP_RESIZE="${WEBP_RESIZE:-200}"
-readonly COL_FOL="$HOME/.local/share/Anki2/${anki_username:-$USER}/collection.media"
+readonly OPUS_Q=${OPUS_Q:-32k}
+readonly WEBP_Q=${WEBP_Q:-5}
+readonly WEBP_RESIZE=${WEBP_RESIZE:-200}
+
+anki_username() {
+	xdotool search --class 'anki' |
+		xargs -I{} xdotool getwindowname {} |
+		grep -oP '^(.+)(?= - Anki$)'
+}
+
+collection_path() {
+	echo "$HOME/.local/share/Anki2/$(anki_username)/collection.media"
+}
+
+check_anki_col_available() {
+	if ! [[ -d $COL_FOL ]]; then
+		echo "Couldn't find Anki user. Maybe Anki isn't running."
+		exit 1
+	fi
+}
 
 _cwebp() { cwebp -blend_alpha '0xffffff' -alpha_q 0 -short -sharp_yuv -af -pass 10 -m 6 -mt -sns 100 -f 100 "$@"; }
+_ffmpeg() { ffmpeg -nostdin -hide_banner -loglevel info "$@"; }
 _findall() { find . -mindepth 1 -maxdepth 1 -type f "$@" -print0; }
 _xargs() { xargs -0 -P 8 -I {} "$@"; }
 
 # Convert a file to webp, specify target size
 stwebp() {
 	[[ ! -f $1 ]] && return 1
-	[[ $1 == *.gif ]] && unset -f _cwebp && _cwebp() { gif2webp -mt -lossy -m 6 -min_size -metadata none "$@";}
+	[[ $1 == *.gif ]] && unset -f _cwebp && _cwebp() { gif2webp -mt -lossy -m 6 -min_size -metadata none "$@"; }
 	_cwebp "$1" -o "$(basename -- "${1%.*}").webp" -resize 0 "${WEBP_RESIZE:?}" -q "${WEBP_Q:?}"
 }
 
 # Convert a file to webp, specify target quality
 twebp() {
 	[[ ! -f $1 ]] && return 1
-	[[ $1 == *.gif ]] && unset -f _cwebp && _cwebp() { gif2webp -mt -lossy -m 6 -min_size -metadata none "$@";}
+	[[ $1 == *.gif ]] && unset -f _cwebp && _cwebp() { gif2webp -mt -lossy -m 6 -min_size -metadata none "$@"; }
 	_cwebp "$1" -o "$(basename -- "${1%.*}").webp" -q "${2:-$WEBP_Q}"
 }
 
 # Convert a file to ogg/opus
 togg() {
 	[[ ! -f $1 ]] && return 1
-	ffmpeg -vn -nostdin -hide_banner -loglevel info -y -i "$1" \
-	-acodec libopus -map_metadata -1 -ac 1 -ab "${2:-$OPUS_Q}" \
-	-vbr on -compression_level 10 -application voip \
-	-af silenceremove=1:0:-50dB "$(basename -- "${1%.*}").ogg"
+	_ffmpeg \
+		-vn \
+		-sn \
+		-y \
+		-i "$1" \
+		-acodec libopus \
+		-map_metadata -1 \
+		-ac 1 \
+		-ab "${2:-$OPUS_Q}" \
+		-vbr on \
+		-compression_level 10 \
+		-application voip \
+		-af silenceremove=1:0:-50dB \
+		"${1%.*}.ogg"
 }
 
 # Can be added to ~/.config/Thunar/uca.xml
@@ -52,37 +76,38 @@ thunar_action_convert_to_webp() {
 }
 
 # Extract subs from MKV
-extsub() { ffmpeg -nostdin -i "$1" "${1%.*}.en.ass" ;}
+extsub() { _ffmpeg -vn -an -i "$1" "${1%.*}.en.ass"; }
 
 # Convert a folder to webp
-ftwebp()  { _findall -iregex '.*.\(jpg\|jpeg\|png\|gif\)' | _xargs cm twebp  {} ;}
+ftwebp() { _findall -iregex '.*\.\(jpg\|jpeg\|png\|gif\)' | _xargs cm twebp {}; }
 
 # Convert a folder to a small webp
-ftswebp() { _findall -iregex '.*.\(jpg\|jpeg\|png\|gif\)' | _xargs cm stwebp {} ;}
+ftswebp() { _findall -iregex '.*\.\(jpg\|jpeg\|png\|gif\)' | _xargs cm stwebp {}; }
 
 # Convert a folder to ogg/opus
-ftogg()   { _findall \( -name '*.mp3' -o -name '*.flac' -o -name '*.aac' \) | _xargs cm togg   {} ;}
+ftogg() { _findall -iregex '.*\.\(mp3\|flac\|aac\|wav\)' | _xargs cm togg {}; }
 
-fextsub() { _findall -name '*.mkv' | _xargs cm extsub {} ;}
+# Extract subs from all mkv files in a folder.
+fextsub() { _findall -iname '*.mkv' | _xargs cm extsub {}; }
 
-check() {
-	ls -1 ./*.mp3 ./*.jpg ./*.png
-}
+check() { ls -1 ./*.mp3 ./*.jpg ./*.png; }
 
 striptags() {
-	find . -name '*.srt' -print0 | xargs -0 -I{} sed -i 's/<font[^>]*>//g;s/<\/font>//g' {}
+	find . -iname '*.srt' -print0 | xargs -0 -I{} sed -i 's/<font[^>]*>//g;s/<\/font>//g' {}
 }
 
 # Convert youtube vtt subs to srt
-ftsrt() {
+vtt2srt() {
 	for file in ./*.vtt; do
-		ffmpeg -nostdin -i  "$file" "$(basename -- "${file%.vtt}").srt"
+		_ffmpeg -vn -an -i "$file" "${file%.vtt}.srt"
 	done
 	rm -v ./*.vtt
 }
 
 # Manually edit audio file in Audacity, then move back to Anki collection
 edit() {
+	check_anki_col_available
+
 	local -r filename="$(echo "$1" | sed 's/^\[sound://; s/\]$//')"
 	local -r filepath="$COL_FOL/$filename"
 	local -r workdir="/tmp/audacity"
@@ -91,7 +116,7 @@ edit() {
 
 	audacity "$filepath" &>/dev/null
 
-	if ! ls ./*.mp3; then
+	if ! ls ./*.*; then
 		echo "Aborted."
 		return
 	fi
@@ -104,6 +129,8 @@ edit() {
 
 # Move all files in the current directory to the anki collection
 moveall() {
+	check_anki_col_available
+
 	mv -v ./* "$COL_FOL"
 }
 
@@ -123,12 +150,16 @@ seqrename() {
 	for file in ./*.*; do
 		if [[ -f "$file" ]]; then
 			mv -nv "$file" "$(printf -- '%010d' "${i}").${file##*.}"
-			i=$((i+1))
+			i=$((i + 1))
 		fi
 	done
 }
 
-if [[ "$1" ]] && declare -f "$1" > /dev/null; then
+# Entry point
+
+COL_FOL=$(collection_path)
+
+if [[ "$1" ]] && declare -f "$1" >/dev/null; then
 	# call arguments verbatim
 	"$@"
 else
