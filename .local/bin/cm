@@ -18,7 +18,7 @@ collection_path() {
 }
 
 check_anki_col_available() {
-	if ! [[ -d $COL_FOL ]]; then
+	if ! [[ -d ${COL_FOL:=$(collection_path)} ]]; then
 		echo "Couldn't find Anki user. Maybe Anki isn't running."
 		exit 1
 	fi
@@ -111,7 +111,7 @@ edit() {
 	local -r filename="$(echo "$1" | sed 's/^\[sound://; s/\]$//')"
 	local -r filepath="$COL_FOL/$filename"
 	local -r workdir="/tmp/audacity"
-	mkdir "$workdir"
+	mkdir -- "$workdir"
 	[[ -f $filepath ]] && cd "$workdir" || return 1
 
 	audacity "$filepath" &>/dev/null
@@ -156,8 +156,6 @@ seqrename() {
 }
 
 # Entry point
-
-COL_FOL=$(collection_path)
 
 if [[ "$1" ]] && declare -f "$1" >/dev/null; then
 	# call arguments verbatim
