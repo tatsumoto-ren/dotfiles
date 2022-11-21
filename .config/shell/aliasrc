@@ -87,3 +87,4 @@ alias \
 	printsrcinfo="makepkg --printsrcinfo > .SRCINFO" \
 	unlockme='faillock --user "$USER" --reset' \
 	listkernels='ls -1 /boot/vmli*' \
+	egit='sudo etckeeper vcs' \

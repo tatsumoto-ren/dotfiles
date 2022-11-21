@@ -1,10 +1,12 @@
 #!/bin/bash
+
 p() { sudo pacman "$@"; notify-pacman-block; }
 see() { cd ~/.local/bin && $EDITOR "$(fzf)" ;}
 vf() { find . -type f | fzf | xargs -r -I % "$EDITOR" % ;}
-calc(){ awk "BEGIN{ print $* }" ;}
+calc() { awk "BEGIN{ print $* }" ;}
 kitsudown() { curl "$@" | grep -Eo 'subtitles[^"]+\.(srt|ass)' | xargs -n 1 -P 26 -I{} wget --no-clobber 'http://kitsunekko.net/{}' ;}
 cheat() { curl "cheat.sh/$*" ;}
+zman() { man -Tpdf "$*" | setsid -f zathura -; }
 choose_from_cwds() {
 	for PROCID in $(pgrep "^$(basename "$SHELL")$") $(pgrep '^ranger$') $(pgrep '^lf$'); do
 		readlink -e "/proc/$PROCID/cwd"
@@ -14,7 +16,7 @@ choose_from_cwds() {
 massrename() {
 	local new=""
 	for file in ./*; do
-		if [[ -f $file ]]; then
+		if [[ -f $file ]] && ! [[ $(basename -- "${file%.*}") =~ ^[0-9]{13,16}$ ]]; then
 			while [[ -z $new ]] || [[ -f $new ]]; do
 				new=$(date '+%s')$(shuf -i 100-999 -n 1).${file##*.}
 			done
@@ -86,4 +88,9 @@ anki_test_run() {
 	if [[ -n $choice ]]; then
 		(cd -- "$dir/$choice" && ./pyenv/bin/anki)
 	fi
+}
+
+sitedl() {
+	local -r url=$1 domain=$2
+	wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --domains "$domain" --no-parent "$url"
 }
