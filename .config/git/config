@@ -69,3 +69,5 @@
 	defaultBranch = main
 [commit]
 	gpgsign = false
+[pager]
+	status = true

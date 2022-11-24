@@ -35,7 +35,15 @@ ask_dir() {
 }
 
 notify_do() {
-	result=$(while read -r file; do "$@"; done)
+	result=$(
+		while read -r file; do
+			if [ -f "$file" ]; then
+				"$@"
+			else
+				echo "🔥 '${file##*/}' does not exist."
+			fi
+		done
+	)
 	notify-send "${0##*/} processed $(echo "$result" | wc -l) files" "$result" &
 }
 
