@@ -80,7 +80,7 @@ alias \
 	trimlogs='sudo journalctl --vacuum-size=150M' \
 	pacclean="remorphans && sudo pacman -Sc && trimlogs" \
 	whathaveidone="tail -500 /var/log/pacman.log | grep -i 'installed\|removed\|graded' --color=never" \
-	refl='sudo reflector --protocol https --download-timeout 60 --verbose --age 12 --latest 100 --fastest 10 --sort rate --country "$(curl -Ls "ifconfig.co/country")" --save /etc/pacman.d/mirrorlist' \
+	refl='sudo reflector --protocol https --download-timeout 60 --verbose --age 6 --latest 100 --fastest 10 --sort rate --country "$(curl -Ls "ifconfig.co/country"),DE,FR,GB,NL,PL,RU,BY,CZ,FI,SE,CH,HU,NO" --save /etc/pacman.d/mirrorlist' \
 	reflp='sudo reflector --url "https://www.parabola.nu/mirrors/status/json" --protocol https --download-timeout 60 --verbose --age 12 --latest 100 --fastest 10 --sort rate --save /etc/pacman.d/parabola-mirrorlist' \
 	all_but_base="comm -23 <(pacman -Qetq | sort) <({ pacman -Qgq base-devel ; echo \$basepac | tr ' ' '\n' ;} | sort) | less" \
 	ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" \

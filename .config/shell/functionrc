@@ -14,8 +14,9 @@ choose_from_cwds() {
 }
 
 massrename() {
+	# Renames all files in the current folder according to this pattern: 1669303368162.ext
 	local new=""
-	for file in ./*; do
+	for file in ./*.*; do
 		if [[ -f $file ]] && ! [[ $(basename -- "${file%.*}") =~ ^[0-9]{13,16}$ ]]; then
 			while [[ -z $new ]] || [[ -f $new ]]; do
 				new=$(date '+%s')$(shuf -i 100-999 -n 1).${file##*.}
