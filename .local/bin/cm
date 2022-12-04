@@ -58,7 +58,7 @@ togg() {
 		-vbr on \
 		-compression_level 10 \
 		-application voip \
-		-af silenceremove=1:0:-50dB \
+		-af 'silenceremove=1:0:-50dB' \
 		"${1%.*}.ogg"
 }
 

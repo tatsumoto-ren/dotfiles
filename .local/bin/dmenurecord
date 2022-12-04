@@ -156,7 +156,7 @@ audio_anki() {
 
 	audacity "${FILE_PATH:?}"
 
-	! ls ./*.mp3 && return
+	! ls ./*.* && return
 	cm ftogg
 
 	local audiofiles bn path
