@@ -1,9 +1,11 @@
 #!/bin/sh
 
 # This script moves the selected window to the bottom left/right of the screen.
-command -v xdotool || exit
+command -v xdotool || exit 1
+# If $1 is left, hovers in the bottom left, if right, the bottom right
+[ -z "$1" ] && exit 1
 
-[ -z "$1" ] && exit # If $1 is left, hovers in the bottom left, if right, the bottom right
+padding=10
 current=$(xdotool getwindowfocus)
 newwidth=$(($(xdotool getdisplaygeometry | awk '{print $2}') / 3))
 newheight=$(($(xdotool getdisplaygeometry | awk '{print $1}') / 3))
@@ -12,7 +14,7 @@ newsize=$(xdotool getwindowgeometry "$current" | grep Geometry | sed -e 's/x/ /g
 newwidth=$(xdotool getwindowgeometry "$current" | grep Geometry | grep -o " [0-9]*")
 
 case "$1" in
-	left) horizontal=0; vertical=$(($(xdotool getdisplaygeometry | awk '{print $2}') - newsize)) ;;
-	right) horizontal=$(($(xdotool getdisplaygeometry | awk '{print $1}') - newwidth)) ; vertical=$(($(xdotool getdisplaygeometry | awk '{print $2}') - newsize)) ;;
+	left) horizontal=$padding; vertical=$(($(xdotool getdisplaygeometry | awk '{print $2}') - newsize - padding)) ;;
+	right) horizontal=$(($(xdotool getdisplaygeometry | awk '{print $1}') - newwidth - padding)) ; vertical=$(($(xdotool getdisplaygeometry | awk '{print $2}') - newsize - padding)) ;;
 esac
 xdotool windowmove "$current" $horizontal $vertical
