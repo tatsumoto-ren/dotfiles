@@ -158,6 +158,7 @@ if &diff
 endif
 
 autocmd FileType python set tabstop=4|set shiftwidth=4|set expandtab
+autocmd FileType json set tabstop=4|set shiftwidth=4|set expandtab
 autocmd FileType javascript set sw=4 ts=4 expandtab
 autocmd FileType html set sw=4 ts=4 expandtab
 

@@ -8,9 +8,9 @@ kitsudown() { curl "$@" | grep -Eo 'subtitles[^"]+\.(srt|ass)' | xargs -n 1 -P 2
 cheat() { curl "cheat.sh/$*" ;}
 zman() { man -Tpdf "$*" | setsid -f zathura -; }
 choose_from_cwds() {
-	for PROCID in $(pgrep "^$(basename "$SHELL")$") $(pgrep '^ranger$') $(pgrep '^lf$'); do
+	for PROCID in $(pgrep -u "$USER" "^${SHELL##*/}$|^lf$|^ranger$"); do
 		readlink -e "/proc/$PROCID/cwd"
-	done | sort -u | dmenu -i -l 5
+	done | sort -u | fzf
 }
 
 massrename() {

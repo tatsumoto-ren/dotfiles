@@ -191,7 +191,7 @@ bindsym $mod+e			layout toggle split
 # You can "split" the current object of your focus with $mod+b or $mod+v,
 # for horizontal and vertical splits respectively.
 # Split in horizontal orientation
-bindsym $mod+shift+backslash	splith
+bindsym $mod+Shift+backslash	splith
 # Split in vertical orientation
 bindsym $mod+v			splitv
 
@@ -474,7 +474,7 @@ bindsym $super+Caps_Lock		mode "$mode_caps"
 bindsym $mod+i exec $explorer
 bindsym $mod+u exec thunar
 
-set $freeze Distraction-free mode (super+shift+f to reactivate bindings)
+set $freeze Distraction-free mode (super+Shift+f to reactivate bindings)
 mode "$freeze" { bindsym $mod+Shift+f mode "default"
 }
 bindsym $mod+Shift+f			mode "$freeze"
@@ -558,8 +558,8 @@ assign [class="Transmission"]		$ws8
 # See `man dunstctl` for a list of commands.
 ###############################################################################
 
-bindsym Ctrl+space			exec dunstctl close
-bindsym Ctrl+Shift+space		exec dunstctl close-all
+bindsym Ctrl+Space			exec dunstctl close
+bindsym $mod+Shift+space		exec dunstctl close-all
 bindsym Ctrl+Shift+period		exec dunstctl context
 bindsym $mod+Shift+grave		exec dunstctl history-pop
 bindsym Ctrl+Shift+grave		exec dunstctl history-pop
