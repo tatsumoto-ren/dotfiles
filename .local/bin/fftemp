@@ -1,7 +1,7 @@
 #!/bin/bash
 
 readonly TZ=UTC
-readonly BROWSER=$(which librewolf icecat iceweasel firefox | head -1)
+readonly BROWSER=$(command -v librewolf icecat iceweasel firefox | head -1)
 readonly fftmpdir=/tmp/firefox-temp
 
 export TZ BROWSER
