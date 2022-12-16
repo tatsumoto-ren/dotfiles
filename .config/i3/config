@@ -173,9 +173,10 @@ bindsym $mod+Shift+Delete	exec lmc mute ; \
 				exec $term -e 'htop' ; \
 				exec $explorer
 
-# Show selection:
-bindsym $mod+Insert		exec --no-startup-id showclip
-##bindsym $mod+Pause
+# Select bookmark / Show selection
+bindsym $mod+Insert		exec --no-startup-id xdotool type --delay 0 "$(grep -v '^#' -- ~/.local/share/larbs/snippets | dmenu -i -l 50 | cut -d' ' -f1)"
+#bindsym $mod+Shift+Insert	exec --no-startup-id
+bindsym $mod+Pause		exec --no-startup-id showclip
 
 # Kill focused window / Force close window
 # Make it impossible to accidentally kill dropdowns
@@ -485,9 +486,9 @@ bindsym $mod+Shift+f			mode "$freeze"
 ###############################################################################
 
 # Override for windows that don't respect "default_border" and "default_floating_border"
-for_window [all]				border pixel 3
-for_window [tiling]				border pixel 3
-for_window [floating]				border normal 3
+# for_window [all]				border pixel 3
+# for_window [tiling]				border pixel 3
+# for_window [floating]				border normal 3
 
 # Global window icons
 for_window [all]				title_window_icon padding 3px
