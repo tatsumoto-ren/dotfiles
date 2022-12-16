@@ -1,6 +1,8 @@
 #!/bin/sh
+
 if ! pkill -f /dev/video; then
-	mpv --no-osc \
+	mpv \
+	--no-osc \
 	--no-input-default-bindings \
 	--input-conf=/dev/null \
 	--geometry=-0-0 \
@@ -8,5 +10,6 @@ if ! pkill -f /dev/video; then
 	--title="mpvfloat" \
 	--profile=low-latency \
 	--untimed \
-	/dev/video0 || notify-send "Camtoggle" "Failed."
+	--no-cache \
+	"$(ls /dev/video* | tail -n 1)" || notify-send "Camtoggle" "Failed."
 fi
