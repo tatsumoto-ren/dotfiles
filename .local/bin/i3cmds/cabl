@@ -31,9 +31,16 @@ else
 	readonly locale=ja
 fi
 
+__report_err() {
+	echo "$*" >&2
+	notify-send "${0##*/}" "$*" &
+	return 1
+}
+
 __anki_store_file() {
 	local -r path=${1:?}
 	local -r name=${2:?}
+	local output=""
 	local request='{
 		"action": "storeMediaFile",
 		"version": 6,
@@ -44,7 +51,7 @@ __anki_store_file() {
 	}'
 	request=${request/<name>/$name}
 	request=${request/<path>/$path}
-	curl localhost:8765 -X POST -d "$request"
+	output=$(curl -fsS localhost:8765 -X POST -d "$request" 2>&1) || __report_err "$output"
 }
 
 __convert_to_opus() {
@@ -68,7 +75,7 @@ if [[ $locale == ja ]]; then
 	pronunciation() {
 		local -r searchterm="$*" format="ogg"
 
-		local_pronunciations "$searchterm" && return
+		local-pronunciations "$searchterm" && return
 
 		get_forvo_audio_url() {
 			local -r searchterm="${*:?}"
@@ -167,6 +174,16 @@ else
 	}
 fi
 
+new_bookmark() {
+	local -r file=$(readlink -f -- ~/.local/share/larbs/snippets)
+	if ! grep -Fqsx "$*" -- "$file"; then
+		echo "$*" >> "$file"
+		notify-send "${0##*/} - ${FUNCNAME[0]}" "✅ Bookmark added." &
+	else
+		notify-send "${0##*/} - ${FUNCNAME[0]}" "❌ Bookmark already exists." &
+	fi
+}
+
 jisho() {
 	# Search words containing the kanji if length == 1.
 	# Otherwise search just the word.
@@ -226,6 +243,9 @@ maps() {
 }
 packages() {
 	"$BROWSER" "https://archlinux.org/packages/?q=$*" "https://aur.archlinux.org/packages?K=$*"
+}
+archwiki() {
+	"$BROWSER" "https://wiki.archlinux.org/index.php?search=$*"
 }
 
 # Download a streamable video through Tor
