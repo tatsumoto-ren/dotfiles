@@ -31,7 +31,7 @@ set cleaner '~/.config/lf/cleaner'
 cmd on-cd %{{
 	# Sort files by time in certain folders.
 	for d in Downloads Screenshots ongoing; do
-		if [[ $PWD == *"$d"* ]]; then
+		if [[ $(basename -- "$PWD") == "$d" ]]; then
 			lf -remote "send $id set sortby time"
 		fi
 	done
