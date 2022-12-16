@@ -12,6 +12,7 @@ choose_from_cwds() {
 		readlink -e "/proc/$PROCID/cwd"
 	done | sort -u | fzf
 }
+humantime() { date -d "@$1" ;}
 
 massrename() {
 	# Renames all files in the current folder according to this pattern: 1669303368162.ext
