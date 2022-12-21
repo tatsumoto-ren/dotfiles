@@ -1,0 +1,177 @@
+#!/usr/bin/python3
+
+import dataclasses
+import json
+import os
+import pickle
+import re
+import subprocess
+import sys
+import urllib.request
+from typing import AnyStr, NewType
+
+PROGRAM = 'local-pronunciations'
+CACHE_DIR = os.path.join(os.environ['XDG_CACHE_HOME'], PROGRAM)
+CONFIG_PATH = os.path.join(os.environ['XDG_CONFIG_HOME'], PROGRAM, 'config.json')
+MatchDict = NewType('MatchDict', dict[str, set[str]])
+
+
+def request(action, **params):
+    return {'action': action, 'params': params, 'version': 6}
+
+
+def invoke(action, **params):
+    request_json = json.dumps(request(action, **params)).encode('utf-8')
+    response = json.load(urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8765', request_json)))
+    if len(response) != 2:
+        raise Exception('response has an unexpected number of fields')
+    if 'error' not in response:
+        raise Exception('response is missing required error field')
+    if 'result' not in response:
+        raise Exception('response is missing required result field')
+    if response['error'] is not None:
+        raise Exception(response['error'])
+    return response['result']
+
+
+def store_file(path: AnyStr, stored_name: AnyStr):
+    invoke('storeMediaFile', filename=stored_name, path=path)
+
+
+def get_pickle_path(source_name: str) -> str:
+    return os.path.join(CACHE_DIR, source_name)
+
+
+def construct_filename(audio_file_name: str, audio_source_name: str) -> str:
+    name, ext = os.path.splitext(audio_file_name)
+    return f'{name}.{audio_source_name}{ext}'
+
+
+def notify_send(title: str, msg: str):
+    subprocess.Popen(
+        ['notify-send', title, msg],
+        shell=False
+    )
+
+
+def to_clip(text: str):
+    subprocess.run(
+        "xclip -sel c",
+        shell=True,
+        universal_newlines=True,
+        input=text
+    )
+
+
+@dataclasses.dataclass(frozen=True)
+class AudioSource:
+    name: str
+    audio_dir_path: str
+    pickle_path: str
+
+
+@dataclasses.dataclass()
+class Config:
+    audio_sources: dataclasses.InitVar[dict[str, str]] = dataclasses.field(kw_only=True)
+    stop_after_first_match: bool = dataclasses.field(kw_only=True)
+
+    def __post_init__(self, audio_sources: dict[str, str]):
+        self.audio_sources: list[AudioSource] = [
+            AudioSource(
+                source_name,
+                source_path,
+                get_pickle_path(source_name),
+            )
+            for source_name, source_path in audio_sources.items()
+        ]
+
+
+def read_config() -> Config:
+    if not os.path.isdir(d := os.path.dirname(CONFIG_PATH)):
+        os.mkdir(d)
+
+    default_config = {
+        "audio_sources": {
+            'audio_1': '/path/to/directory',
+            'audio_2': '/path/to/directory',
+        },
+        "stop_after_first_match": False,
+    }
+
+    if not os.path.isfile(CONFIG_PATH):
+        with open(CONFIG_PATH, 'w', encoding='utf8') as of:
+            json.dump(default_config, of, indent=4, ensure_ascii=False)
+        print(f"Created config file: {CONFIG_PATH}")
+        print("Edit the file and include your directories with audio.")
+
+    with open(CONFIG_PATH, encoding='utf8') as f:
+        return Config(**(default_config | json.load(f)))
+
+
+def possible_matches(audio_file_name: str):
+    # expected format: {kanji}_{reading}.{reserved}.{extension}
+    name = audio_file_name.split('.')[0]
+    return re.split(r'[。、・._\b]', name, re.IGNORECASE)
+
+
+def construct_match_dict(audio_dir_path: str) -> MatchDict:
+    result = {}
+    for path in os.scandir(audio_dir_path):
+        path: os.DirEntry
+        for substr in possible_matches(path.name):
+            result.setdefault(substr, set()).add(path.path)
+    return MatchDict(result)
+
+
+def ensure_cache_exists(config: Config):
+    if not os.path.isdir(CACHE_DIR):
+        os.mkdir(CACHE_DIR)
+    for source in config.audio_sources:
+        if not os.path.isfile(source.pickle_path) and os.path.isdir(source.audio_dir_path):
+            with open(source.pickle_path, 'wb') as f:
+                pickle.dump(construct_match_dict(source.audio_dir_path), f, pickle.HIGHEST_PROTOCOL)
+
+
+def get_pickle_content(source_name: str) -> MatchDict:
+    with open(get_pickle_path(source_name), 'rb') as f:
+        return MatchDict(pickle.load(f))
+
+
+def main(search_term: str) -> int:
+    if not search_term:
+        print(f"Usage: {os.path.basename(__file__)} SEARCH_TERM")
+        return 0
+
+    config = read_config()
+    ensure_cache_exists(config)
+    added_filenames = []
+
+    for source in config.audio_sources:
+        if not os.path.isfile(source.pickle_path):
+            continue
+        match_dict = get_pickle_content(source.name)
+        if search_term in match_dict:
+            for file_path in match_dict[search_term]:
+                new_name = construct_filename(os.path.basename(file_path), source.name)
+                store_file(path=file_path, stored_name=new_name)
+                added_filenames.append(new_name)
+            if added_filenames and config.stop_after_first_match:
+                break
+
+    if added_filenames:
+        to_clip(''.join(f'[sound:{f}]' for f in added_filenames))
+        notify_send(
+            "Added local pronunciations.",
+            "File(s) added to Anki collection. Codes are copied to the clipboard.\n\n" + '\n'.join(added_filenames)
+        )
+    else:
+        notify_send(
+            "No local pronunciations",
+            f"Couldn't find anything matching {search_term}."
+        )
+
+    return int(not added_filenames)
+
+
+if __name__ == '__main__':
+    sys.exit(main(search_term=''.join(sys.argv[1:])))
