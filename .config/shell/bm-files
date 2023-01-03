@@ -41,3 +41,5 @@ cfb	${XDG_CONFIG_HOME:-$HOME/.config}/i3blocks/config
 cft	${XDG_CONFIG_HOME:-$HOME/.config}/termite/config
 cff	${XDG_CONFIG_HOME:-$HOME/.config}/shell/functionrc
 cfal	${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/alacritty.yml
+
+snippets ~/.local/share/larbs/snippets

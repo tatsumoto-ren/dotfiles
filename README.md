@@ -11,7 +11,7 @@ Configuration files and scripts I use in my computing.
 * Distro - [Arch Linux](https://archlinux.org/)
 * Shell - zsh + [zsh-theme-powerlevel10k](https://archlinux.org/packages/community/x86_64/zsh-theme-powerlevel10k/)
 * Terminal - [Alacritty](https://wiki.archlinux.org/title/Alacritty)
-* WM - [i3-wm](https://archlinux.org/packages/community/x86_64/i3-wm/). Do not use `i3-gaps`!
+* WM - [i3-wm](https://archlinux.org/packages/community/x86_64/i3-wm/).
 * Status bar - [i3blocks](https://archlinux.org/packages/community/x86_64/i3blocks/)
 * Launcher - [rofi](https://archlinux.org/packages/community/x86_64/rofi/)
 * File Manager - [lf](https://github.com/gokcehan/lf)
