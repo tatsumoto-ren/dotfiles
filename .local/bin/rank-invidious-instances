@@ -1,10 +1,13 @@
 #!/usr/bin/python3
 
 import asyncio
-import time
+import os.path
+import sys
 from typing import NamedTuple, Collection
 
 import httpx
+
+CACHE = '/tmp/inv_instances'
 
 
 class Instance(NamedTuple):
@@ -83,12 +86,22 @@ async def filter_alive(client: httpx.AsyncClient, instances: list[Instance]) -> 
     ]
 
 
+def sorted_instances(instances: list[Instance]) -> list[Instance]:
+    return sorted(instances, key=lambda ins: (-ins.health_percent, ins.active_month))
+
+
 async def main():
+    if os.path.isfile(CACHE) and '--recalc' not in sys.argv[1:]:
+        with open(CACHE) as f:
+            return print(f.read())
+
     async with httpx.AsyncClient(timeout=5) as client:
         instances = await filter_alive(client, await parse_instances(client))
 
-    for instance in sorted(instances, key=lambda ins: (-ins.health_percent, ins.active_month)):
-        print(*instance, sep='\t')
+    with open(CACHE, 'w') as of:
+        for instance in sorted_instances(instances):
+            print(*instance, sep='\t', file=of)
+            print(*instance, sep='\t')
 
 
 if __name__ == '__main__':

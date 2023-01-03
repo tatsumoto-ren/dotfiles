@@ -1,6 +1,12 @@
 #!/usr/bin/python3
 
+import os
+import sys
 from typing import NamedTuple
+
+import requests
+
+CACHE = '/tmp/nitter_instances'
 
 
 def json_url():
@@ -17,17 +23,25 @@ class Instance(NamedTuple):
             lambda val: float(val.replace('%', '')),
             (json["uptimeDay"], json["uptimeWeek"], json["uptimeMonth"], json["uptimeYear"],)
         ))
-        return cls(url=json['url'], rank=rank,)
+        return cls(url=json['url'], rank=rank, )
+
+
+def sorted_instances(instances: list[Instance]) -> list[Instance]:
+    return sorted(instances, key=lambda item: (*item.rank, -len(item.url)), reverse=True)
 
 
 def main():
-    import requests
+    if os.path.isfile(CACHE) and '--recalc' not in sys.argv[1:]:
+        with open(CACHE) as f:
+            return print(f.read())
 
     with requests.session() as s:
-        content: list[dict] = s.get(json_url(), timeout=10).json()
+        instances: list[Instance] = [Instance.from_json(d) for d in s.get(json_url(), timeout=10).json()]
 
-    for instance in sorted(map(Instance.from_json, content), key=lambda item: (*item.rank, -len(item.url)), reverse=True):
-        print(instance.url, *instance.rank, sep='\t')
+    with open(CACHE, 'w') as of:
+        for instance in sorted_instances(instances):
+            print(instance.url, *instance.rank, sep='\t', file=of)
+            print(instance.url, *instance.rank, sep='\t')
 
 
 if __name__ == '__main__':
