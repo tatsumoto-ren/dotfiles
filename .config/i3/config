@@ -174,8 +174,8 @@ bindsym $mod+Shift+Delete	exec lmc mute ; \
 				exec $explorer
 
 # Select bookmark / Show selection
-bindsym $mod+Insert		exec --no-startup-id xdotool type --delay 0 "$(grep -v '^#' -- ~/.local/share/larbs/snippets | dmenu -i -l 50 | cut -d' ' -f1)"
-#bindsym $mod+Shift+Insert	exec --no-startup-id
+bindsym $mod+Insert		exec --no-startup-id bookmarkctl select
+bindsym $mod+Shift+Insert	exec --no-startup-id bookmarkctl pop
 bindsym $mod+Pause		exec --no-startup-id showclip
 
 # Kill focused window / Force close window

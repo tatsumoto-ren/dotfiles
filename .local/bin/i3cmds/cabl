@@ -175,13 +175,7 @@ else
 fi
 
 new_bookmark() {
-	local -r file=$(readlink -f -- ~/.local/share/larbs/snippets)
-	if ! grep -Fqsx "$*" -- "$file"; then
-		echo "$*" >> "$file"
-		notify-send "${0##*/} - ${FUNCNAME[0]}" "✅ Bookmark added." &
-	else
-		notify-send "${0##*/} - ${FUNCNAME[0]}" "❌ Bookmark already exists." &
-	fi
+	bookmarkctl new "$*"
 }
 
 jisho() {
