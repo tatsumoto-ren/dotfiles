@@ -13,6 +13,11 @@ choose_from_cwds() {
 	done | sort -u | fzf
 }
 humantime() { date -d "@$1" ;}
+wait-notify() {
+	sleep "$@"
+	notify-send -t 0 --icon alarm-timer "Timer ended" "$* passed" &
+	paplay /usr/share/sounds/freedesktop/stereo/complete.oga &
+}
 
 massrename() {
 	# Renames all files in the current folder according to this pattern: 1669303368162.ext
@@ -77,7 +82,7 @@ anki_test_install() {
 		mkdir -p -- "$dir" && cd -- "$dir" || exit
 		python -m venv --system-site-packages pyenv
 		./pyenv/bin/pip3 install --upgrade pip
-		./pyenv/bin/pip3 install --upgrade --pre "aqt==2.1.$version"
+		./pyenv/bin/pip3 install --upgrade --pre "aqt==$version"
 	)
 }
 anki_test_run() {
