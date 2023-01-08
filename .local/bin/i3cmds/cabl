@@ -339,10 +339,11 @@ __main() {
 	fi
 
 	pid=$(xprop -id "$(xprop -root | awk '/_NET_ACTIVE_WINDOW\(WINDOW\)/{print $NF}')" | grep -m 1 PID | cut -d " " -f 3)
-	pid=$(pstree -lpA "$pid" | tail -n 1 | awk -F'---' '{print $NF}' | sed -re 's/[^0-9]//g')
-	cd -- "$(readlink -- "/proc/$pid/cwd")" || exit
-	[[ -f "$search_text" ]] && xdg-open "$search_text" && exit
-	[[ -d "$search_text" ]] && "i3-sensible-terminal" "$search_text" && exit
+	for pid in $(pstree -lpA "$pid" | head -1 | grep --color=never -oP '\(\K\d+(?=\))'); do
+		cd -- "$(readlink -- "/proc/$pid/cwd")" || continue
+		[[ -f "$search_text" ]] && xdg-open "$search_text" && exit
+		[[ -d "$search_text" ]] && "i3-sensible-terminal" "$search_text" && exit
+	done
 
 	if [[ -n ${func:=$(__ask_action)} ]]; then
 		"${func// /_}" "$search_text"
