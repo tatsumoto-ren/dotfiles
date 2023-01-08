@@ -25,14 +25,14 @@ consume_bookmark() {
 }
 
 select_bookmark() {
-	grep -v '^#' -- "$bookmark_file" | dmenu -i -l 50 -p "${1:-Select} bookmark"
+	grep -v '^#' -- "$bookmark_file" | tac | dmenu -i -l 50 -p "${1:-Select} bookmark"
 }
 
 pop_bookmark() {
 	if [[ -n ${bookmark:=$(select_bookmark Pop)} ]]; then
 		echo "$bookmark"
 		content=$(cat -- "$bookmark_file")
-		content=${content/$bookmark/}
+		content=${content//$bookmark/}
 		sed '/^[[:space:]]*$/d' <<<"$content" >"$bookmark_file"
 		notify-send "${0##*/} - ${FUNCNAME[0]//_/ }" "✅ Bookmark removed." &
 	fi
