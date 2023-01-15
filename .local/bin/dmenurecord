@@ -11,7 +11,8 @@
 # https://trac.ffmpeg.org/wiki/Encode/H.264
 
 screen_resolution() {
-	xrandr | grep -F '*' | sed 1q | awk '{print $1;}' # first monitor
+	# first monitor only
+	xrandr | sed -n '/\s*\([0-9]\+x[0-9]\+\).*\*.*/{ s//\1/p; q }'
 }
 
 notify_end() { notify-send "$(basename "$0")" "Stopped recording."; }
@@ -44,14 +45,16 @@ __ffmpeg() {
 
 	exec ffmpeg -y \
 		-f x11grab \
-		-framerate 60 \
+		-framerate 30 \
 		-s "$video_resolution" \
 		-i "$input" \
+		-use_wallclock_as_timestamps 1 \
 		-f alsa \
+		-thread_queue_size 1024 \
 		-i default \
 		-r 30 \
 		-c:v libx264 \
-		-crf 19 \
+		-crf 10 \
 		-preset ultrafast \
 		-c:a aac \
 		-b:a 256k \
@@ -82,6 +85,7 @@ video() {
 	ffmpeg \
 		-an \
 		-f x11grab \
+		-framerate 30 \
 		-s "$(screen_resolution)" \
 		-i "$DISPLAY" \
 		-c:v libx264 \
@@ -184,13 +188,13 @@ askrecording() {
 		EOF
 	)
 	case "$choice" in
-		'screencast') screencast ;;
-		'video') video ;;
-		'audio') audio ;;
-		'audio+add to anki') audio_anki ;;
-		'webcam') webcam ;;
-		'webcam (hi-def)') webcamhidef ;;
-		'selected area') selected_area ;;
+	'screencast') screencast ;;
+	'video') video ;;
+	'audio') audio ;;
+	'audio+add to anki') audio_anki ;;
+	'webcam') webcam ;;
+	'webcam (hi-def)') webcamhidef ;;
+	'selected area') selected_area ;;
 	esac
 }
 
@@ -200,15 +204,15 @@ asktoend() {
 }
 
 case "$1" in
-	screencast) screencast ;;
-	audio) audio ;;
-	video) video ;;
-	selected*) selected_area ;;
-	kill) killrecording ;;
-	*) if [ -f /tmp/recordingpid ]; then
-		asktoend
-		exit
-	else
-		askrecording
-	fi ;;
+screencast) screencast ;;
+audio) audio ;;
+video) video ;;
+selected*) selected_area ;;
+kill) killrecording ;;
+*) if [ -f /tmp/recordingpid ]; then
+	asktoend
+	exit
+else
+	askrecording
+fi ;;
 esac
