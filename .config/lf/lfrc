@@ -48,11 +48,11 @@ cmd open ${{
 	text/rtf|application/ms*|application/*office*|application/octet-stream|*opendocument*|*powerpoint*|application/vnd.ms*) setsid -f soffice $fx >/dev/null 2>&1 ;;
 	application/vnd.djvu|application/epub*|image/vnd.djvu|application/pdf|application/postscript) setsid -f zathura $fx >/dev/null 2>&1 ;;
 	text/troff) man ./ $fx;;
-	text/*|application/json|inode/x-empty) setsid -f ${VISUAL:-geany} $fx >/dev/null 2>&1 ;;
+	text/*|application/json|inode/x-empty|application/x-subrip) setsid -f ${VISUAL:-geany} $fx >/dev/null 2>&1 ;;
 	image/x-xcf) setsid -f gimp $fx >/dev/null 2>&1 ;;
 	image/svg+xml) setsid -f display -- $fx ;;
 	image/*) setsid -f lf-select $f ;;
-	audio/*) mpv --audio-display=no --force-window=no $fx ;;
+	audio/*|video/x-ms-asf) mpv --audio-display=no --force-window=no $fx ;;
 	video/*|application/vnd.rn-realmedia) setsid -f mpv $fx -quiet >/dev/null 2>&1 ;;
 	application/x-rar) setsid -f file-roller $fx >/dev/null 2>&1 ;;
 	application/pgp-encrypted) $EDITOR $fx ;;
