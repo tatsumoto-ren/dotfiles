@@ -24,6 +24,7 @@ export WM="i3"
 export STATUSBAR="${WM}blocks"
 export EDITOR="nvim"
 export TERMINAL="alacritty"
+export TERMINAL_PROG=$TERMINAL
 export BROWSER="fingerbox"
 export READER="zathura"
 export FILE="lfub"
