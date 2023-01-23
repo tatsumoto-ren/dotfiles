@@ -3,6 +3,7 @@
 set -euo pipefail
 
 readonly anki_image_field=${MAIMPICK_ANKI_FIELD:-Image}
+readonly selections_cache=$HOME/.cache/previous_selections
 
 take_screenshot() {
 	maim --hidecursor --format=png --quality 10 "$@"
@@ -25,7 +26,7 @@ ask_command() {
 
 notify() {
 	echo "$*"
-	notify-send "Maim Pick" "$*"
+	notify-send "Maim Pick" "$*" &
 }
 
 if_installed() {
@@ -49,14 +50,22 @@ ankiconnect_request() {
 	curl --silent localhost:8765 -X POST -d "${1:?}"
 }
 
-anki_last_note_id() {
+anki_selected_note() {
 	ankiconnect_request '{
-		"action": "findNotes",
+		"action": "guiSelectedNotes",
+		"version": 6
+	}' | grep -Po '\[\K[0-9, ]+(?=\])' | sed 's|, |\n|g' | sort -g | tail -1
+}
+
+anki_select_note() {
+	local request='{
+		"action": "guiBrowse",
 		"version": 6,
 		"params": {
-			"query": "added:2"
+			"query": "nid:<QUERY>"
 		}
-	}' | grep -Po '\[\K[0-9, ]+(?=\])' | sed 's|, |\n|g' | sort -g | tail -1
+	}'
+	ankiconnect_request "${request/<QUERY>/$1}"
 }
 
 anki_store() {
@@ -75,7 +84,7 @@ anki_store() {
 }
 
 anki_update_note() {
-	local -r note_id=${1:?} field=${2:?} new_content=${3//\"/\\\"}
+	local -r note_id=${1:?} field=${2:?} new_content=${3:?}
 	local request='{
 		"action": "updateNoteFields",
 		"version": 6,
@@ -107,6 +116,34 @@ anki_note_content() {
 		grep -Po "\"$field\":\s*{\"value\":\s*\"\K.*?(?=\",)"
 }
 
+_cwebp() { cwebp -blend_alpha '0xffffff' -alpha_q 0 -short -sharp_yuv -af -pass 10 -m 6 -mt -sns 100 -f 100 "$@"; }
+
+_cut() {
+	awk -F 'x|@' "-vfield=$1" '{print $field }' <<<"${2:?No string specified.}"
+}
+
+ask_size_quality() {
+	{
+		tac "$selections_cache" || true
+		cat <<-EOF
+			0x250@0
+			0x250@1
+			0x250@5
+			0x350@5
+			0x0@100
+		EOF
+	} | head -10 | dmenu -i -p "Size and quality"
+}
+
+convert_image() {
+	# 1=source, 2=dest, 3={w}x{h}@{q}
+	_cwebp \
+		-o "$2" \
+		-resize "$(_cut 1 "$3")" "$(_cut 2 "$3")" \
+		-q "$(_cut 3 "$3")" \
+		-- "$1"
+}
+
 main() {
 	if_installed dmenu maim xdotool || exit 1
 
@@ -131,13 +168,28 @@ main() {
 		cleanup_after "60s" "$file_path"
 		;;
 	*area*Anki)
+		local -r selected_note=$(anki_selected_note)
+		if [[ -z $selected_note ]]; then
+			notify "No selected note."
+			return
+		fi
+		anki_select_note "0" &
 		take_screenshot -s "$file_path"
-		anki_store "$file_path" "$(basename -- "$file_path")"
-		local -r last_note_id=$(anki_last_note_id)
-		local -r prev_content=$(anki_note_content "$last_note_id" "$anki_image_field")
-		local -r new_content="<img src=\"$(basename -- "$file_path")\">"
-		anki_update_note "$last_note_id" "$anki_image_field" "${prev_content}${new_content}"
+		local -r size_quality=$(ask_size_quality) webp_path=${file_path%.*}.webp
+		if [[ -z $size_quality ]]; then
+			notify "Aborted."
+			return
+		fi
+		echo "$size_quality" >>"$selections_cache"
+		convert_image "$file_path" "$webp_path" "$size_quality"
+		anki_store "$webp_path" "$(basename -- "$webp_path")"
+		local -r prev_content=$(anki_note_content "$selected_note" "$anki_image_field")
+		local -r new_content="<img src=\\\"$(basename -- "$webp_path")\\\">"
+		anki_update_note "$selected_note" "$anki_image_field" "${prev_content}${new_content}"
+		anki_select_note "$selected_note" &
+		notify "Added. File size: $(("$(stat --format='%s' "$webp_path")" / 1024)) KiB"
 		cleanup_after "3s" "$file_path"
+		cleanup_after "3s" "$webp_path"
 		;;
 	*area*Tesseract*)
 		if which maimocr; then
@@ -155,18 +207,23 @@ main() {
 		;;
 	*area)
 		take_screenshot -s "$file_path"
+		notify "Area captured."
 		;;
 	*window*clipboard)
 		take_screenshot -i "$(xdotool getactivewindow)" | xclip_png
+		notify "Area copied."
 		;;
 	full*clipboard)
 		take_screenshot | xclip_png
+		notify "Window copied."
 		;;
 	*window)
 		take_screenshot -i "$(xdotool getactivewindow)" "$file_path"
+		notify "Window captured."
 		;;
 	full*)
 		take_screenshot "$file_path"
+		notify "Whole screen captured."
 		;;
 	*)
 		notify "No appropriate action."

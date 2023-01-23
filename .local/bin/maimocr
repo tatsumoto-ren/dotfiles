@@ -6,7 +6,7 @@ readonly TESSDATA_PREFIX=$HOME/.local/share/tessdata
 
 notify() {
 	echo "$*"
-	notify-send "Maim OCR" "$*"
+	notify-send "Maim OCR" "$*" &
 }
 
 if_installed() {

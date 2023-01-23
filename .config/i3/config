@@ -362,16 +362,19 @@ bindsym $mod+Shift+bracketleft 	exec --no-startup-id mpc seek -120
 bindsym $mod+Shift+bracketright exec --no-startup-id mpc seek +120
 
 # PrintScreen takes a screenshot
-bindsym --release Print		exec maimpick full && notify-send "Screenshot" "Whole screen captured."
+bindsym --release Print		exec maimpick full
 
 # Ctrl + PrintScreen takes the given window
-bindsym --release Ctrl+Print	exec maimpick window && notify-send "Screenshot" "Window captured."
+bindsym --release Ctrl+Print	exec maimpick window
 
 # Shift + PrintScreen takes the given area
-bindsym --release Shift+Print	exec maimpick area && notify-send "Screenshot" "Area captured."
+bindsym --release Shift+Print	exec maimpick area
+
+# Ctrl + Shift + PrintScreen takes the given area and copies the image to the clipboard.
+bindsym --release Ctrl+Shift+Print	exec maimpick area-clipboard
 
 # Super+Print shows the dialog window
-bindsym --release $mod+Print	exec maimpick && notify-send "Maim" "Screenshot captured."
+bindsym $mod+Print		exec maimpick
 
 # For screenshots and recording
 bindsym $mod+Shift+Print	exec --no-startup-id $startrec
@@ -544,6 +547,7 @@ assign [class="pycharm"]		$ws3
 assign [class="QtCreator"]   		$ws3
 assign [class="Eclipse"]   		$ws3
 assign [class="Element|SchildiChat"] 	$ws4
+assign [class="TelegramDesktop"]  	$ws4
 assign [class="VirtualBox"]  		$ws5
 assign [title="GIMP Startup"]		$ws5
 assign [class="Gimp"]			$ws5
