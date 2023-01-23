@@ -54,7 +54,7 @@ export MBSYNCRC="$XDG_CONFIG_HOME/mbsync/config"
 export ELECTRUMDIR="$XDG_DATA_HOME/electrum"
 
 # Other program settings:
-export GEM_HOME="$(ruby -e 'puts Gem.user_dir')"
+export GEM_HOME="$(ruby -e 'puts Gem.user_dir' 2>/dev/null)"
 export LANG="en_US.UTF-8"
 export TERM="xterm-256color"
 export LESS='-F -i -J -M -R -W -x4 -X -z-4' # https://www.topbug.net/blog/2016/09/27/make-gnu-less-more-powerful/
@@ -104,8 +104,11 @@ fi
 if [[ -d "$HOME/.local/bin/" ]]; then
 	PATH="$PATH:${$(find ~/.local/bin -type d -printf %p:)%%:}"
 fi
-if [[ -n $GEM_HOME ]]; then
+if [[ -n $GEM_HOME ]] && [[ -d "$GEM_HOME/bin" ]]; then
 	PATH="$PATH:$GEM_HOME/bin"
+fi
+if [[ -d "$HOME/.local/share/cargo/bin" ]]; then
+	PATH="$PATH:$HOME/.local/share/cargo/bin"
 fi
 export PATH
 
