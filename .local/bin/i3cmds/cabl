@@ -68,6 +68,7 @@ if [[ $locale == ja ]]; then
 	weblio_sentences() { "$BROWSER" "https://ejje.weblio.jp/sentence/content/$*"; }
 	captionpop() { "$BROWSER" "https://www.captionpop.com/search?nl=en&tl=ja&filter=target&q=$*"; }
 	weblio() { "$BROWSER" "https://www.weblio.jp/content/$*"; }
+	weblio_synonyms() { "$BROWSER" "https://thesaurus.weblio.jp/content/$*"; }
 	kotobank() { "$BROWSER" "https://kotobank.jp/gs/?q=$*"; }
 	sakuraparis() { "$BROWSER" "https://sakura-paris.org/dict/%E5%BA%83%E8%BE%9E%E8%8B%91/prefix/$*"; }
 	reverso() { "$BROWSER" "https://context.reverso.net/translation/japanese-english/$*"; }
