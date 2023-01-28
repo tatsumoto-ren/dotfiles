@@ -64,7 +64,7 @@ case "$1" in
 	notify_do move_file
 	;;
 "i")
-	notify-send -t 0 "File information" "$(mediainfo -- "$(first_file)")"
+	notify-send -t 0 "File information" "$(mediainfo -- "$(first_file)" | sed "s/[ ]\+:/:/g;s/: /: <b>/;s/$/<\/b>/" | grep "<b>")"
 	;;
 "w")
 	setbg "$(first_file)"
