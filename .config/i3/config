@@ -373,6 +373,9 @@ bindsym --release Shift+Print	exec maimpick area
 # Ctrl + Shift + PrintScreen takes the given area and copies the image to the clipboard.
 bindsym --release Ctrl+Shift+Print	exec maimpick area-clipboard
 
+# Alt + i takes the given area and adds the image to the selected Anki card.
+bindsym --release $alt+i		exec maimpick area-Anki
+
 # Super+Print shows the dialog window
 bindsym $mod+Print		exec maimpick
 

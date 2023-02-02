@@ -209,10 +209,12 @@ audio) audio ;;
 video) video ;;
 selected*) selected_area ;;
 kill) killrecording ;;
-*) if [ -f /tmp/recordingpid ]; then
-	asktoend
-	exit
-else
-	askrecording
-fi ;;
+*)
+	if [[ -f /tmp/recordingpid ]]; then
+		asktoend
+		exit
+	else
+		askrecording
+	fi
+	;;
 esac

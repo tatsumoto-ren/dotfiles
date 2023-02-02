@@ -9,7 +9,7 @@ readonly bookmark_file
 
 new_bookmark() {
 	if ! grep -Fqsx "$*" -- "$bookmark_file"; then
-		echo "$*" >>"$bookmark_file"
+		echo "${*//$'\n'/<br>}" >>"$bookmark_file"
 		notify-send "${0##*/} - ${FUNCNAME[0]//_/ }" "✅ Bookmark added." &
 	else
 		notify-send "${0##*/} - ${FUNCNAME[0]//_/ }" "❌ Bookmark already exists." &
@@ -17,15 +17,19 @@ new_bookmark() {
 }
 
 consume_bookmark() {
-	if [[ $* == http?://* ]]; then
-		"${BROWSER:-xdg-open}" "$*"
+	local -r text=${*//<br>/$'\n'}
+
+	if [[ $text == http?://* ]]; then
+		"${BROWSER:-xdg-open}" "$text"
 	else
-		xclip -sel c <<< "$*"
+		xclip -sel c <<< "$text"
 	fi
 }
 
 select_bookmark() {
-	grep -v '^#' -- "$bookmark_file" | tac | dmenu -i -l 50 -p "${1:-Select} bookmark"
+	grep -v '^#' -- "$bookmark_file" |
+		tac |
+		dmenu -i -l 50 -p "${1:-Select} bookmark"
 }
 
 pop_bookmark() {

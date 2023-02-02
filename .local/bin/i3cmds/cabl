@@ -307,7 +307,7 @@ if echo "$search_text" | grep -q "/watch?v=\|invidious\|youtube\.com\|youtu\.be\
 	add_to_impd() { impd add "$*"; }
 fi
 
-echo "$search_text" | grep -q "instagram\.com\|nitter\|bitchute\.com\|worldstar\.com/web/video\|twitter\.com/" &&
+echo "$search_text" | grep -q "instagram\.com\|nitter\|bitchute\.com\|worldstar\.com/web/video\|twitter\." &&
 	youtubedl() { tsp yt-dlp --add-metadata -ic "$@"; }
 
 if echo "$search_text" | grep -q "^.*\.[A-Za-z]\+.*"; then
