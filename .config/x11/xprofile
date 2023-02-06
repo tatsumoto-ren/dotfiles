@@ -27,11 +27,11 @@ rank-nitter-instances >/dev/null &
 xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources"
 
 # Autostart
-for program in mpd xcompmgr dunst unclutter pipewire; do
+for program in mpd xcompmgr dunst unclutter pipewire remapd; do
 	if ! pidof -s "$program" && command -v "$program"; then
 		"$program" &
 	fi
-done >/dev/null 2>&1
+done
 
 # Ensure that xrdb has finished running before moving on to start the WM/DE.
 [ -n "$xrdbpid" ] && wait "$xrdbpid"
