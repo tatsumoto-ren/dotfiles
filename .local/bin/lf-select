@@ -3,7 +3,7 @@
 # View files with sxiv and and select them in lf.
 
 rotdir "${1:?}" |
-grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\|ico\)\(_large\)*$" |
+grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|avif\|tif\|ico\)\(_large\)*$" |
 sxiv -aio 2>/dev/null |
 while read -r file; do
 	[ -z "$file" ] && continue
