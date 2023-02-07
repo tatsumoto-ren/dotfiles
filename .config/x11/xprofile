@@ -10,8 +10,6 @@ dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XA
 xrandr --dpi 96
 # Set the background with the `setbg` script
 setbg &
-# Run the remaps script, switching caps/esc and more; check it for more info
-remaps &
 # File synchronization
 syncthing -no-browser &
 # Backups. Install deja-dup.
