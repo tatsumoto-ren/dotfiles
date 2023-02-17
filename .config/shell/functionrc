@@ -1,7 +1,10 @@
 #!/bin/bash
 
 p() { sudo pacman "$@"; notify-pacman-block; }
-see() { cd ~/.local/bin && $EDITOR "$(fzf)" ;}
+see() {
+	choice="$(find ~/.local/bin -mindepth 1 -printf '%P\n' | fzf)"
+	[ -f "$HOME/.local/bin/$choice" ] && $EDITOR "$HOME/.local/bin/$choice"
+}
 vf() { find . -type f | fzf | xargs -r -I % "$EDITOR" % ;}
 calc() { awk "BEGIN{ print $* }" ;}
 kitsudown() { curl "$@" | grep -Eo 'subtitles[^"]+\.(srt|ass)' | xargs -n 1 -P 26 -I{} wget --no-clobber 'http://kitsunekko.net/{}' ;}

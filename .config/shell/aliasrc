@@ -6,12 +6,15 @@
 # Use $XINITRC variable if file exists.
 [ -f "$XINITRC" ] && alias startx="startx $XINITRC"
 
+[ -f "$MBSYNCRC" ] && alias mbsync="mbsync -c $MBSYNCRC"
+
 # Verbosity and settings that you pretty much just always are going to want.
 alias \
 	cp="cp -iv" \
 	mv="mv -iv" \
 	rm="rm -vI" \
 	bc="bc -ql" \
+	rsync="rsync -vrPlu" \
 	mkd="mkdir -pv" \
 	ffmpeg="ffmpeg -hide_banner" \
 	:q="exit" \
@@ -26,6 +29,7 @@ alias \
 	yta="yt -x -f bestaudio/best" \
 	mp3dl="yta --audio-quality 1 --audio-format mp3" \
 	ytv="youtube-viewer" \
+	ytt="yt --skip-download --write-thumbnail" \
 
 # Colorize commands when possible.
 alias \
