@@ -15,8 +15,8 @@ choose_from_cwds() {
 humantime() { date -d "@$1" ;}
 wait-notify() {
 	sleep "$@"
-	notify-send -t 0 --icon alarm-timer "Timer ended" "$* passed" &
-	paplay /usr/share/sounds/freedesktop/stereo/complete.oga &
+	setsid -f notify-send -t 0 --icon alarm-timer "Timer ended" "$* passed"
+	setsid -f paplay /usr/share/sounds/freedesktop/stereo/complete.oga
 }
 
 massrename() {
@@ -100,4 +100,10 @@ anki_test_run() {
 sitedl() {
 	local -r url=$1 domain=$2
 	wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --domains "$domain" --no-parent "$url"
+}
+
+all_but_base() {
+	local -r basepac=$(pacman -Qi base-devel base | grep -Fi 'depends on' | cut -d: -f2 | tr ' ' '\n')
+
+	comm -23 <(pacman -Qetq | sort -u) <(echo "$basepac" | sort -u) | less
 }

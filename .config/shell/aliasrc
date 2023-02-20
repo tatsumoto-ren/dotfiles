@@ -71,7 +71,6 @@ alias \
 	kakasi_reading="kakasi -i utf8 -o utf8 -u -JH -KH" \
 
 # Pacman / system
-basepac='bash bzip2 coreutils file filesystem findutils gawk gcc-libs gettext glibc grep gzip iproute2 iputils licenses pacman pciutils procps-ng psmisc sed shadow systemd systemd-sysvcompat tar util-linux xz'
 
 alias \
 	lsp="pacman -Qett --color=always | less" \
@@ -82,9 +81,9 @@ alias \
 	whathaveidone="tail -500 /var/log/pacman.log | grep -i 'installed\|removed\|graded' --color=never" \
 	refl='sudo reflector --protocol https --download-timeout 60 --verbose --age 6 --latest 100 --fastest 10 --sort rate --country "$(curl -Ls "ifconfig.co/country"),DE,FR,GB,NL,PL,RU,BY,CZ,FI,SE,CH,HU,NO" --save /etc/pacman.d/mirrorlist' \
 	reflp='sudo reflector --url "https://www.parabola.nu/mirrors/status/json" --protocol https --download-timeout 60 --verbose --age 12 --latest 100 --fastest 10 --sort rate --save /etc/pacman.d/parabola-mirrorlist' \
-	all_but_base="comm -23 <(pacman -Qetq | sort) <({ pacman -Qgq base-devel ; echo \$basepac | tr ' ' '\n' ;} | sort) | less" \
 	ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" \
 	printsrcinfo="makepkg --printsrcinfo > .SRCINFO" \
 	unlockme='faillock --user "$USER" --reset' \
 	listkernels='ls -1 /boot/vmli*' \
 	egit='sudo etckeeper vcs' \
+	te='gio trash --empty' \
