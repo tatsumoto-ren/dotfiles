@@ -266,7 +266,7 @@ if echo "$search_text" | grep -Pq 'boards\.4chan(nel)?\.org'; then
 		local -r title=$(echo "$html" | grep -Po '<title>\K.*(?=</title>)' | sed 's,/,,g')
 		local -r folder=$HOME/Pictures/$title
 		local -r urls=$(echo "$html" |
-			grep -Po '\w+\.4cdn\.org/\w{1,3}/\d+\.(jpg|png|webp)' |
+			grep -Po '\w+\.4cdn\.org/\w{1,6}/\d+\.(jpg|png|webp)' |
 			sort -u |
 			awk '{ printf "url = \"%s\"\n-LO\n", $1 }')
 		mkdir -p -- "$folder" && cd -- "$folder" || return 1
@@ -343,7 +343,7 @@ __main() {
 	for pid in $(pstree -lpA "$pid" | head -1 | grep --color=never -oP '\(\K\d+(?=\))'); do
 		cd -- "$(readlink -- "/proc/$pid/cwd")" || continue
 		[[ -f "$search_text" ]] && xdg-open "$search_text" && exit
-		[[ -d "$search_text" ]] && "i3-sensible-terminal" "$search_text" && exit
+		[[ -d "$search_text" ]] && "${TERMINAL:-alacritty}" -e "${FILE:-lf}" "$search_text" && exit
 	done
 
 	if [[ -n ${func:=$(__ask_action)} ]]; then
