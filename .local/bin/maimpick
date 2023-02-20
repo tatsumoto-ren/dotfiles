@@ -161,6 +161,7 @@ main() {
 	case $command in
 	*area*clipboard)
 		take_screenshot -s | xclip_png
+		notify "Area copied to the clipboard."
 		;;
 	*area*gimp)
 		take_screenshot -s "$file_path"
@@ -173,13 +174,13 @@ main() {
 			notify "No selected note."
 			return
 		fi
-		anki_select_note "0" &
 		take_screenshot -s "$file_path"
 		local -r size_quality=$(ask_size_quality) webp_path=${file_path%.*}.webp
 		if [[ -z $size_quality ]]; then
 			notify "Aborted."
 			return
 		fi
+		anki_select_note "0"
 		echo "$size_quality" >>"$selections_cache"
 		convert_image "$file_path" "$webp_path" "$size_quality"
 		anki_store "$webp_path" "$(basename -- "$webp_path")"
