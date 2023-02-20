@@ -7,19 +7,40 @@
 # if I press next, it will go to the 16th etc. Autistic, I know, but this is
 # one of the reasons that sxiv is great for being able to read standard input.
 
-import sys,os,re
+import os
+import re
+import sys
 
 if len(sys.argv) < 2:
     sys.exit('usage: rotdir filename')
 
-def natural_sort(l):
-    convert = lambda text: int(text) if text.isdigit() else text.lower()
-    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
-    return sorted(l, key = alphanum_key)
+
+def as_numeric(text: str) -> int | str:
+    return int(text) if text.isdigit() else text.lower()
+
+
+def alphanum_key(text: str) -> tuple[str | int, ...]:
+    return tuple(as_numeric(c) for c in re.split('([0-9]+)', text))
+
+
+def natural_sort(file_list: list[str]) -> list[str]:
+    return sorted(file_list, key=alphanum_key)
+
+
+def selected_file_name() -> str:
+    return os.path.basename(''.join(sys.argv[1:]))
+
+
+def list_current_dir() -> list[str]:
+    return os.listdir(os.getcwd())
+
+
+def main():
+    ls = natural_sort(list_current_dir())
+    base_index = ls.index(selected_file_name())
+    result = ls[base_index:] + ls[:base_index]
+    print('\n'.join(result))
+
 
 if __name__ == '__main__':
-    base = os.path.basename(''.join(sys.argv[1:]))
-    ls=natural_sort(os.listdir(os.getcwd()))
-    base_index=ls.index(base)
-    result=ls[base_index:] + ls[:base_index]
-    print('\n'.join(result))
+    main()
