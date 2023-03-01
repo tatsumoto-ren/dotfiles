@@ -1,6 +1,6 @@
 [Added Associations]
 application/epub+zip=org.pwmt.zathura.desktop;
-application/json=geany.desktop;codium.desktop;nvim.desktop;
+application/json=geany.desktop;codium.desktop;nvim.desktop;vscodium.desktop;
 application/ogg=mpv.desktop;
 application/pdf=libreoffice-draw.desktop;org.pwmt.zathura.desktop;
 application/postscript=org.pwmt.zathura.desktop;geany.desktop;
@@ -28,7 +28,7 @@ image/avif=firefox.desktop;sxiv.desktop;
 image/gif=sxiv.desktop;gimp.desktop;mpv.desktop;
 image/jpeg=gimp.desktop;sxiv.desktop;nsxiv.desktop;
 image/png=gimp.desktop;sxiv.desktop;nsxiv.desktop;
-image/svg+xml=gimp.desktop;firefox.desktop;nvim.desktop;geany.desktop;
+image/svg+xml=gimp.desktop;nvim.desktop;firefox.desktop;geany.desktop;
 image/webp=gimp.desktop;sxiv.desktop;vwebp.desktop;nsxiv.desktop;
 inode/directory=lf.desktop;thunar.desktop;
 inode/mount-point=lf.desktop;thunar.desktop;
@@ -87,3 +87,4 @@ application/zip=org.gnome.FileRoller.desktop
 application/x-xdg-protocol-tg=telegramdesktop.desktop
 x-scheme-handler/tg=telegramdesktop.desktop
 audio/mpeg=mpv.desktop
+application/json=vscodium.desktop
