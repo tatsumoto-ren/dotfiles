@@ -94,7 +94,9 @@ if [[ $locale == ja ]]; then
 			--node-format='%f[6]\n' \
 			--eos-format='\n' \
 			--unk-format='\n' <<< "$*" |
+			sed '/^ *$/d' |
 			dmenu |
+			tee >(xclip) |
 			xclip -selection clipboard
 	}
 	longman() { "$BROWSER" "https://www.ldoceonline.com/search/japanese-english/direct/?q=$*"; }
