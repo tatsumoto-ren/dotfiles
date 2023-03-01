@@ -9,6 +9,8 @@
 
 readonly tmp_dir=/tmp/cabl && mkdir -p -- "$tmp_dir"
 readonly BROWSER=${BROWSER:-xdg-open}
+readonly ANKI_MODEL=${ANKI_MODEL:-Japanese sentences}
+readonly ANKI_SENTENCE_FIELD=${ANKI_SENTENCE_FIELD:-SentKanji}
 
 __strip() {
 	sed 's/^ *//; s/ *$//;'
@@ -37,6 +39,10 @@ __report_err() {
 	return 1
 }
 
+__ankiconnect_request() {
+	curl -fsS localhost:8765 -X POST -d "$1"
+}
+
 __anki_store_file() {
 	local -r path=${1:?}
 	local -r name=${2:?}
@@ -51,7 +57,14 @@ __anki_store_file() {
 	}'
 	request=${request/<name>/$name}
 	request=${request/<path>/$path}
-	output=$(curl -fsS localhost:8765 -X POST -d "$request" 2>&1) || __report_err "$output"
+	output=$(__ankiconnect_request "$request" 2>&1) || __report_err "$output"
+}
+
+__escape_json() {
+	local text=$1
+	text=${text//'"'/'&quot;'}
+	text=${text//$'\n'/'<br>'}
+	echo "$text"
 }
 
 __convert_to_opus() {
@@ -191,7 +204,7 @@ jisho() {
 
 clip() { cabl clip; }
 
-ankisearch() {
+anki_search() {
 	local -r request='{
 		"action": "guiBrowse",
 		"version": 6,
@@ -199,9 +212,26 @@ ankisearch() {
 			"query": "<query>"
 		}
 	}'
-	local query=${*//\"/\\\"}
-	query=${query//$'\n'/ }
-	curl 'localhost:8765' -X POST -d "${request/<query>/$query}"
+	__ankiconnect_request "${request/<query>/$(__escape_json "$*")}"
+}
+make_anki_card() {
+	local request='{
+		"action": "guiAddCards",
+		"version": 6,
+		"params": {
+			"note": {
+				"deckName": "Default",
+				"modelName": "<anki_model>",
+				"fields": {
+					"<sentence_field>": "<sentence>"
+				}
+			}
+		}
+	}'
+	request=${request/<sentence_field>/$ANKI_SENTENCE_FIELD}
+	request=${request/<anki_model>/$ANKI_MODEL}
+	request=${request/<sentence>/$(__escape_json "$1")}
+	output=$(__ankiconnect_request "$request" 2>&1) || __report_err "$output"
 }
 sankaku() {
 	"$BROWSER" "https://chan.sankakucomplex.com/post/index?tags=$* order:popular"
@@ -241,6 +271,9 @@ packages() {
 }
 archwiki() {
 	"$BROWSER" "https://wiki.archlinux.org/index.php?search=$*"
+}
+myanimelist() {
+	"$BROWSER" "https://myanimelist.net/search/all?q=$*"
 }
 
 # Download a streamable video through Tor
