@@ -74,7 +74,29 @@ __convert_to_opus() {
 		-vbr on -compression_level 10 -application voip "$output"
 }
 
+__find_mecab() {
+	{
+		which mecab --skip-functions --skip-alias
+		find ~/.local/share/Anki2/addons21 -type f -name mecab.lin -o -name mecab
+	} | head -1
+}
+
+__find_mecab_dicrc() {
+	find ~/.local/share/Anki2/addons21 -type f -name dicrc | head -1
+}
+
 if [[ $locale == ja ]]; then
+	show_headwords() {
+		# split sentence with mecab, show a list of headwords. copy selected to the clipboard.
+		# requires AJT Japanese or Japanese Support to be installed.
+		"$(__find_mecab)" \
+			-d "$(dirname -- "$(__find_mecab_dicrc)")" \
+			--node-format='%f[6]\n' \
+			--eos-format='\n' \
+			--unk-format='\n' <<< "$*" |
+			dmenu |
+			xclip -selection clipboard
+	}
 	longman() { "$BROWSER" "https://www.ldoceonline.com/search/japanese-english/direct/?q=$*"; }
 	aozora_search() { "$BROWSER" "https://myokoym.net/aozorasearch/search?word=$*"; }
 	forvo() { "$BROWSER" "https://forvo.com/search/$*/"; }
