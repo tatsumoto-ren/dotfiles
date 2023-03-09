@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Requires installing mecab and ONE of the following:
+# https://ankiweb.net/shared/info/1344485230
+# https://ankiweb.net/shared/info/3918629684
+# https://ankiweb.net/shared/info/13462835
+
+# Open GoldenDict, press "Edit" > "Dictionaries" > "Programs" and add this script.
+# GoldenDict passes the search string to stdin.
+
+find_mecab_dicrc() {
+	find ~/.local/share/Anki2/addons21 -type f -name dicrc | head -1
+}
+
+sanitize_input() {
+	sed -E 's,[a-z]+, ,Ig'
+}
+
+sanitize_input | mecab \
+	--node-format='<a href="bword:%m">%m</a> ' \
+	--eos-format='<br> ' \
+	--unk-format=' ' \
+	--dicdir="$(dirname -- "$(find_mecab_dicrc)")"
