@@ -132,7 +132,7 @@ ask_size_quality() {
 			0x350@5
 			0x0@100
 		EOF
-	} | head -10 | dmenu -i -p "Size and quality"
+	} | sort -u | head -10 | dmenu -i -p "Size and quality"
 }
 
 convert_image() {

@@ -106,6 +106,7 @@ if [[ $locale == ja ]]; then
 	captionpop() { "$BROWSER" "https://www.captionpop.com/search?nl=en&tl=ja&filter=target&q=$*"; }
 	weblio() { "$BROWSER" "https://www.weblio.jp/content/$*"; }
 	weblio_synonyms() { "$BROWSER" "https://thesaurus.weblio.jp/content/$*"; }
+	wadoku() { "$BROWSER" "https://www.wadoku.de/search/$*"; }
 	kotobank() { "$BROWSER" "https://kotobank.jp/gs/?q=$*"; }
 	sakuraparis() { "$BROWSER" "https://sakura-paris.org/dict/%E5%BA%83%E8%BE%9E%E8%8B%91/prefix/$*"; }
 	reverso() { "$BROWSER" "https://context.reverso.net/translation/japanese-english/$*"; }
