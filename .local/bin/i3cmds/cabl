@@ -40,7 +40,7 @@ __report_err() {
 }
 
 __ankiconnect_request() {
-	curl -fsS localhost:8765 -X POST -d "$1"
+	curl -fsS '127.0.0.1:8765' -X POST -d "$1"
 }
 
 __anki_store_file() {
@@ -82,7 +82,7 @@ __find_mecab() {
 }
 
 __find_mecab_dicrc() {
-	find ~/.local/share/Anki2/addons21 -type f -name dicrc | head -1
+	find /usr/lib/mecab/ ~/.local/share/Anki2/addons21 -type f -name dicrc -print -quit
 }
 
 if [[ $locale == ja ]]; then
@@ -95,7 +95,7 @@ if [[ $locale == ja ]]; then
 			--eos-format='\n' \
 			--unk-format='\n' <<< "$*" |
 			sed '/^ *$/d' |
-			dmenu |
+			{ dmenu || echo "$*" ;} |
 			tee >(xclip) |
 			xclip -selection clipboard
 	}
@@ -212,6 +212,8 @@ else
 		fi
 	}
 fi
+
+goldendict() { unset -f goldendict && goldendict "$@"; }
 
 new_bookmark() {
 	bookmarkctl new "$*"

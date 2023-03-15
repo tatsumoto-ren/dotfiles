@@ -88,3 +88,5 @@ application/x-xdg-protocol-tg=telegramdesktop.desktop
 x-scheme-handler/tg=telegramdesktop.desktop
 audio/mpeg=mpv.desktop
 application/json=vscodium.desktop
+audio/ogg=mpv.desktop
+audio/x-opus+ogg=mpv.desktop

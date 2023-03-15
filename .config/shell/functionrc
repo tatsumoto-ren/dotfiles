@@ -107,3 +107,17 @@ all_but_base() {
 
 	comm -23 <(pacman -Qetq | sort -u) <(echo "$basepac" | sort -u) | less
 }
+
+silenceremove() {
+	ffmpeg \
+		-i "${1:?Input is not set}" \
+		-af silenceremove=stop_periods=-1:stop_duration=0.3:stop_threshold=-50dB \
+		-c:a libopus \
+		"${2:?Output is not set}"
+}
+
+my_mecab() {
+	local -r support_dir=$(dirname -- "$(find ~/.local/share/Anki2/addons21 -name dicrc -print -quit)")
+
+	mecab -d "$support_dir" -u "$support_dir/user_dic.dic" -r "$support_dir/mecabrc"
+}

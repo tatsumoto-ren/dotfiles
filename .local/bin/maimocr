@@ -20,7 +20,7 @@ if_installed() {
 
 download_tessdata() {
 	local -r \
-		zip_url='https://g33k.se/_matrix/media/r0/download/g33k.se/chvDlHzjiXgDEdeGTFnyOExv' \
+		zip_url='https://trygve.me/_matrix/media/r0/download/trygve.me/DYlvuAsYWfLmyixcJTDPdwWW' \
 		zip_path=$(mktemp /tmp/tesseract_data.XXXXXX) \
 		osd_path=/usr/share/tessdata/osd.traineddata
 
