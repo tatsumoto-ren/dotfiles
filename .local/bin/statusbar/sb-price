@@ -8,50 +8,42 @@
 [ -z "$3" ] && exit 1
 
 # use $4 as currency, if not passed in use "usd" as default
+url="${CRYPTOURL:-rate.sx}"
 currency="${4:-usd}"
-interval="@14d" # History contained in chart preceded by '@' (7d = 7 days)
-dir="${XDG_DATA_HOME:-$HOME/.local/share}/crypto-prices"
+interval="@14d"	# History contained in chart preceded by '@' (7d = 7 days)
+dir="${XDG_CACHE_HOME:-$HOME/.cache}/crypto-prices"
 pricefile="$dir/$1-$currency"
 chartfile="$dir/$1-$currency-chart"
-
-updateprice() {
-	temp="$(mktemp)"
-	curl -s "$currency.rate.sx/1$1" >"$temp" &&
-		mv -f "$temp" "$pricefile" &&
-		curl -s "$currency.rate.sx/$1$interval" >"$temp" &&
-		mv -f "$temp" "$chartfile"
-}
+filestat="$(stat -c %x "$pricefile" 2>/dev/null)"
 
 [ -d "$dir" ] || mkdir -p "$dir"
 
-[ "$(stat -c %x "$pricefile" 2>/dev/null | cut -d' ' -f1)" != "$(date '+%Y-%m-%d')" ] &&
+updateprice() { curl -sf -m 3 $currency.$url/{1$1,$1$interval} --output "$pricefile" --output "$chartfile" ||
+	rm -f "$pricefile" "$chartfile" ;}
+
+[ "${filestat%% *}" != "$(date '+%Y-%m-%d')" ] &&
 	updateprice "$1"
 
 case $BLOCK_BUTTON in
-1)
-	setsid -f "$TERMINAL" -e less -Srf "$chartfile"
-	;;
-2)
-	notify-send -u low "$3 Updating..." "Updating $2 price..."
-	updateprice "$1" && notify-send "$3 Update complete." "$2 price is now \$$(cat "$pricefile")"
-	;;
-3)
-	uptime="$(date -d "$(stat -c %x "$pricefile")" '+%D at %T' | sed "s|$(date '+%D')|Today|")"
-	notify-send "$3 $2 module" "\- <b>Exact price: \$$(cat "$pricefile")</b>
+	1) setsid "$TERMINAL" -e less -Srf "$chartfile" ;;
+	2) notify-send -u low "$3 Updating..." "Updating $2 price..."
+		updateprice "$1" && notify-send "$3 Update complete." "$2 price is now
+\$$(cat "$pricefile")" ;;
+	3) uptime="$(date -d "$filestat" '+%D at %T' | sed "s|$(date '+%D')|Today|")"
+		notify-send "$3 $2 module" "\- <b>Exact price: \$$(cat "$pricefile")</b>
 - Left click for chart of changes.
 - Middle click to update.
 - Shows 🔃 if updating prices.
 - <b>Last updated:
-	$uptime</b>"
-	;;
-6) "$TERMINAL" -e "$EDITOR" "$0" ;;
+	$uptime</b>" ;;
+	6) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
 case "$currency" in
-usd) symb="$" ;;
-gbp) symb="£" ;;
-eur) symb="€" ;;
-btc) symb="₿" ;;
+	usd) symb="$" ;;
+	gbp) symb="£" ;;
+	eur) symb="€" ;;
+	btc) symb="" ;;
 esac
 
-printf "$3$symb%0.2f$after" "$(cat "$pricefile")"
+[ -f "$pricefile" ] && printf "$3$symb%0.2f" "$(cat "$pricefile")"
