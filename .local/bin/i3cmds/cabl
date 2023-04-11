@@ -171,6 +171,7 @@ else
 	longman() { "$BROWSER" "https://www.ldoceonline.com/dictionary/$*"; }
 	cambridge() { "$BROWSER" "https://dictionary.cambridge.org/us/dictionary/english/$*"; }
 	macmillandictionary() { "$BROWSER" "https://www.macmillandictionary.com/us/dictionary/american/$*"; }
+	collinsdictionary() { "$BROWSER" "https://www.collinsdictionary.com/search/?dictCode=english&q=$*"; }
 	merriam_webster() { "$BROWSER" "https://www.merriam-webster.com/dictionary/$*"; }
 	youglish() { "$BROWSER" "https://youglish.com/pronounce/$*/english/us"; }
 	pronunciation() {

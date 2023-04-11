@@ -89,9 +89,11 @@ async def filter_alive(client: httpx.AsyncClient, instances: list[Instance]) -> 
 def sorted_instances(instances: list[Instance]) -> list[Instance]:
     return sorted(instances, key=lambda ins: (-ins.health_percent, ins.active_month))
 
+def file_exists(file_path):
+    return os.path.isfile(file_path) and os.stat(file_path).st_size > 0
 
 async def main():
-    if os.path.isfile(CACHE) and '--recalc' not in sys.argv[1:]:
+    if file_exists(CACHE) and '--recalc' not in sys.argv[1:]:
         with open(CACHE) as f:
             return print(f.read())
 

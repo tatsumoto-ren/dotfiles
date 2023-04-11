@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # A collection of media editing scripts
 
@@ -27,7 +27,7 @@ check_anki_col_available() {
 _cwebp() { cwebp -blend_alpha '0xffffff' -alpha_q 0 -short -sharp_yuv -af -pass 10 -m 6 -mt -sns 100 -f 100 "$@"; }
 _ffmpeg() { ffmpeg -nostdin -hide_banner -loglevel info "$@"; }
 _findall() { find . -mindepth 1 -maxdepth 1 -type f "$@" -print0; }
-_xargs() { xargs -0 -P 8 -I {} "$@"; }
+_xargs() { xargs -0 -P "$(nproc)" -I {} "$@"; }
 
 # Convert a file to webp, specify target size
 stwebp() {

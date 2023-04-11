@@ -63,4 +63,5 @@ case "$ext" in
 	*) sed -n '/^#!/s/^#!//p; q' "$file" | xargs -r -I % "$file" ;;
 esac
 
+echo -n "Press any key to continue..."
 read -r
