@@ -199,6 +199,7 @@ bindsym $mod+v			splitv
 # Sticky floating windows (stay on screen even if you switch to another workspace)
 bindsym $mod+o			sticky toggle
 bindsym $alt+o			exec --no-startup-id transformers_ocr recognize
+bindsym $alt+Shift+o		exec --no-startup-id transformers_ocr hold
 
 # Toggle music pause
 bindsym $mod+p			exec --no-startup-id mpc toggle
@@ -545,7 +546,9 @@ for_window [class="(?i)anki" title="^Card Types for "]			floating disable
 
 # Assign workspaces to programs
 assign [class="Thunderbird"]		$ws1
+assign [class="Firefox|LibreWolf"]	$ws1
 assign [class="(?i)anki"]   		$ws2
+assign [class="(?i)GoldenDict"]		$ws2
 assign [class="pycharm"]		$ws3
 assign [class="QtCreator"]   		$ws3
 assign [class="Eclipse"]   		$ws3
