@@ -184,3 +184,7 @@ nnoremap <leader>h :call ToggleHiddenAll()<CR>
 " So ":vs ;cfz" will expand into ":vs /home/<user>/.config/zsh/.zshrc"
 " if typed fast without the timeout.
 silent! source ~/.config/nvim/shortcuts.vim
+
+" Auto Fcitx
+" https://wiki.archlinux.org/title/Fcitx#Vim
+source ~/.config/nvim/auto_fcitx.vim
