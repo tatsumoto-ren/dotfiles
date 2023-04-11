@@ -120,7 +120,9 @@ silenceremove() {
 }
 
 my_mecab() {
-	local -r support_dir=$(dirname -- "$(find ~/.local/share/Anki2/addons21 -name dicrc -print -quit)")
-
-	mecab -d "$support_dir" -u "$support_dir/user_dic.dic" -r "$support_dir/mecabrc"
+	local -r support_dir=$(dirname -- "$(find /usr/lib/mecab/dic/mecab-ipadic-neologd /usr/lib/mecab/dic ~/.local/share/Anki2/addons21 -type f -name dicrc -print -quit)")
+	local -r user_dic=$(find "$support_dir" -type f -name "user_dic.dic")
+	local -a command=(mecab -d "$support_dir" "$@")
+	[[ -f $user_dic ]] && command+=(-u "$user_dic")
+	"${command[@]}"
 }
