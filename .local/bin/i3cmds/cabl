@@ -111,6 +111,7 @@ if [[ $locale == ja ]]; then
 	sakuraparis() { "$BROWSER" "https://sakura-paris.org/dict/%E5%BA%83%E8%BE%9E%E8%8B%91/prefix/$*"; }
 	reverso() { "$BROWSER" "https://context.reverso.net/translation/japanese-english/$*"; }
 	qolibri() { unset -f qolibri && qolibri "$@"; }
+	kanjijoho() { "$BROWSER" "https://kanjijoho.com/cat/search.html?search=part&getdata=$*"; }
 	pronunciation() {
 		local -r searchterm="$*" format="ogg"
 
@@ -334,7 +335,7 @@ if echo "$search_text" | grep -Pq 'boards\.4chan(nel)?\.org'; then
 		tsp curl \
 			--parallel \
 			--parallel-immediate \
-			--parallel-max 50 \
+			--parallel-max 10 \
 			-w '%{url} %{exitcode}\n' \
 			--connect-timeout 10 --max-time 60 \
 			--retry 2 \
@@ -368,7 +369,7 @@ if echo "$search_text" | grep -q "/watch?v=\|invidious\|youtube\.com\|youtu\.be\
 	add_to_impd() { impd add "$*"; }
 fi
 
-echo "$search_text" | grep -q "instagram\.com\|nitter\|bitchute\.com\|worldstar\.com/web/video\|twitter\." &&
+echo "$search_text" | grep -Pq "instagram\.com|nitter|/status/|bitchute\.com|worldstar\.com/web/video|twitter\." &&
 	youtubedl() { tsp yt-dlp --add-metadata -ic "$@"; }
 
 if echo "$search_text" | grep -q "^.*\.[A-Za-z]\+.*"; then
