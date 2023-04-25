@@ -12,7 +12,7 @@
 
 screen_resolution() {
 	# first monitor only
-	xrandr | sed -n '/\s*\([0-9]\+x[0-9]\+\).*\*.*/{ s//\1/p; q }'
+	xrandr | grep -Po 'connected primary \K[^ ]*?(?=\+)'
 }
 
 notify_end() { notify-send "$(basename "$0")" "Stopped recording."; }
@@ -67,8 +67,12 @@ __ffmpeg() {
 		"$output"
 }
 
+screen_offset() {
+	xrandr | grep -Po 'connected primary [^ ]*?\+\K[^ ]*' | sed 's/+/,/'
+}
+
 screencast() {
-	__ffmpeg "$DISPLAY" "$(screen_resolution)" "$HOME/screencast-$(timestamp).mp4" &
+	__ffmpeg "$DISPLAY+$(screen_offset)" "$(screen_resolution)" "$HOME/screencast-$(timestamp).mp4" &
 	echo $! >/tmp/recordingpid
 	updateicon "⏺️🎙️"
 }
