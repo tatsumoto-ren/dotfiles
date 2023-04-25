@@ -23,6 +23,8 @@ rank-invidious-instances >/dev/null &
 rank-nitter-instances >/dev/null &
 # Use Xresources colors/settings on startup
 xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources"
+# Start a polkit agent to run software like gparted.
+lxqt-policykit-agent &
 
 # Autostart
 for program in mpd xcompmgr dunst unclutter pipewire remapd; do
