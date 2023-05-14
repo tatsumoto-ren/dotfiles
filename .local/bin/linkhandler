@@ -14,7 +14,6 @@ else
 	url="$1"
 fi
 
-
 case "${url:?}" in
 *twitter.com/*)
 	nitter_instance=$(rank-nitter-instances | head -5 | cut -f1 | shuf -n1)

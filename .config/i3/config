@@ -85,8 +85,8 @@ default_floating_border	normal 3
 
 # Restore workspace
 # i3 layout saving requires perl-anyevent-i3
-exec --no-startup-id	i3-msg 'workspace $ws9;\
-				append_layout ~/.config/i3/ws9.json;\
+exec --no-startup-id	i3-msg 'workspace $ws10;\
+				append_layout ~/.config/i3/ws10.json;\
 				workspace $ws1;'
 
 exec --no-startup-id	redshift -l $(curl -s 'https://location.services.mozilla.com/v1/geolocate?key=geoclue' | sed -rn 's/^.*"lat": *([0-9.]+), *"lng": *([0-9.]+).*$/\1:\2/p')

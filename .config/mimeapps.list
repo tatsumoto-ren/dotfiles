@@ -2,7 +2,7 @@
 application/epub+zip=org.pwmt.zathura.desktop;
 application/json=geany.desktop;codium.desktop;nvim.desktop;vscodium.desktop;
 application/ogg=mpv.desktop;
-application/pdf=libreoffice-draw.desktop;org.pwmt.zathura.desktop;
+application/pdf=gimp.desktop;libreoffice-draw.desktop;org.inkscape.Inkscape.desktop;org.pwmt.zathura.desktop;
 application/postscript=org.pwmt.zathura.desktop;geany.desktop;
 application/rss+xml=geany.desktop;newsboat-rss-add.desktop;codium.desktop;
 application/vnd.sqlite3=libreoffice-base.desktop;
@@ -41,7 +41,7 @@ text/tab-separated-values=libreoffice-calc.desktop;geany.desktop;
 text/x-log=geany.desktop;
 text/x-python=geany.desktop;pycharm.desktop;
 text/x-shellscript=nvim.desktop;
-video/mp4=audacity.desktop;firefox.desktop;Alacritty.desktop;mpv.desktop;
+video/mp4=org.kde.kdenlive.desktop;audacity.desktop;firefox.desktop;Alacritty.desktop;mpv.desktop;
 video/webm=mpv.desktop;
 video/x-matroska=mpv.desktop;audacity.desktop;
 x-scheme-handler/chrome=linkhandler.desktop;

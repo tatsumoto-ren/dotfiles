@@ -328,7 +328,7 @@ if echo "$search_text" | grep -Pq 'boards\.4chan(nel)?\.org'; then
 		local -r title=$(echo "$html" | grep -Po '<title>\K.*(?=</title>)' | sed 's,/,,g')
 		local -r folder=$HOME/Pictures/$title
 		local -r urls=$(echo "$html" |
-			grep -Po '\w+\.4cdn\.org/\w{1,6}/\d+\.(jpg|png|webp)' |
+			grep -Po '\w+\.4chan\.org/\w{1,6}/\d+\.(jpg|png|webp)' |
 			sort -u |
 			awk '{ printf "url = \"%s\"\n-LO\n", $1 }')
 		mkdir -p -- "$folder" && cd -- "$folder" || return 1
@@ -370,7 +370,10 @@ if echo "$search_text" | grep -q "/watch?v=\|invidious\|youtube\.com\|youtu\.be\
 fi
 
 echo "$search_text" | grep -Pq "instagram\.com|nitter|/status/|bitchute\.com|worldstar\.com/web/video|twitter\." &&
-	youtubedl() { tsp yt-dlp --add-metadata -ic "$@"; }
+	youtubedl() {
+		local url=$(sed -E 's|/nitter\.\w+|/twitter.com|g' <<< "$*")
+		tsp yt-dlp --proxy 'socks5://127.0.0.1:9050/' --add-metadata -ic "$url";
+	}
 
 if echo "$search_text" | grep -q "^.*\.[A-Za-z]\+.*"; then
 	gotourl() { "$BROWSER" "$@"; }
