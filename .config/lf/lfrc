@@ -204,12 +204,12 @@ map <delete> trash
 # cd to mountpoint
 map gm $lf -remote "send $id cd '$(stat -c %m "$(pwd)")'"
 
+map A :rename; cmd-end # at the very end
 map cw push A<c-u> # new rename
-map ci push A<a-b><a-b><a-f> # before extension
-map A rename # at the very end
-map I push A<c-a> # at the very beginning
-map i push A<a-b><a-b><a-f> # before extension
-map a push A<a-b> # after extension
+map I :rename; cmd-home # at the very beginning
+map i :rename # before extension
+map ci :rename # before extension
+map a :rename; cmd-right # after extension
 map b bulkrename
 map B $setbg $f
 
