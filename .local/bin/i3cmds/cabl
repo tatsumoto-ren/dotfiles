@@ -274,14 +274,14 @@ nyaa_search() {
 duckduckgo() {
 	"$BROWSER" "https://duckduckgo.com/?q=$*&kp=-2&kl=jp-jp"
 }
+searx_search() {
+	"$BROWSER" "https://searx.work/search?q=$*&safesearch=0&categories=general"
+}
 brave_search() {
 	"$BROWSER" "https://search.brave.com/search?q=$*"
 }
 duckduckgo_images() {
 	"$BROWSER" "https://duckduckgo.com/?q=$*&iax=images&ia=images&kp=-2&kl=jp-jp"
-}
-brave_images() {
-	"$BROWSER" "https://search.brave.com/images?q=$*"
 }
 google_images() {
 	"$BROWSER" "https://www.google.co.jp/search?q=$*&tbm=isch"
