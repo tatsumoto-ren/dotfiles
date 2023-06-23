@@ -69,8 +69,14 @@ __escape_json() {
 
 __convert_to_opus() {
 	local -r input=${1:?} output=${2:?} bitrate=32k
+	local -r silence_remove="
+		areverse,
+		silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-48dB,
+		areverse,
+		silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-48dB,
+		"
 	ffmpeg -vn -nostdin -hide_banner -loglevel fatal -y -i "$input" \
-		-map_metadata -1 -acodec libopus -ac 1 -ab "$bitrate" -af silenceremove=1:0:-50dB \
+		-map_metadata -1 -acodec libopus -ac 1 -ab "$bitrate" -af "$silence_remove" \
 		-vbr on -compression_level 10 -application voip "$output"
 }
 
@@ -114,13 +120,26 @@ if [[ $locale == ja ]]; then
 	kanjijoho() { "$BROWSER" "https://kanjijoho.com/cat/search.html?search=part&getdata=$*"; }
 	pronunciation() {
 		local -r searchterm="$*" format="ogg"
+		local -ra headers=(
+			-H 'Host: forvo.com'
+			-H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:114.0) Gecko/20100101 Firefox/114.0'
+			-H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'
+			-H 'Accept-Language: en-US,en;q=0.5'
+			-H 'DNT: 1'
+			-H 'Connection: keep-alive'
+			-H 'Upgrade-Insecure-Requests: 1'
+			-H 'Sec-Fetch-Dest: document'
+			-H 'Sec-Fetch-Mode: navigate'
+			-H 'Sec-Fetch-Site: none'
+			-H 'Sec-Fetch-User: ?1'
+		)
 
 		local-pronunciations "$searchterm" && return
 
 		get_forvo_audio_url() {
 			local -r searchterm="${*:?}"
 			local -r play_field=$([[ ${format:?} == 'mp3' ]] && echo 2 || echo 3)
-			curl -Ls "https://forvo.com/search/$searchterm/ja" |
+			curl -Ls "${headers[@]}" "https://forvo.com/search/$searchterm/ja" |
 				grep -oP -m 1 "(?<=Play\()[^)>]+(?=\))" |
 				cut -d, -f"$play_field" |
 				tr -d \' |
@@ -371,7 +390,7 @@ fi
 
 echo "$search_text" | grep -Pq "instagram\.com|nitter|/status/|bitchute\.com|worldstar\.com/web/video|twitter\." &&
 	youtubedl() {
-		local url=$(sed -E 's|/nitter\.\w+|/twitter.com|g' <<< "$*")
+		local url=$(sed -E 's|/nitter(\.\w+)+|/twitter.com|g' <<< "$*")
 		tsp yt-dlp --proxy 'socks5://127.0.0.1:9050/' --add-metadata -ic "$url";
 	}
 
