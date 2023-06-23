@@ -22,6 +22,16 @@
                     "title": "journalctl"
                 }
             ]
+        },
+        {
+            "name": "terminal",
+            "percent": 0.5,
+            "type": "con",
+            "swallows": [
+                {
+                    "title": "terminal"
+                }
+            ]
         }
     ]
 }
