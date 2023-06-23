@@ -6,6 +6,9 @@
 readonly OPUS_Q=${OPUS_Q:-32k}
 readonly WEBP_Q=${WEBP_Q:-5}
 readonly WEBP_RESIZE=${WEBP_RESIZE:-200}
+# https://trac.ffmpeg.org/wiki/Encode/MP3
+# 0 = max(up to 260 kbit/s)
+readonly MP3_Q=${MP3_Q:-6}
 
 anki_username() {
 	xdotool search --class 'anki' |
@@ -43,7 +46,15 @@ twebp() {
 	_cwebp "$1" -o "$(basename -- "${1%.*}").webp" -q "${2:-$WEBP_Q}"
 }
 
+readonly silence_remove_filter="
+	areverse,
+	silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-47dB,
+	areverse,
+	silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-47dB,
+"
+
 # Convert a file to ogg/opus
+# reads OPUS_Q variable
 togg() {
 	[[ ! -f $1 ]] && return 1
 	_ffmpeg \
@@ -58,8 +69,25 @@ togg() {
 		-vbr on \
 		-compression_level 10 \
 		-application voip \
-		-af 'silenceremove=1:0:-50dB' \
+		-af "$silence_remove_filter" \
 		"${1%.*}.ogg"
+}
+
+# Convert a file to mp3
+# reads MP3_Q variable
+tomp3() {
+	[[ ! -f $1 ]] && return 1
+	_ffmpeg \
+		-vn \
+		-sn \
+		-y \
+		-i "$1" \
+		-codec:a libmp3lame \
+		-qscale:a "$MP3_Q" \
+		-map_metadata -1 \
+		-ac 1 \
+		-af "$silence_remove_filter" \
+		"${1%.*}.mp3"
 }
 
 # Can be added to ~/.config/Thunar/uca.xml
@@ -85,7 +113,10 @@ ftwebp() { _findall -iregex '.*\.\(jpg\|jpeg\|png\|gif\)' | _xargs cm twebp {}; 
 ftswebp() { _findall -iregex '.*\.\(jpg\|jpeg\|png\|gif\)' | _xargs cm stwebp {}; }
 
 # Convert a folder to ogg/opus
-ftogg() { _findall -iregex '.*\.\(mp3\|flac\|aac\|wav\)' | _xargs cm togg {}; }
+ftogg() { _findall -iregex '.*\.\(mp3\|flac\|aac\|wav\|webm\)' | _xargs cm togg {}; }
+
+# Convert a folder to mp3
+ftomp3() { _findall -iregex '.*\.\(ogg\|flac\|aac\|wav\|webm\)' | _xargs cm tomp3 {}; }
 
 # Extract subs from all mkv files in a folder.
 fextsub() { _findall -iname '*.mkv' | _xargs cm extsub {}; }

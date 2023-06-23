@@ -20,7 +20,7 @@ __strip() {
 if [[ $1 == clip* ]]; then
 	search_text="$(xclip -o -selection clipboard | __strip)"
 else
-	search_text="$(xclip -o | __strip)"
+	search_text="$( { xclip -o || xclip -o -selection clipboard; } | __strip)"
 fi
 readonly search_text
 

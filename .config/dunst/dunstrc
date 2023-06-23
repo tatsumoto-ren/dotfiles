@@ -30,6 +30,7 @@
     # The geometry of the window:
     # Notice: default height of the i3bar is 21 pixels.
     width = 320
+    height = 1000
     origin = top-right
     offset = 0x21
 
