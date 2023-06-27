@@ -102,6 +102,14 @@ case "$1" in
 "g")
 	ifinstalled gimp && setsid -f gimp "$(first_file)"
 	;;
+"t")
+	# Tag the current file using lf. E.g, the last read manga page.
+	# When sxiv is launched as a child of lf, the 'id' vairable must be set.
+	if [ -n "$id" ] && ifinstalled lf; then
+		 lf -remote "send $id select \"$(first_file)\""
+		 lf -remote "send $id tag x"
+	fi
+	;;
 *)
 	notify-send "${0##*/}" "$1 is not bound." &
 	;;

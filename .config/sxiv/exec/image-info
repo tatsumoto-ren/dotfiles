@@ -20,3 +20,8 @@ geometry="${2}x${3}"
 tags=$(identify -format '%[IPTC:2:25]' ":$1" | tr ';' ',')
 
 echo "${filesize}${s}${geometry}${tags:+$s}${tags}${s}${mimetype}${s}${filename}"
+
+# If running as a child of lf, select the current file.
+if [ -n "$id" ]; then
+	lf -remote "send $id select \"$filename\""
+fi

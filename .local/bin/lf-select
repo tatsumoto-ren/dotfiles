@@ -2,11 +2,25 @@
 
 # View files with sxiv and and select them in lf.
 
-rotdir "${1:?}" |
+readonly first_file=$1
+readonly exe=$(basename -- "$0")
+
+if ! [ -f "$first_file" ]; then
+	notify-send "$exe" "first arg is not a file!"
+	exit 1
+fi
+
+if [ -z "$id" ]; then
+	notify-send "$exe" "lf id is not set!"
+	exit 1
+fi
+
+rotdir "$first_file" |
 grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|avif\|tif\|ico\)\(_large\)*$" |
 sxiv -aio 2>/dev/null |
 while read -r file; do
-	[ -z "$file" ] && continue
-	lf -remote "send select \"$file\""
-	lf -remote "send toggle"
+	if [ -n "$file" ]; then
+		lf -remote "send $id select \"$file\""
+		lf -remote "send $id toggle"
+	fi
 done
