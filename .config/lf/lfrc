@@ -143,7 +143,7 @@ cmd bulkrename ${{
     tmpfile_old="$(mktemp)"
     tmpfile_new="$(mktemp)"
 
-    [ -n "$fs" ] && fs=$(basename -a $fs) || fs=$(ls)
+    [ -n "$fs" ] && fs=$(basename -a $fs) || fs=$(ls -A)
 
     echo "$fs" > "$tmpfile_old"
     echo "$fs" > "$tmpfile_new"
