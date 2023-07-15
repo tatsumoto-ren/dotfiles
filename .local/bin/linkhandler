@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Feed script a url or file location.
-# If an image, it will view in sxiv,
+# If an image, it will view in nsxiv,
 # if a video or gif, it will view in mpv
 # if a music file or pdf, it will download,
 # otherwise it opens link in browser.
@@ -13,6 +13,8 @@ if [ -z "${1-}" ]; then
 else
 	url="$1"
 fi
+
+cd -- ~/Downloads || true
 
 case "${url:?}" in
 *twitter.com/*)
@@ -44,7 +46,7 @@ case "${url:?}" in
 	*matrix/media/*/download/*)
 	filename=$(echo "$url" | sed 's|.*/||; s|%20| |g')
 	dl_file_path=$HOME/Downloads/$(mktemp -- "${filename%.*}.XXXXXX")
-	curl -sL -- "$url" -o "$dl_file_path"
+	curl --max-time 180 -sL -- "$url" -o "$dl_file_path"
 	new_file_path="${dl_file_path%.*}.$(file --mime-type --brief "$dl_file_path" | cut -d/ -f2)"
 	mv -n -- "$dl_file_path" "$new_file_path"
 	setsid -f xdg-open "$new_file_path" >/dev/null 2>&1 &

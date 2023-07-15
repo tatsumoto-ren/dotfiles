@@ -32,8 +32,8 @@ cfmc	${XDG_CONFIG_HOME:-$HOME/.config}/ncmpcpp/config
 cfl	${XDG_CONFIG_HOME:-$HOME/.config}/lf/lfrc
 # lf's scope/preview file
 cfL	${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope
-# sxiv (image viewer) key/script handler
-cfX	${XDG_CONFIG_HOME:-$HOME/.config}/sxiv/exec/key-handler
+# nsxiv (image viewer) key/script handler
+cfX	${XDG_CONFIG_HOME:-$HOME/.config}/nsxiv/exec/key-handler
 
 cfx	${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources
 cfi	${XDG_CONFIG_HOME:-$HOME/.config}/i3/config

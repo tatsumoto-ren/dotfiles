@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# View files with sxiv and and select them in lf.
+# View files with nsxiv and and select them in lf.
 
 readonly first_file=$1
 readonly exe=$(basename -- "$0")
@@ -17,7 +17,7 @@ fi
 
 rotdir "$first_file" |
 grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|avif\|tif\|ico\)\(_large\)*$" |
-sxiv -aio 2>/dev/null |
+nsxiv -aio 2>/dev/null |
 while read -r file; do
 	if [ -n "$file" ]; then
 		lf -remote "send $id select  \"$file\"  "

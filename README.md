@@ -15,7 +15,7 @@ Configuration files and scripts I use in my computing.
 * Status bar - [i3blocks](https://archlinux.org/packages/community/x86_64/i3blocks/)
 * Launcher - [rofi](https://archlinux.org/packages/community/x86_64/rofi/)
 * File Manager - [lf](https://github.com/gokcehan/lf)
-* Image viewer and manga reader - [sxiv](https://wiki.archlinux.org/title/Sxiv) (`nsxiv`)
+* Image viewer and manga reader - [nsxiv](https://wiki.archlinux.org/title/Sxiv)
 * Manga OCR - [transformers-ocr](https://github.com/Ajatt-Tools/transformers_ocr)
 * Video player - [mpv](https://wiki.archlinux.org/title/Mpv) + [scripts](https://github.com/search?q=topic%3Ampv+org%3AAjatt-Tools+fork%3Atrue&type=repositories)
 * Renaming files - [vidir](https://aur.archlinux.org/packages/vidir)
