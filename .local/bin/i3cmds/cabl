@@ -324,6 +324,14 @@ myanimelist() {
 	"$BROWSER" "https://myanimelist.net/search/all?q=$*"
 }
 
+dlraws() {
+	"$BROWSER" "https://dlraw.to/search/${*// /+}/"
+}
+
+mangadex() {
+	"$BROWSER" "https://mangadex.org/search?q=$*"
+}
+
 # Download a streamable video through Tor
 # Enable tor - sudo systemctl start tor
 echo "$search_text" | grep -Fq "streamable.com" &&
