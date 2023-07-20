@@ -179,6 +179,7 @@ map M moveto
 map R reload
 map <c-n> push :mkdir<space>
 map mk push :mkdir<space>
+map mi &impd add $fx
 map r push &setsid<space>-f<space><space>$fx<left><left><left><left>
 map <c-r> reload
 map <c-s> set hidden!

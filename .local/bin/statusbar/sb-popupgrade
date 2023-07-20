@@ -1,14 +1,28 @@
 #!/bin/sh
 
-archnews
-printf "Beginning upgrade.\\n"
-if pacman -Qq trizen >/dev/null; then
-	trizen -Syu
-elif pacman -Qq paru >/dev/null; then
-	paru -Syu
-else
-	sudo pacman -Syu
+notify_pacman_i3_block() {
+	pkill -RTMIN+8 "${STATUSBAR:-i3blocks}"
+}
+
+pac_upgrade() {
+	if pacman -Qq trizen >/dev/null; then
+		trizen -Syu
+	elif pacman -Qq paru >/dev/null; then
+		paru -Syu
+	else
+		sudo pacman -Syu
+	fi
+}
+
+archnews || exit 1
+echo "Beginning upgrade."
+pac_upgrade
+notify_pacman_i3_block
+if pacman -Qq python-pipx >/dev/null; then
+	pipx upgrade-all
 fi
-pkill -RTMIN+8 "${STATUSBAR:-i3blocks}"
-printf '\nUpgrade complete.\nPress <Enter> to exit window.\n\n'
-read -r _
+echo "Upgrade complete."
+if [ "$1" != "--no-wait" ]; then
+	echo "Press <Enter> to exit window."
+	read -r _
+fi

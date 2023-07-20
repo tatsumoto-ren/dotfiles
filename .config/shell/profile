@@ -87,6 +87,10 @@ export TDESKTOP_USE_GTK_FILE_DIALOG=1
 export TS_SLOTS=10		# the maximum number of jobs running at once with task-spooler.
 export TS_ONFINISH=tsp_onfinish	# run by the client after the  queued  job.
 
+# Compiler
+export CC=gcc
+export CXX=g++
+
 # Speed up compile times
 # https://wiki.archlinux.org/index.php/Makepkg#Creating_optimized_packages
 MAKEFLAGS="-j$(($(nproc) + 1)) -l$(nproc)"; export MAKEFLAGS
@@ -98,7 +102,8 @@ export CXXFLAGS="$CFLAGS"
 export QT_QPA_PLATFORMTHEME=qt6ct
 
 # Fix QT plugin path for pyqt packages installed with pip.
-export QT_PLUGIN_PATH=/usr/lib/qt/plugins:$(find ~/.local/lib/ -type d -wholename '*/python3*/site-packages/PyQt*/plugins' | paste -s -d :)
+# Note: disabled
+# export QT_PLUGIN_PATH=/usr/lib/qt6/plugins:$(find ~/.local/lib/ -type d -wholename '*/python3*/site-packages/PyQt*/plugins' | paste -s -d :)
 
 # Fix Java programs
 # https://wiki.archlinux.org/index.php/Java_Runtime_Environment_fonts

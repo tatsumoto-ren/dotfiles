@@ -20,7 +20,7 @@ grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|avif\|tif\|ico\)\(_large\)*$" |
 sxiv -aio 2>/dev/null |
 while read -r file; do
 	if [ -n "$file" ]; then
-		lf -remote "send $id select \"$file\""
+		lf -remote "send $id select  \"$file\"  "
 		lf -remote "send $id toggle"
 	fi
 done

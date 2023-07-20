@@ -86,7 +86,7 @@ alias \
 alias \
 	lsp="pacman -Qett --color=always | less" \
 	notify-pacman-block="pkill -RTMIN+8 i3blocks" \
-	upd="archnews && trizen -Syu && notify-pacman-block" \
+	upd="sb-popupgrade --no-wait" \
 	trimlogs='sudo journalctl --vacuum-size=150M' \
 	pacclean="remorphans && sudo pacman -Sc && trimlogs" \
 	whathaveidone="tail -500 /var/log/pacman.log | grep -i 'installed\|removed\|graded' --color=never" \

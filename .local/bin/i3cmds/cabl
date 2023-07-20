@@ -190,7 +190,6 @@ else
 	another_word_for() { "$BROWSER" "https://www.wordhippo.com/what-is/another-word-for/$*.html"; }
 	longman() { "$BROWSER" "https://www.ldoceonline.com/dictionary/$*"; }
 	cambridge() { "$BROWSER" "https://dictionary.cambridge.org/us/dictionary/english/$*"; }
-	macmillandictionary() { "$BROWSER" "https://www.macmillandictionary.com/us/dictionary/american/$*"; }
 	collinsdictionary() { "$BROWSER" "https://www.collinsdictionary.com/search/?dictCode=english&q=$*"; }
 	merriam_webster() { "$BROWSER" "https://www.merriam-webster.com/dictionary/$*"; }
 	youglish() { "$BROWSER" "https://youglish.com/pronounce/$*/english/us"; }
@@ -201,9 +200,6 @@ else
 
 		# Download pronunciations and convert them to opus/ogg
 		{
-			curl -Ls "https://www.macmillandictionary.com/us/dictionary/american/${searchterm// /-}" |
-				grep -o 'https://www\.macmillandictionary\.com/media/american/us_pron/.\+\.mp3'
-
 			curl -Ls "https://dictionary.cambridge.org/us/dictionary/english/${searchterm// /-}" |
 				grep -o '[^"]*/us_pron[^"]*\.mp3' |
 				sed 's,^,https://dictionary.cambridge.org,'
