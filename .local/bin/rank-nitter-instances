@@ -1,48 +1,84 @@
 #!/usr/bin/python3
-
+import asyncio
 import os
+import re
 import sys
+import time
 from typing import NamedTuple
 
-import requests
+import httpx
 
 CACHE = '/tmp/nitter_instances'
+RE_MD_URL = re.compile(r'\[([^]\[]+)]\(([^)(\[\]]+)\)')
 
 
-def json_url():
-    return 'https://raw.githubusercontent.com/xnaas/nitter-instances/master/history/summary.json'
+def md_url():
+    return 'https://raw.githubusercontent.com/wiki/zedeus/nitter/Instances.md'
 
 
-class Instance(NamedTuple):
-    url: str
-    rank: tuple[float, ...]
-
-    @classmethod
-    def from_json(cls, json: dict[str, str]):
-        rank = tuple(map(
-            lambda val: float(val.replace('%', '')),
-            (json["uptimeDay"], json["uptimeWeek"], json["uptimeMonth"], json["uptimeYear"],)
-        ))
-        return cls(url=json['url'], rank=rank, )
+def example_tweet(instance_url: str) -> str:
+    return instance_url.rstrip('/') + "/elonmusk/status/1686050455468621831"
 
 
-def sorted_instances(instances: list[Instance]) -> list[Instance]:
-    return sorted(instances, key=lambda item: (*item.rank, -len(item.url)), reverse=True)
+async def get_urls(s: httpx.AsyncClient) -> list[str]:
+    lines = []
+    response = await s.get(md_url())
+    for line in response.text.splitlines():
+        if "### Tor" in line:
+            break
+        if m := re.search(RE_MD_URL, line):
+            if '@' in m.group(2):
+                continue
+            lines.append(m.group(2))
+    return lines
 
 
-def main():
-    if os.path.isfile(CACHE) and '--recalc' not in sys.argv[1:]:
+def file_exists(file_path: str) -> bool:
+    return os.path.isfile(file_path) and os.stat(file_path).st_size > 0
+
+
+class TweetResponse(NamedTuple):
+    r: httpx.Response
+    instance_url: str
+    elapsed: float
+
+
+async def get_example_tweet(s: httpx.AsyncClient, instance_url: str) -> TweetResponse:
+    start_time = time.perf_counter()
+    r = await s.get(example_tweet(instance_url))
+    end_time = time.perf_counter()
+    return TweetResponse(r, instance_url, end_time-start_time)
+
+
+async def rank_urls(s: httpx.AsyncClient, instance_urls: list[str]):
+    responses = await asyncio.gather(*[get_example_tweet(s, url) for url in instance_urls], return_exceptions=True)
+    results = []
+    for response in responses:
+        if isinstance(response, Exception):
+            continue
+        response: TweetResponse
+        if response.r.status_code != 200:
+            continue
+        if "Elon Musk" not in response.r.text or "Canada" not in response.r.text:
+            continue
+        results.append(response)
+    return results
+
+
+async def main():
+    if file_exists(CACHE) and '--recalc' not in sys.argv[1:]:
         with open(CACHE) as f:
             return print(f.read())
 
-    with requests.session() as s:
-        instances: list[Instance] = [Instance.from_json(d) for d in s.get(json_url(), timeout=10).json()]
+    async with httpx.AsyncClient(timeout=5) as s:
+        urls: list[str] = await get_urls(s)
+        instances: list[TweetResponse] = await rank_urls(s, urls)
 
     with open(CACHE, 'w') as of:
-        for instance in sorted_instances(instances):
-            print(instance.url, *instance.rank, sep='\t', file=of)
-            print(instance.url, *instance.rank, sep='\t')
+        for instance in sorted(instances, key=lambda r: r.elapsed):
+            print(instance.instance_url, instance.elapsed, sep='\t', file=of)
+            print(instance.instance_url, instance.elapsed, sep='\t')
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
