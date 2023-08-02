@@ -38,12 +38,13 @@ case "$ext" in
 	h) sudo make install ;;
 	java) javac -d classes "$file" && java -cp classes "${1%.*}" ;;
 	m) octave "$file" ;;
-	md)	if  [ -x "$(command -v lowdown)" ]; then
-			lowdown --parse-no-intraemph "$file" -Tms | groff -mpdfmark -ms -kept -T pdf > "$base".pdf
-		elif [ -x "$(command -v wkhtmltopdf)" ]; then
+	md)
+		if [ -x "$(command -v wkhtmltopdf)" ]; then
 			md2html -f --github "$file" |
 			sed '/^<meta .*>$/a <meta charset="utf-8">' |
 			wkhtmltopdf - "$base.pdf"
+		elif  [ -x "$(command -v lowdown)" ]; then
+			lowdown --parse-no-intraemph "$file" -Tms | groff -mpdfmark -ms -kept -T pdf > "$base".pdf
 		elif [ -x "$(command -v groffdown)" ]; then
 			groffdown -i "$file" | groff -T pdf > "$base".pdf
 		else
