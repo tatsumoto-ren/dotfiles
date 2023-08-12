@@ -57,12 +57,11 @@ def json_url() -> str:
 
 async def parse_instances(client: httpx.AsyncClient) -> list[Instance]:
     response = await client.get(json_url())
-    instances = []
-    for entry in response.json():
-        instance = Instance.from_json(entry)
-        if instance.active_month > 1:
-            instances.append(instance)
-    return instances
+    return [
+        instance
+        for entry in response.json()
+        if (instance := Instance.from_json(entry)).active_month > 1
+    ]
 
 
 async def test_instance(client: httpx.AsyncClient, instance: Instance) -> InstanceAlive:
@@ -89,8 +88,10 @@ async def filter_alive(client: httpx.AsyncClient, instances: list[Instance]) -> 
 def sorted_instances(instances: list[Instance]) -> list[Instance]:
     return sorted(instances, key=lambda ins: (-ins.health_percent, ins.active_month))
 
+
 def file_exists(file_path):
     return os.path.isfile(file_path) and os.stat(file_path).st_size > 0
+
 
 async def main():
     if file_exists(CACHE) and '--recalc' not in sys.argv[1:]:

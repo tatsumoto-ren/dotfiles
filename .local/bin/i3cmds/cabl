@@ -172,7 +172,7 @@ if [[ $locale == ja ]]; then
 	youreijp() { "$BROWSER" "http://yourei.jp/$*"; }
 	gooexamples() { "$BROWSER" "https://dictionary.goo.ne.jp/word/$*/example/"; }
 	massif() { "$BROWSER" "https://massif.la/ja/search?q=$*"; }
-	simplytranslate() { "$BROWSER" "https://simplytranslate.org/?engine=google&text=$*&sl=ja&tl=en"; }
+	simplytranslate() { "$BROWSER" "https://simplytranslate.vern.cc/?engine=google&text=$*&sl=ja&tl=en"; }
 	most_common_spelling() {
 		# rankspellings is an external script from my dotfiles.
 		IFS='▼▽ ,.・、。' read -r -a args <<<"$*"
@@ -246,6 +246,10 @@ jisho() {
 	fi
 }
 
+dicpixiv() {
+	"$BROWSER" "https://dic.pixiv.net/a/$*"
+}
+
 clip() { cabl clip; }
 
 anki_search() {
@@ -290,7 +294,7 @@ duckduckgo() {
 	"$BROWSER" "https://duckduckgo.com/?q=$*&kp=-2&kl=jp-jp"
 }
 searx_search() {
-	"$BROWSER" "https://searx.work/search?q=$*&safesearch=0&categories=general"
+	"$BROWSER" "https://xo.wtf/search?q=$*&safesearch=0&categories=general"
 }
 brave_search() {
 	"$BROWSER" "https://search.brave.com/search?q=$*"
