@@ -42,7 +42,7 @@ case "${url:?}" in
 	setsid -f trympv "$url" >/dev/null 2>&1 &
 	;;
 *.png | *.jpg | *.jpe | *.jpeg | *.gif | \
-	*.pdf | *.cbz | *.cbr | \
+	*.pdf | *.cbz | *.cbr | *.webp | \
 	*matrix/media/*/download/*)
 	filename=$(echo "$url" | sed 's|.*/||; s|%20| |g')
 	dl_file_path=$HOME/Downloads/$(mktemp -- "${filename%.*}.XXXXXX")
