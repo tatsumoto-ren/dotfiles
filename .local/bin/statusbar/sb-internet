@@ -25,19 +25,29 @@ case $BLOCK_BUTTON in
 esac
 
 wifi_status() {
-	if grep -xqs 'up' /sys/class/net/w*/operstate; then
+	if [ "$(cat /sys/class/net/w*/operstate 2>/dev/null)" = 'up' ] ; then
 		awk '/^\s*w/ { printf " %d%\n", int($3 * 10 / 7) }' /proc/net/wireless
-	elif grep -xqs 'down' /sys/class/net/w*/operstate; then
-		grep -xqs '0x1003' /sys/class/net/w*/flags && echo 📡 || echo ❌
-	fi 2>/dev/null
+	elif [ "$(cat /sys/class/net/w*/operstate 2>/dev/null)" = 'down' ] ; then
+		if [ "$(cat /sys/class/net/w*/flags 2>/dev/null)" = '0x1003' ];then
+			echo 📡
+		else
+			echo ❌
+		fi
+	fi
 }
 
 ethernet_status() {
-	sed 's/down/❎/;s/up/🌐/' /sys/class/net/e*/operstate 2>/dev/null
+	if [ "$(cat /sys/class/net/e*/operstate 2>/dev/null)" = 'up' ]; then
+		echo 🌐
+	else
+		echo ❎
+	fi
 }
 
 vpn_status() {
-	sed 's/.*/🔒/' /sys/class/net/tun*/operstate 2>/dev/null
+	if [ -n "$(cat /sys/class/net/tun*/operstate 2>/dev/null)" ];then
+		echo 🔒
+	fi
 }
 
 printf -- '%s%s%s\n' \
