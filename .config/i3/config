@@ -387,7 +387,7 @@ bindsym XF86Launch1		exec --no-startup-id xset dpms force off
 bindsym $mod+Scroll_Lock	exec --no-startup-id "killall screenkey || screenkey -t 0.5 -p center"
 
 # The right mouse button and Alt over any part of the window kills the window
-bindsym --whole-window $alt+button3 kill
+#bindsym --whole-window $alt+button3 kill
 
 # List open windows to switch to
 bindsym $alt+Tab		exec rofi -show window
