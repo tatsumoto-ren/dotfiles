@@ -53,6 +53,10 @@ x-scheme-handler/tg=telegramdesktop.desktop;
 audio/x-ms-wma=mpv.desktop;
 application/zip=cr3.desktop;org.gnome.FileRoller.desktop;
 application/rtf=libreoffice-writer.desktop;
+application/msword=libreoffice-writer.desktop;
+application/vnd.openxmlformats-officedocument.wordprocessingml.document=libreoffice-writer.desktop;
+application/vnd.oasis.opendocument.text=libreoffice-writer.desktop;
+application/vnd.amazon.mobi8-ebook=org.pwmt.zathura.desktop;
 
 [Default Applications]
 x-scheme-handler/chrome=linkhandler.desktop;
@@ -90,3 +94,6 @@ audio/mpeg=mpv.desktop
 application/json=vscodium.desktop
 audio/ogg=mpv.desktop
 audio/x-opus+ogg=mpv.desktop
+application/msword=libreoffice-writer.desktop
+application/vnd.openxmlformats-officedocument.wordprocessingml.document=libreoffice-writer.desktop
+application/vnd.oasis.opendocument.text=libreoffice-writer.desktop

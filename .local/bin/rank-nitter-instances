@@ -22,14 +22,18 @@ def example_tweet(instance_url: str) -> str:
 
 async def get_urls(s: httpx.AsyncClient) -> list[str]:
     lines = []
-    response = await s.get(md_url())
-    for line in response.text.splitlines():
-        if "### Tor" in line:
-            break
-        if m := re.search(RE_MD_URL, line):
-            if '@' in m.group(2):
-                continue
-            lines.append(m.group(2))
+    try:
+        response = await s.get(md_url())
+    except httpx.ConnectTimeout as e:
+        print("Connect timeout!")
+    else:
+        for line in response.text.splitlines():
+            if "### Tor" in line:
+                break
+            if m := re.search(RE_MD_URL, line):
+                if '@' in m.group(2):
+                    continue
+                lines.append(m.group(2))
     return lines
 
 

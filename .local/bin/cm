@@ -48,9 +48,9 @@ twebp() {
 
 readonly silence_remove_filter="
 	areverse,
-	silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-47dB,
+	silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-50dB,
 	areverse,
-	silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-47dB,
+	silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-50dB,
 "
 
 # Convert a file to ogg/opus

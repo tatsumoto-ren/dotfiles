@@ -19,7 +19,7 @@ echo "Beginning upgrade."
 pac_upgrade
 remaps
 notify_pacman_i3_block
-if pacman -Qq python-pipx >/dev/null; then
+if pacman -Qq python-pipx 2>/dev/null; then
 	pipx upgrade-all
 fi
 echo "Upgrade complete."

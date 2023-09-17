@@ -11,7 +11,7 @@ separator=true
 interval=5
 
 [sb-music]
-interval=once
+interval=10
 signal=11
 markup=pango
 

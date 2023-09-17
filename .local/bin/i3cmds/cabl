@@ -13,7 +13,7 @@ readonly ANKI_MODEL=${ANKI_MODEL:-Japanese sentences}
 readonly ANKI_SENTENCE_FIELD=${ANKI_SENTENCE_FIELD:-SentKanji}
 
 __strip() {
-	sed 's/^ *//; s/ *$//;'
+	sed -e 's/^ *//; s/ *$//;' -e 's/▼//g' -e 's/△//g'
 }
 
 # If you run `cabl clip`, reads from the clipboard instead.
@@ -176,7 +176,7 @@ if [[ $locale == ja ]]; then
 	simplytranslate() { "$BROWSER" "https://simplytranslate.vern.cc/?engine=google&text=$*&sl=ja&tl=en"; }
 	most_common_spelling() {
 		# rankspellings is an external script from my dotfiles.
-		IFS='▼▽ ,.・、。' read -r -a args <<<"$*"
+		IFS='|▼▽ ,.・、。' read -r -a args <<<"$*"
 		if [[ ${#args[@]} -ge 0 ]]; then
 			result=$(rankspellings -g "${args[@]}")
 			echo "$result" | cut -f1 | head -1 | tr -d '\n' | xclip -selection clipboard
