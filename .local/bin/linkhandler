@@ -22,7 +22,12 @@ case "${url:?}" in
 	nitter_url=$(sed -E "s,(https?://)?(www\.)?(twitter\.com),$nitter_instance,g" <<< "$url")
 	setsid -f "$BROWSER" -- "$nitter_url" &
 	;;
-*youtube.com/* | *youtu.be/*)
+*youtube.com/live/* | *youtu.be/*)
+	invidious_instance=$(rank-invidious-instances | head -1 | cut -f1)
+	invidious_url="$invidious_instance/watch?v=$(grep -Po '/\K[^/?=]{10,}' <<< "$url")"
+	setsid -f "$BROWSER" -- "$invidious_url" &
+	;;
+*youtube.com/*)
 	invidious_instance=$(rank-invidious-instances | head -1 | cut -f1)
 	invidious_url=$(sed -E "s,(https?://)?(www\.)?(m\.)?(youtube\.com|youtu\.be),$invidious_instance,g" <<< "$url")
 	setsid -f "$BROWSER" -- "$invidious_url" &
