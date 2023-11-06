@@ -252,6 +252,7 @@ dicpixiv() {
 }
 
 clip() { cabl clip; }
+torsocks() { unset -f torsocks; torsocks cabl; }
 
 anki_search() {
 	local -r request='{
@@ -289,7 +290,7 @@ sankaku_solo() {
 	"$BROWSER" "https://chan.sankakucomplex.com/post/index?tags=$* order:popular solo rating:safe"
 }
 nyaa_search() {
-	"$BROWSER" "https://nyaa.iss.ink/?q=$*"
+	"$BROWSER" "https://nyaa.land/?q=$*"
 }
 duckduckgo() {
 	"$BROWSER" "https://duckduckgo.com/?q=$*&kp=-2&kl=jp-jp"
@@ -401,7 +402,8 @@ fi
 
 echo "$search_text" | grep -Pq "instagram\.com|nitter|/status/|bitchute\.com|worldstar\.com/web/video|twitter\." &&
 	youtubedl() {
-		tsp yt-dlp --proxy 'socks5://127.0.0.1:9050/' --add-metadata -ic "$*";
+		local -r url=$(sed -E 's,.*/([^\/]+)/status/,https://twitter.com/\1/status/,' <<< "$*")
+		tsp torsocks yt-dlp --add-metadata -ic "$url";
 	}
 
 if echo "$search_text" | grep -q "^.*\.[A-Za-z]\+.*"; then
@@ -412,7 +414,6 @@ fi
 
 if [[ $search_text =~ twitter\.com/[^/]*/status/ ]]; then
 	download() {
-		local url=${*/twitter.com/nitter.pussthecat.org}
 		cd -- ~/Downloads/ &&
 			curl -s "$url" |
 			grep -F '<meta property="og:image"' |

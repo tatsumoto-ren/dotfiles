@@ -6,7 +6,7 @@ readonly DIR="${BLOCK_INSTANCE:-/}"
 
 notify_stats() {
 	local -r stats=$(
-		df -hl --output=target,used,size,pcent -x devtmpfs -x tmpfs |
+		df -hl --output=target,used,size,pcent -x devtmpfs -x tmpfs -x efivarfs |
 			sed 's/^\/home.*$/<b><span color=\"white\">&<\/span><\/b>/'
 	)
 	notify-send -t 0 " Disk space" "$stats"

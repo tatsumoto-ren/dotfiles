@@ -126,3 +126,9 @@ my_mecab() {
 	[[ -f $user_dic ]] && command+=(-u "$user_dic")
 	"${command[@]}"
 }
+
+bfg_strip_blobs() {
+	bfg --strip-blobs-bigger-than "${1:-200K}"
+	git reflog expire --expire=now --all
+	git gc --prune=now --aggressive
+}

@@ -158,6 +158,7 @@ if &diff
     highlight! link DiffText MatchParen
 endif
 
+autocmd FileType lua set tabstop=4|set shiftwidth=4|set expandtab
 autocmd FileType python set tabstop=4|set shiftwidth=4|set expandtab
 autocmd FileType json set tabstop=4|set shiftwidth=4|set expandtab
 autocmd FileType javascript set sw=4 ts=4 expandtab

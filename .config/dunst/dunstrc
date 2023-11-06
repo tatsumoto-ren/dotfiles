@@ -44,11 +44,6 @@
     # The transparency of the window.  Range: [0; 100].
     transparency = 0
 
-    # The height of the entire notification.  If the height is smaller
-    # than the font height and padding combined, it will be raised
-    # to the font height and padding.
-    notification_height = 0
-
     # Draw a line of "separator_height" pixel height between two
     # notifications.
     # Set to 0 to disable.
@@ -167,7 +162,7 @@
     ### Misc/Advanced ###
 
     # dmenu path.
-    dmenu = /usr/bin/dmenu -p dunst:
+    dmenu = /usr/bin/rofi -dmenu -p dunst:
 
     # Browser for opening urls in context menu.
     browser = /usr/bin/xdg-open
@@ -181,11 +176,6 @@
     # Define the class of the windows spawned by dunst
     class = Dunst
 
-    # Print a notification on startup.
-    # This is mainly for error detection, since dbus (re-)starts dunst
-    # automatically after a crash.
-    startup_notification = false
-
     ### Legacy
 
     # Use the Xinerama extension instead of RandR for multi-monitor support.
@@ -197,6 +187,13 @@
     # is connected or disconnected which might break follow mode if the screen
     # layout changes.
     force_xinerama = false
+
+    # Defines list of actions for each mouse event
+    mouse_left_click = close_current
+    mouse_middle_click = do_action
+    mouse_right_click = close_all
+
+
 
 # Experimental features that may or may not work correctly. Do not expect them
 # to have a consistent behaviour across releases.

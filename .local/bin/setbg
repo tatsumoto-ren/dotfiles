@@ -25,9 +25,10 @@ else
 fi
 
 if [ -f "$givenpath" ]; then
-	if setwallpaper "$givenpath" && ln -srf "$givenpath" "$linkpath"; then
+	if setwallpaper "$givenpath" && ln -srf -- "$givenpath" "$linkpath"; then
 		notify-send -i "$linkpath" "Wallpaper changed."
 	else
+		setwallpaper "$linkpath"
 		die
 	fi
 else

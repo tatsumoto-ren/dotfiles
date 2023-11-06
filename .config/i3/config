@@ -553,6 +553,7 @@ assign [class="pycharm"]		$ws3
 assign [class="QtCreator"]   		$ws3
 assign [class="Eclipse"]   		$ws3
 assign [class="Element|SchildiChat"] 	$ws4
+assign [class="nheko"]		 	$ws4
 assign [class="TelegramDesktop"]  	$ws4
 assign [class="VirtualBox"]  		$ws5
 assign [title="GIMP Startup"]		$ws5

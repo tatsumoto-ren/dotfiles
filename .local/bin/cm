@@ -46,11 +46,12 @@ twebp() {
 	_cwebp "$1" -o "$(basename -- "${1%.*}").webp" -q "${2:-$WEBP_Q}"
 }
 
-readonly silence_remove_filter="
+readonly af_filters="
 	areverse,
 	silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-50dB,
 	areverse,
 	silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-50dB,
+	loudnorm=I=-16:TP=-6.2:LRA=11:dual_mono=true,
 "
 
 # Convert a file to ogg/opus
@@ -69,7 +70,7 @@ togg() {
 		-vbr on \
 		-compression_level 10 \
 		-application voip \
-		-af "$silence_remove_filter" \
+		-af "$af_filters" \
 		"${1%.*}.ogg"
 }
 
@@ -86,7 +87,7 @@ tomp3() {
 		-qscale:a "$MP3_Q" \
 		-map_metadata -1 \
 		-ac 1 \
-		-af "$silence_remove_filter" \
+		-af "$af_filters" \
 		"${1%.*}.mp3"
 }
 
