@@ -50,9 +50,12 @@ ankiconnect_request() {
 	curl --silent localhost:8765 -X POST -d "${1:?}"
 }
 
-anki_selected_note() {
+anki_last_added_note() {
 	ankiconnect_request '{
-		"action": "guiSelectedNotes",
+		"action": "findNotes",
+		"params": {
+			"query": "added:1"
+		},
 		"version": 6
 	}' | grep -Po '\[\K[0-9, ]+(?=\])' | sed 's|, |\n|g' | sort -g | tail -1
 }
@@ -169,8 +172,8 @@ main() {
 		cleanup_after "60s" "$file_path"
 		;;
 	*area*Anki)
-		local -r selected_note=$(anki_selected_note)
-		if [[ -z $selected_note ]]; then
+		local -r target_note=$(anki_last_added_note)
+		if [[ -z $target_note ]]; then
 			notify "No selected note."
 			return
 		fi
@@ -184,10 +187,10 @@ main() {
 		echo "$size_quality" >>"$selections_cache"
 		convert_image "$file_path" "$webp_path" "$size_quality"
 		anki_store "$webp_path" "$(basename -- "$webp_path")"
-		local -r prev_content=$(anki_note_content "$selected_note" "$anki_image_field")
+		local -r prev_content=$(anki_note_content "$target_note" "$anki_image_field")
 		local -r new_content="<img src=\\\"$(basename -- "$webp_path")\\\">"
-		anki_update_note "$selected_note" "$anki_image_field" "${prev_content}${new_content}"
-		anki_select_note "$selected_note" &
+		anki_update_note "$target_note" "$anki_image_field" "${prev_content}${new_content}"
+		anki_select_note "$target_note" &
 		notify "Added. File size: $(("$(stat --format='%s' "$webp_path")" / 1024)) KiB"
 		cleanup_after "3s" "$file_path"
 		cleanup_after "3s" "$webp_path"
