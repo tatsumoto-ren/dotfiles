@@ -1,4 +1,5 @@
-#!/bin/zsh
+#!/bin/sh
+# shellcheck disable=SC2155
 
 # https://wiki.archlinux.org/index.php/Zsh
 # http://zsh.sourceforge.net/FAQ/
@@ -17,7 +18,7 @@ startsway () {
 	exec sway
 }
 
-unsetopt PROMPT_SP
+unsetopt PROMPT_SP 2>/dev/null
 
 # Default programs:
 export WM="i3"
@@ -69,6 +70,7 @@ export LESS='-F -i -J -M -R -W -x4 -X -z-4' # https://www.topbug.net/blog/2016/0
 export DICS="/usr/share/stardict/dic/"
 export SUDO_ASKPASS="$HOME/.local/bin/dmenupass"
 export FZF_DEFAULT_OPTS="--layout=reverse --height 40%"
+export LESS="R"
 export LESS_TERMCAP_mb="$(printf '%b' '[1;31m')"
 export LESS_TERMCAP_md="$(printf '%b' '[1;36m')"
 export LESS_TERMCAP_me="$(printf '%b' '[0m')"
@@ -77,9 +79,9 @@ export LESS_TERMCAP_se="$(printf '%b' '[0m')"
 export LESS_TERMCAP_us="$(printf '%b' '[1;32m')"
 export LESS_TERMCAP_ue="$(printf '%b' '[0m')"
 export LESSOPEN="| /usr/bin/highlight -O ansi %s 2>/dev/null"
-export MOZ_USE_XINPUT2="1" # Mozilla smooth scrolling/touchpads.
+export MOZ_USE_XINPUT2=1                  # Mozilla smooth scrolling/touchpads.
 export AWT_TOOLKIT="MToolkit wmname LG3D" # May have to install wmname
-export _JAVA_AWT_WM_NONREPARENTING=1 # Fix for Java applications in dwm
+export _JAVA_AWT_WM_NONREPARENTING=1      # Fix for Java applications in dwm
 export TDESKTOP_USE_GTK_FILE_DIALOG=1
 
 # TSP settings
@@ -109,13 +111,13 @@ export QT_QPA_PLATFORMTHEME=qt6ct
 # https://wiki.archlinux.org/index.php/Java_Runtime_Environment_fonts
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=gasp'
 
-if [[ ! -f ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ]]; then
-	setsid shortcuts >/dev/null 2>&1
+if [[ ! -f "$XDG_CONFIG_HOME/shell/shortcutrc" ]]; then
+	setsid -f shortcuts >/dev/null 2>&1
 fi
 
-# Adds `~/.local/bin/` and all subdirectories to $PATH
+# Add all directories in `~/.local/bin` to $PATH
 if [[ -d "$HOME/.local/bin/" ]]; then
-	PATH="$PATH:${$(find ~/.local/bin -type d -printf %p:)%%:}"
+	PATH="$PATH:$(find ~/.local/bin -type d | paste -sd ':' -)"
 fi
 if [[ -n $GEM_HOME ]] && [[ -d "$GEM_HOME/bin" ]]; then
 	PATH="$PATH:$GEM_HOME/bin"
@@ -136,4 +138,4 @@ if [[ "$(tty)" == "/dev/tty2" ]]; then
 fi
 
 # Switch escape and caps if tty and no passwd required:
-sudo -n loadkeys "${XDG_DATA_HOME:-$HOME/.local/share}/larbs/ttymaps.kmap" 2>/dev/null
+sudo -n loadkeys "$XDG_DATA_HOME/larbs/ttymaps.kmap" 2>/dev/null

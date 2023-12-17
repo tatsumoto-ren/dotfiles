@@ -62,7 +62,7 @@ cmd open ${{
 }}
 
 # https://github.com/gokcehan/lf/wiki/Tips#commandmapping-to-create-new-directories
-cmd mkdir $mkdir -p "$(echo $* | tr ' ' '\ ')"
+cmd mkdir $mkdir -p "$@"
 
 cmd extract !{{
 	if [[ $(file -b --mime-type -- "$f") == application/* ]]; then
@@ -177,7 +177,7 @@ map E extract
 map C copyto
 map M moveto
 map R reload
-map <c-n> push :mkdir<space>
+map <c-n> push :mkdir<space>""<left>
 map mk push :mkdir<space>
 map mi &impd add $fx
 map r push &setsid<space>-f<space><space>$fx<left><left><left><left>
