@@ -4,3 +4,5 @@
 /.local/share/icc
 # Various firefox profiles
 /.local/share/applications/firefox-*
+# Everyone has their own bookmarks
+/.config/newsboat/urls
