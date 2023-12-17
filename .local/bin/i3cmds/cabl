@@ -107,8 +107,6 @@ forvodl() {
 		-H 'Sec-Fetch-User: ?1'
 	)
 
-	local-pronunciations "$searchterm" && return
-
 	get_forvo_audio_url() {
 		local -r searchterm="${*:?}"
 		local -r play_field=$([[ ${format:?} == 'mp3' ]] && echo 2 || echo 3)
@@ -353,7 +351,7 @@ if echo "$search_text" | grep -Pq 'boards\.4chan(nel)?\.org'; then
 	}
 	download_4chan_images() {
 		local -r thread=$*
-		local -r html=$(curl -Ls "$thread")
+		local -r html=$(curl -Ls --max-time 10 "$thread")
 		local -r title=$(echo "$html" | grep -Po '<title>\K.*(?=</title>)' | sed 's,/,,g')
 		local -r folder=$HOME/Pictures/$title
 		local -r urls=$(echo "$html" |

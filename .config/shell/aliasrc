@@ -54,6 +54,7 @@ alias \
 	visoodoo="sudo visudo -f /etc/sudoers.d/01_sudoers" \
 	res_screencast="xrandr --output DP1 --primary --mode 1920x1080" \
 	res_normal="xrandr --output DP1 --primary --mode 1920x1200" \
+	charm="setsid -f pycharm ." \
 
 # dotfiles in git
 # https://wiki.archlinux.org/index.php/Dotfiles
