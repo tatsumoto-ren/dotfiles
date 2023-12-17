@@ -20,7 +20,7 @@ if_installed() {
 
 download_tessdata() {
 	local -r \
-		zip_url='https://trygve.me/_matrix/media/r0/download/trygve.me/DYlvuAsYWfLmyixcJTDPdwWW' \
+		zip_url='https://matrix.4d2.org/_matrix/media/v3/download/4d2.org/akBtGDReZvxAbHZvKtHKfbyi' \
 		zip_path=$(mktemp /tmp/tesseract_data.XXXXXX) \
 		osd_path=/usr/share/tessdata/osd.traineddata
 
@@ -40,7 +40,14 @@ installed_languages() {
 take_screenshot() {
 	# https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html#missing-borders
 	maim --select --hidecursor --format=png --quality 1 |
-		convert png:- -alpha off -bordercolor White -border 10x10 png:-
+		convert \
+		png:- \
+		-modulate 100,0 \
+		-resize 400% \
+		-alpha off \
+		-bordercolor White \
+		-border 10x10 \
+		png:-
 }
 
 tesseract_recognize() {
