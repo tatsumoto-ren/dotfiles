@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # shellcheck disable=SC2155
 
 # https://wiki.archlinux.org/index.php/Zsh
@@ -66,11 +66,11 @@ export SQLITE_HISTORY="$XDG_DATA_HOME/sqlite_history"
 export GEM_HOME="$(ruby -e 'puts Gem.user_dir' 2>/dev/null)"
 export LANG="en_US.UTF-8"
 export TERM="xterm-256color"
+#export LESS="R"
 export LESS='-F -i -J -M -R -W -x4 -X -z-4' # https://www.topbug.net/blog/2016/09/27/make-gnu-less-more-powerful/
 export DICS="/usr/share/stardict/dic/"
 export SUDO_ASKPASS="$HOME/.local/bin/dmenupass"
 export FZF_DEFAULT_OPTS="--layout=reverse --height 40%"
-export LESS="R"
 export LESS_TERMCAP_mb="$(printf '%b' '[1;31m')"
 export LESS_TERMCAP_md="$(printf '%b' '[1;36m')"
 export LESS_TERMCAP_me="$(printf '%b' '[0m')"
