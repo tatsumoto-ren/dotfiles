@@ -4,9 +4,9 @@ case $BLOCK_BUTTON in
 1) notify-send "Memory hogs" "$(ps axch -o cmd:15,%mem --sort=-%mem | head)" ;;
 2) notify-send "Memory module" "\- Shows Memory Used/Total.
 - Click to show memory hogs.
-- Middle click to open htop." ;;
-3) i3-msg -q exec "$TERMINAL -e htop" ;;
-6) i3-msg -q exec "$TERMINAL -e $EDITOR $0" ;;
+- Middle click to open htop." &;;
+3) setsid -f "$TERMINAL" -e htop ;;
+6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
 TYPE="${BLOCK_INSTANCE:-mem}"

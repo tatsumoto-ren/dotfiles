@@ -42,7 +42,7 @@ case "$BLOCK_BUTTON" in
 	setsid -f "$TERMINAL" -e bmon &
 	;;
 6)
-	"$TERMINAL" -e "$EDITOR" "$0"
+	setsid -f "$TERMINAL" -e "$EDITOR" "$0"
 	;;
 esac
 

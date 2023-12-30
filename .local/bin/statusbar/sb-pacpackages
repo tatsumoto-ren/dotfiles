@@ -16,8 +16,8 @@ print_cache() {
 
 case $BLOCK_BUTTON in
 1) notify-send "Upgradeable packages" "$(print_cache)" &;;
-3) i3-msg -q exec "$TERMINAL -e sb-popupgrade" ;;
-6) i3-msg -q exec "$TERMINAL -e $EDITOR '$0'" ;;
+3) setsid -f "$TERMINAL" -e sb-popupgrade ;;
+6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
 printf -- "UPD "
