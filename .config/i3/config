@@ -299,7 +299,7 @@ bindsym $mod+F4		exec --no-startup-id $browser
 bindsym $mod+F6		exec --no-startup-id (pavucontrol || $term -e pulsemixer)
 bindsym $mod+F7		exec --no-startup-id (qbittorrent || transmission-gtk)
 bindsym $mod+F8		exec --no-startup-id mailsync
-bindsym $mod+F9		exec --no-startup-id ducksearch
+bindsym $mod+F9		exec --no-startup-id somesearch
 bindsym $mod+F10	exec --no-startup-id anki
 bindsym $mod+F12	exec --no-startup-id displayselect
 
@@ -521,6 +521,7 @@ for_window [class="disks"]			focus
 for_window [class="GParted"]			focus
 for_window [class="(?i)Bleachbit"]		focus
 for_window [class="sent"]			border pixel 0px
+for_window [class="mpv"]			move position center, border pixel 3, focus, layout tabbed
 for_window [title="Default - Wine desktop"]	floating enable
 for_window [class="Arandr"]			floating enable
 for_window [class="break-timer"]		floating enable, move position center
@@ -528,7 +529,6 @@ for_window [class=".{1}alculator$"]		floating enable, border pixel 3, resize set
 for_window [class="(?i)calendar$"]		floating enable
 for_window [class="(?i)deja-?dup"]		floating enable
 for_window [class="^Lx.*"]			floating enable, border normal 3
-for_window [class="mpv"]			floating enable, move position center, border pixel 3, focus
 for_window [class="Nm-connection-editor"]	floating enable, border normal 3
 for_window [class="Pavucontrol"]		floating enable, border normal 3
 for_window [window_type="dialog"]		floating enable
@@ -542,7 +542,8 @@ for_window [title="Preferences$"]		floating enable
 for_window [title="WebP viewer"]		floating enable, move position center
 for_window [window_role="GtkFileChooserDialog"] resize set 800 600
 for_window [window_role="GtkFileChooserDialog"] move position center
-for_window [class="(?i)anki" title="^Card Types for "]			floating disable
+for_window [class="(?i)anki" title="^Card Types for "]		floating disable
+for_window [class="(?i)org.gnome.DejaDup"]			floating disable
 
 # Assign workspaces to programs
 assign [class="Thunderbird"]		$ws1
