@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -euo pipefail
+
+readonly BROWSER=${BROWSER:-firefox}
+
+pgrep -x dmenu && exit
+
+readonly prompts=$(cat <<-EOF
+zeal
+duckduckgo
+searx
+EOF
+)
+
+readonly choice=$(echo "$prompts" | dmenu -i -p "Search:") || exit 1
+readonly s=${choice#* }
+
+case $choice in
+'ze '*)
+	setsid -f zeal "$s"
+	;;
+'du '*)
+	setsid -f "$BROWSER" "https://duckduckgo.com/?q=${s}&t=ffab&atb=v1-1"
+	;;
+'se '*)
+	setsid -f "$BROWSER" "https://searx.work/search?q=${s}&language=auto&safesearch=0&categories=general"
+	;;
+*)
+	exit 1
+	;;
+esac
