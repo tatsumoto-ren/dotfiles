@@ -44,9 +44,9 @@ alias \
 alias \
 	lf="lfub" \
 	magit="nvim -c MagitOnly" \
-	tmux="tmux -f \${XDG_CONFIG_HOME:-\$HOME/.config}/tmux/tmux.conf" \
+	tmux="tmux -f \${XDG_CONFIG_HOME}/tmux/tmux.conf" \
 	timer='echo "Timer started. Stop with Ctrl-D." && date "+%a, %d %b %H:%M:%S" && time cat && date "+%a, %d %b %H:%M:%S"' \
-	updxrdb="xrdb -merge \${XDG_CONFIG_HOME:-\$HOME/.config}/Xresources" \
+	updxrdb="xrdb -merge \${XDG_CONFIG_HOME}/Xresources" \
 	genpasswd="openssl rand -base64 21" \
 	update-grub="sudo grub-mkconfig -o /boot/grub/grub.cfg" \
 	trim="sudo fstrim -v / && sudo fstrim -v /home" \
@@ -54,12 +54,12 @@ alias \
 	visoodoo="sudo visudo -f /etc/sudoers.d/01_sudoers" \
 	res_screencast="xrandr --output DP1 --primary --mode 1920x1080" \
 	res_normal="xrandr --output DP1 --primary --mode 1920x1200" \
-	charm="setsid -f pycharm ." \
+	charm="setsid -f pycharm . >/dev/null" \
 
 # dotfiles in git
 # https://wiki.archlinux.org/index.php/Dotfiles
 # or use ~/.git/info/exclude
-alias dot='git --git-dir=${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/ --work-tree=$HOME'
+alias dot='git --git-dir=${XDG_CONFIG_HOME}/dotfiles/ --work-tree=$HOME'
 
 # Journal
 alias \
@@ -93,7 +93,7 @@ alias \
 	whathaveidone="tail -500 /var/log/pacman.log | grep -i 'installed\|removed\|graded' --color=never" \
 	refl='sudo reflector --protocol https --download-timeout 60 --verbose --age 6 --latest 100 --fastest 10 --sort rate --country "$(curl -Ls "ifconfig.co/country"),DE,FR,GB,NL,PL,RU,BY,CZ,FI,SE,CH,HU,NO" --save /etc/pacman.d/mirrorlist' \
 	reflp='sudo reflector --url "https://www.parabola.nu/mirrors/status/json" --protocol https --download-timeout 60 --verbose --age 12 --latest 100 --fastest 10 --sort rate --save /etc/pacman.d/parabola-mirrorlist' \
-	ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" \
+	ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME}/shell/shortcutrc ; source ${XDG_CONFIG_HOME}/shell/zshnameddirrc" \
 	printsrcinfo="makepkg --printsrcinfo > .SRCINFO" \
 	unlockme='faillock --user "$USER" --reset' \
 	listkernels='ls -1 /boot/vmli*' \

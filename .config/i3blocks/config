@@ -67,7 +67,7 @@ instance=default-source
 
 [sb-weather]
 interval=1800
-command=curlwttr "$LOCATION?format=1" | sed 's/ //' || echo '±?°C'
+command=curlwttr "$LOCATION?format=1" || echo '±?°C'
 
 [sb-calendar]
 interval=30

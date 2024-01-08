@@ -29,7 +29,7 @@ case "${url:?}" in
 	;;
 *youtube.com/*)
 	invidious_instance=$(rank-invidious-instances | head -1 | cut -f1)
-	invidious_url=$(sed -E "s,(https?://)?(www\.)?(m\.)?(youtube\.com|youtu\.be),$invidious_instance,g" <<< "$url")
+	invidious_url=$(sed -E "s,^(https?://)?(www\.)?(m\.)?(youtube\.com|youtu\.be),$invidious_instance,g" <<< "$url")
 	setsid -f "$BROWSER" -- "$invidious_url" &
 	;;
 *reddit.com/*)

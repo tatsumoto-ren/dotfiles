@@ -16,6 +16,7 @@ pac_upgrade() {
 
 archnews || exit 1
 echo "Beginning upgrade."
+sudo pacman -S --needed archlinux-keyring
 pac_upgrade
 remaps
 notify_pacman_i3_block

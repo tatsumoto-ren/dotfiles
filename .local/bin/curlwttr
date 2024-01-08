@@ -1,4 +1,16 @@
-#!/bin/sh
-readonly result=$(curl -H "Accept-Language: ${LANG%_*}" --compressed "https://wttr.in/$*" 2>/dev/null)
-echo "$result" | grep -qi 'sorry\|unknow\|error\|time-out' && exit 1
-echo "$result"
+#!/bin/bash
+
+set -euo pipefail
+
+readonly result=$(curl -s \
+	--max-time 10 \
+	--compressed \
+	-H "Accept-Language: ${LANG%_*}" \
+	"https://wttr.in/$*" 2>/dev/null
+)
+
+if [[ -n $result ]] && ! [[ ${result,,} =~ sorry|unknow|error|time-out ]]; then
+	echo "$result"
+else
+	exit 1
+fi
