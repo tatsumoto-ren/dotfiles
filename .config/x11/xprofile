@@ -19,8 +19,8 @@ podentr &
 # Run mailsync periodically
 { command -v mailsync && while :; do mailsync; sleep 15m; done; } &
 # Rank invidious and nitter instances
-rank-invidious-instances >/dev/null &
-rank-nitter-instances >/dev/null &
+{ sleep 5s; rank-invidious-instances; } >/dev/null &
+{ sleep 6s; rank-nitter-instances; } >/dev/null &
 # Use Xresources colors/settings on startup
 xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources"
 # Start a polkit agent to run software like gparted.

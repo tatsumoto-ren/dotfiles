@@ -341,7 +341,7 @@ echo "$search_text" | grep -Fq "streamable.com" &&
 if echo "$search_text" | grep -Pq 'boards\.4chan(nel)?\.org'; then
 	download_4chan_media() {
 		cd -- ~/Downloads/ || exit 1
-		local -r page=$(curl -s "$*" | sed 's,<wbr>,,g')
+		local -r page=$(curl --socks5-hostname '127.0.0.1:9050' -s "$*" | sed 's,<wbr>,,g')
 
 		grep -Po 'https?://streamable\.com/[a-z0-9]+' <<<"$page" |
 			xargs -I{} tsp yt-dlp --proxy 'socks5://127.0.0.1:9050/' -f best "{}"
@@ -435,8 +435,8 @@ __main() {
 	pid=$(xprop -id "$(xprop -root | awk '/_NET_ACTIVE_WINDOW\(WINDOW\)/{print $NF}')" | grep -m 1 PID | cut -d " " -f 3)
 	for pid in $(pstree -lpA "$pid" | head -1 | grep --color=never -oP '\(\K\d+(?=\))'); do
 		cd -- "$(readlink -- "/proc/$pid/cwd")" || continue
-		[[ -f "$search_text" ]] && xdg-open "$search_text" && exit
-		[[ -d "$search_text" ]] && "${TERMINAL:-alacritty}" -e "${FILE:-lf}" "$search_text" && exit
+		[[ -f "$search_text" ]] && xdg-open "$(readlink -f -- "$search_text")" && exit
+		[[ -d "$search_text" ]] && "${TERMINAL:-alacritty}" -e "${FILE:-lf}" "$(readlink -f -- "$search_text")" && exit
 	done
 
 	if [[ -n ${func:=$(__ask_action)} ]]; then

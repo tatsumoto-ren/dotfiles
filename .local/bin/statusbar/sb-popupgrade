@@ -14,16 +14,20 @@ pac_upgrade() {
 	fi
 }
 
+pipx_upgrade() {
+	if pacman -Qq python-pipx 2>/dev/null; then
+		pipx upgrade-all
+	fi
+}
+
 archnews || exit 1
 echo "Beginning upgrade."
-sudo pacman -S --needed archlinux-keyring
 pac_upgrade
-remaps
 notify_pacman_i3_block
-if pacman -Qq python-pipx 2>/dev/null; then
-	pipx upgrade-all
-fi
+remaps
+pipx_upgrade
 echo "Upgrade complete."
+
 if [ "$1" != "--no-wait" ]; then
 	echo "Press <Enter> to exit window."
 	read -r _
