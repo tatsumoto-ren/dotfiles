@@ -548,8 +548,9 @@ for_window [class="(?i)org.gnome.DejaDup"]			floating disable
 # Assign workspaces to programs
 assign [class="Thunderbird"]		$ws1
 assign [class="Firefox|LibreWolf"]	$ws1
-assign [class="(?i)anki"]   		$ws2
-assign [class="(?i)GoldenDict"]		$ws2
+assign [class="Chromium"]		$ws1
+assign [class="Anki" title="- Anki$"] 	$ws2
+assign [class="(?i)GoldenDict" title="(?i)GoldenDict"]		$ws2
 assign [class="pycharm"]		$ws3
 assign [class="QtCreator"]   		$ws3
 assign [class="Eclipse"]   		$ws3
