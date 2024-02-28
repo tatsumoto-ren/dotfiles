@@ -21,7 +21,7 @@ Configuration files and scripts I use in my computing.
 * Renaming files - [vidir](https://aur.archlinux.org/packages/vidir)
 * Music - [mpd](https://wiki.archlinux.org/title/Music_Player_Daemon)+[ncmpcpp](https://wiki.archlinux.org/title/Ncmpcpp)
 * Passive immersion - [impd](https://github.com/Ajatt-Tools/impd)
-* Preview images in terminal - [ueberzug](https://archlinux.org/packages/?name=ueberzug)
+* Preview images in terminal - [ueberzug](https://archlinux.org/packages/?name=ueberzug) / ueberzugpp
 * RSS reader - [newsboat](https://wiki.archlinux.org/title/Newsboat)
 * Various scripts in [~/.local/bin/](.local/bin)
 * Handy [aliases](.config/shell/aliasrc) and [functions](.config/shell/functionrc)
