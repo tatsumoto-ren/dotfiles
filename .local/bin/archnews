@@ -4,7 +4,7 @@ archnews() {
 	local -r cached_page=$HOME/.cache/archnews
 	local -r current_page=/tmp/archnews
 
-	curl -s "https://archlinux.org/feeds/news/" -o "$current_page"
+	curl --max-time 20 -s "https://archlinux.org/feeds/news/" -o "$current_page"
 
 	if ! [[ -s $current_page ]]; then
 		echo "Couldn't connect to archlinux.org."
