@@ -544,6 +544,7 @@ for_window [window_role="GtkFileChooserDialog"] resize set 800 600
 for_window [window_role="GtkFileChooserDialog"] move position center
 for_window [class="(?i)anki" title="^Card Types for "]		floating disable
 for_window [class="(?i)org.gnome.DejaDup"]			floating disable
+for_window [class="Telegram-desktop" ] 		floating enable
 
 # Assign workspaces to programs
 assign [class="Thunderbird"]		$ws1
