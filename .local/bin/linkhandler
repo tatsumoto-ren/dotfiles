@@ -29,7 +29,7 @@ case "${url:?}" in
 	;;
 *youtube.com/live/* | *youtu.be/*)
 	invidious_instance=$(rank-invidious-instances | head -1 | cut -f1)
-	invidious_url="$invidious_instance/watch?v=$(grep -Po '/\K[^/?=]{10,}' <<< "$url")"
+	invidious_url="$invidious_instance/watch?v=$(grep -Po '(live|be)/\K[^/?=]{10,}' <<< "$url")"
 	setsid -f "$BROWSER" -- "$invidious_url" &
 	;;
 *youtube.com/*)
@@ -50,7 +50,7 @@ case "${url:?}" in
 	*matrix/media/*/download/*)
 	filename=$(echo "$url" | sed 's|.*/||; s|%20| |g')
 	dl_file_path=$HOME/Downloads/$(mktemp -- "${filename%.*}.XXXXXX")
-	curl --max-time 180 -sL -- "$url" -o "$dl_file_path"
+	curl --max-time 180 -sL -o "$dl_file_path" -- "$url"
 	new_file_path="${dl_file_path%.*}.$(file --mime-type --brief "$dl_file_path" | cut -d/ -f2)"
 	mv -n -- "$dl_file_path" "$new_file_path"
 	setsid -f xdg-open "$new_file_path" >/dev/null 2>&1 &
