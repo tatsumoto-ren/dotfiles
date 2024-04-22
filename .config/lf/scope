@@ -6,17 +6,18 @@
 
 [[ ${1} == *'.!qB' ]] && exit
 
+
 set -C -f
 IFS="$(printf '%b_' '\n')"; IFS="${IFS%_}"
 
+printf '{"action": "remove", "identifier": "PREVIEW"}\n' > "$FIFO_UEBERZUG"
+
 image() {
-    FILE_PATH="$1"
-    X=$4
-    Y=$5
-    MW=$(($2 - 1))
-    MH=$3
-    ueberzugpp cmd -s "$UB_SOCKET" -a add -i PREVIEW -x "$X" -y "$Y" --max-width "$MW" --max-height "$MH" -f "$FILE_PATH"
-    exit 1
+	if [ -f "$1" ] && [ -n "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ] && command -V ueberzug >/dev/null 2>&1; then
+		printf '{"action": "add", "identifier": "PREVIEW", "x": "%s", "y": "%s", "width": "%s", "height": "%s", "scaler": "contain", "path": "%s"}\n' "$4" "$5" "$(($2-1))" "$(($3-1))" "$1" > "$FIFO_UEBERZUG"
+	else
+		mediainfo "$6"
+	fi
 }
 
 batorcat() {
