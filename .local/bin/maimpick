@@ -214,7 +214,7 @@ main() {
 		notify "Area captured."
 		;;
 	*window*clipboard)
-		take_screenshot -i "$(xdotool getactivewindow)" | xclip_png
+		take_screenshot -B -i "$(xdotool getactivewindow)" | xclip_png
 		notify "Area copied."
 		;;
 	full*clipboard)
@@ -222,7 +222,7 @@ main() {
 		notify "Window copied."
 		;;
 	*window)
-		take_screenshot -i "$(xdotool getactivewindow)" "$file_path"
+		take_screenshot -B -i "$(xdotool getactivewindow)" "$file_path"
 		notify "Window captured."
 		;;
 	full*)
