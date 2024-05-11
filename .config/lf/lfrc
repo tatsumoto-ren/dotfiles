@@ -222,9 +222,9 @@ map o &mimeopen -- "$f"
 map O $mimeopen --ask -- "$f"
 map y
 map yy copy
-map yp $echo -n "$f" | xclip -selection clipboard
-map yn $echo -n "$(basename -- "$f")" | xclip -selection clipboard
-map yf $echo "file://$(readlink -f -- "$f")" | xclip -selection clipboard -target "text/uri-list"
+map yp $ printf -- "%s" "$f" | xclip -selection clipboard
+map yn $ basename -- "$( printf -- "%s" "$f" )" | xclip -selection clipboard
+map yf $ readlink -f -- "$( printf -- "file://%s" "$f" )" | xclip -selection clipboard -target "text/uri-list"
 map S $clear && $SHELL
 map ZG !filename="$(basename -- "$f")" && tar -I 'gzip -9' -cvf "${filename}.tar.gz" -- "$filename"
 map ZD !filename="$(basename -- "$f")" && tar --zstd -cvf "${filename}.tar.zst" -- "$filename"
@@ -275,7 +275,25 @@ map V push :!nvim<space>
 map L &$TERMINAL -e "nvim $fx"
 
 map W $setsid -f $TERMINAL >/dev/null 2>&1
-map Y $printf "%s" "$fx" | xclip -selection clipboard
+
+# Copies the selected filename (instead of the filepath) to clipboard.
+map U $ printf -- "%s" "$fx" | xclip -selection clipboard
+map u $ printf -- "%s" "$fx" | sed 's/.*\///' | xclip -selection clipboard
+
+# Copies the selected filename and if it matches the yt-dlp downloaded video format [1234567891011],
+# gets the full youtube URL and pipes it to cl  ipboard.
+map . $ printf -- "%s" "$fx" | sed -E 's/^.+\[/https:\/\/www.youtube.com\/watch?v=/' | sed -E 's/\]\..+//' | xclip -selection clipboard
+
+# Copies the selected filename and if it matches the yt-dlp downloaded video format [1234567891011],
+# gets the full piped.video URL and pipes it t  o the clipboard. (piped.video is a mirror of youtube, even includes comments)
+map <gt> $ printf -- "%s" "$fx" | sed -E 's/^.+\[/https:\/\/piped.video\/watch?v=/' | sed -E 's/\]\..+//' | xclip -selection clipboard
+
+# Opens current folder in full picture mode.
+# Think windows large icons mode. Good for browsing quickly through image albums.
+map T $sxiv -t "$(pwd)" # opens thumbnail mode
+
+# Ctrl+l to unselect all selections so the behaviour matches the terminal.
+map <c-l> unselect
 
 # Move history
 map H jump-prev
