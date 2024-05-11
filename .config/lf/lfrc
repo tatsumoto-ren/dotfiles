@@ -46,8 +46,8 @@ cmd open ${{
     fi
     case $(file --mime-type "$(readlink -f -- $f)" -b) in
 	application/vnd.openxmlformats-officedocument.spreadsheetml.sheet) localc $fx ;;
-	text/rtf|application/ms*|application/*office*|application/octet-stream|*opendocument*|*powerpoint*|application/vnd.ms*) setsid -f soffice $fx >/dev/null 2>&1 &;;
-	application/vnd.djvu|application/epub*|image/vnd.djvu|application/pdf|application/postscript) setsid -f zathura $fx >/dev/null 2>&1 &;;
+	text/rtf|application/ms*|application/*office*|*opendocument*|*powerpoint*|application/vnd.ms*) setsid -f soffice $fx >/dev/null 2>&1 &;;
+	image/vnd.djvu|application/pdf|application/postscript|application/vnd.djvu|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 &;;
 	text/troff) man ./ $fx;;
 	text/*|application/json|inode/x-empty|application/x-subrip) setsid -f ${VISUAL:-$OPENER} $fx >/dev/null 2>&1 &;;
 	image/x-xcf) setsid -f gimp $fx >/dev/null 2>&1 &;;
@@ -57,7 +57,13 @@ cmd open ${{
 	video/*|application/vnd.rn-realmedia) setsid -f mpv $fx -quiet >/dev/null 2>&1 &;;
 	application/x-rar) setsid -f xarchiver $fx >/dev/null 2>&1 &;;
 	application/pgp-encrypted) $EDITOR $fx ;;
-	application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text|application/vnd.openxmlformats-officedocument.spreadsheetml.sheet|application/octet-stream|application/vnd.oasis.opendocument.spreadsheet|application/vnd.oasis.opendocument.spreadsheet-template|application/vnd.openxmlformats-officedocument.presentationml.presentation|application/vnd.oasis.opendocument.presentation-template|application/vnd.oasis.opendocument.presentation|application/vnd.ms-powerpoint|application/vnd.oasis.opendocument.graphics|application/vnd.oasis.opendocument.graphics-template|application/vnd.oasis.opendocument.formula|application/vnd.oasis.opendocument.database) setsid -f libreoffice $fx >/dev/null 2>&1 &;;
+	application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text|application/vnd.openxmlformats-officedocument.spreadsheetml.sheet|application/vnd.oasis.opendocument.spreadsheet|application/vnd.oasis.opendocument.spreadsheet-template|application/vnd.openxmlformats-officedocument.presentationml.presentation|application/vnd.oasis.opendocument.presentation-template|application/vnd.oasis.opendocument.presentation|application/vnd.ms-powerpoint|application/vnd.oasis.opendocument.graphics|application/vnd.oasis.opendocument.graphics-template|application/vnd.oasis.opendocument.formula|application/vnd.oasis.opendocument.database) setsid -f libreoffice $fx >/dev/null 2>&1 &;;
+        application/octet-stream) case ${f##*.} in
+			doc|docx|xls|xlsx|odt|ppt|pptx) setsid -f libreoffice $fx >/dev/null 2>&1 ;;
+			ghw) setsid -f gtkwave $f >/dev/null 2>&1 ;;
+			ts) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
+			*) setsid -f zathura $fx >/dev/null 2>&1 ;;
+	   	esac ;;
         *) for f in $fx; do
 	       setsid -f $OPENER $f >/dev/null 2>&1 &;
 	   done;;
