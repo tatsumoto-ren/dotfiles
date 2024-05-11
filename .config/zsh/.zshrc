@@ -44,6 +44,7 @@ SAVEHIST=10000
 HISTFILE=~/.cache/zsh/history
 HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/history"
 mkdir -p "${HISTFILE%/*}"
+setopt inc_append_history
 
 # Basic auto/tab complete:
 # Enable autocompletion with an arrow-key driven interface.
