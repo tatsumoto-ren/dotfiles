@@ -300,7 +300,7 @@ map <gt> $ printf -- "%s" "$fx" | sed -E 's/^.+\[/https:\/\/piped.video\/watch?v
 
 # Opens current folder in full picture mode.
 # Think windows large icons mode. Good for browsing quickly through image albums.
-map T $sxiv -t "$(pwd)" # opens thumbnail mode
+map T $nsxiv -t "$(pwd)" # opens thumbnail mode
 
 # Ctrl+l to unselect all selections so the behaviour matches the terminal.
 map <c-l> unselect
