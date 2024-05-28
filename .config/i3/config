@@ -450,7 +450,7 @@ mode "$mode_system" {
 	bindsym s exec --no-startup-id sysact suspend, mode "default"
 	bindsym r exec --no-startup-id sysact reboot, mode "default"
 	bindsym p exec --no-startup-id sysact poweroff, mode "default"
-	#bindsym h exec --no-startup-id sysact hibernate, mode "default"
+	bindsym h exec --no-startup-id sysact hibernate, mode "default"
 
 	# Exit/Reload/Restart i3
 	bindsym o		exit, mode "default"
@@ -544,7 +544,7 @@ for_window [window_role="GtkFileChooserDialog"] resize set 800 600
 for_window [window_role="GtkFileChooserDialog"] move position center
 for_window [class="(?i)anki" title="^Card Types for "]		floating disable
 for_window [class="(?i)org.gnome.DejaDup"]			floating disable
-for_window [class="Telegram-desktop" ] 		floating enable
+for_window [class="(?i)Telegram" ]				floating disable
 
 # Assign workspaces to programs
 assign [class="Thunderbird"]		$ws1
