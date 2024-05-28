@@ -1,4 +1,8 @@
 #!/bin/sh
+
+# https://github.com/jstkdng/ueberzugpp/blob/master/scripts/lf/cleaner
+#ueberzugpp cmd -s "$UB_SOCKET" -a remove -i PREVIEW
+
 if [ -n "$FIFO_UEBERZUG" ]; then
 	printf '{"action": "remove", "identifier": "PREVIEW"}\n' > "$FIFO_UEBERZUG"
 fi
