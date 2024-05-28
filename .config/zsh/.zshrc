@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/zsh
 
 # vim: ft=zsh
 #
@@ -158,9 +158,9 @@ lfcd () {
     fi
 }
 
-bindkey -s '^o' '^ulfcd\n'
-bindkey -s '^a' '^ubc -lq\n'
-bindkey -s '^f' '^ucd "$(dirname -- "$(fzf)")"\n'
+bindkey -s '^o' '^ulfcd\n' # Ctrl+O to launch file manager.
+bindkey -s '^a' '^ubc -lq\n' # Ctrl+A to launch calculator.
+bindkey -s '^f' '^ucd -- "$(dirname -- "$(fzf)")"\n' # Ctrl+F to search directory with fzf.
 bindkey '^[[P' delete-char
 
 # Edit line in vim with ctrl-e:
@@ -174,9 +174,8 @@ bindkey -M vicmd '^[[P' vi-delete-char
 bindkey -M vicmd '^e' edit-command-line
 bindkey -M visual '^[[P' vi-delete
 
-# Load powerlevel9k
-# https://github.com/bhilburn/powerlevel9k
-# https://www.archlinux.org/packages/?q=powerlevel9k
+# Load powerlevel10k
+# https://github.com/romkatv/powerlevel10k
 [[ $TERM != "$TERMINAL" ]] && return
 source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
 
