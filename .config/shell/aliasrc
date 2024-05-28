@@ -30,12 +30,13 @@ alias \
 	mp3dl="yta --audio-quality 1 --audio-format mp3" \
 	ytv="youtube-viewer" \
 	ytt="yt --skip-download --write-thumbnail" \
+	ytw="yt --merge-output-format webm -f 'bestvideo[ext=webm]+bestaudio/best[ext=webm]'" \
 
 # Colorize commands when possible.
 alias \
 	ls="ls -hN --color=auto --group-directories-first" \
 	grep="grep --color=auto" \
-	ggrep="grep --exclude-dir='.git'" \
+	ggrep="grep --exclude-dir='.git' --exclude-dir='.mypy_cache'" \
 	diff="diff --color=auto" \
 	ccat="highlight --out-format=ansi" \
 	ip="ip -color=auto" \
@@ -91,7 +92,7 @@ alias \
 	trimlogs='sudo journalctl --vacuum-size=150M' \
 	pacclean="remorphans && sudo pacman -Sc && trimlogs" \
 	whathaveidone="tail -500 /var/log/pacman.log | grep -i 'installed\|removed\|graded' --color=never" \
-	refl='sudo reflector --protocol https --download-timeout 60 --verbose --age 6 --latest 100 --fastest 10 --sort rate --country "$(curl -Ls "ifconfig.co/country"),DE,FR,GB,NL,PL,RU,BY,CZ,FI,SE,CH,HU,NO" --save /etc/pacman.d/mirrorlist' \
+	refl='sudo reflector --protocol https --download-timeout 60 --verbose --age 6 --latest 100 --fastest 10 --sort rate --country "$(curl -Ls "ifconfig.co/country")" --save /etc/pacman.d/mirrorlist' \
 	reflp='sudo reflector --url "https://www.parabola.nu/mirrors/status/json" --protocol https --download-timeout 60 --verbose --age 12 --latest 100 --fastest 10 --sort rate --save /etc/pacman.d/parabola-mirrorlist' \
 	ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME}/shell/shortcutrc ; source ${XDG_CONFIG_HOME}/shell/zshnameddirrc" \
 	printsrcinfo="makepkg --printsrcinfo > .SRCINFO" \
