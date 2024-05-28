@@ -27,6 +27,7 @@ set hiddenfiles ".*:*.aux:*.bbl:*.bcf:*.blg:*.run.xml"
 set hidden true
 set ratios 1:2:3
 set cleaner '~/.config/lf/cleaner'
+set dupfilefmt "%b(%n)%e"
 
 cmd on-cd %{{
 	# Sort files by time in certain folders.
@@ -48,13 +49,13 @@ cmd open ${{
 	text/rtf|application/ms*|application/*office*|application/octet-stream|*opendocument*|*powerpoint*|application/vnd.ms*) setsid -f soffice $fx >/dev/null 2>&1 &;;
 	application/vnd.djvu|application/epub*|image/vnd.djvu|application/pdf|application/postscript) setsid -f zathura $fx >/dev/null 2>&1 &;;
 	text/troff) man ./ $fx;;
-	text/*|application/json|inode/x-empty|application/x-subrip) setsid -f ${VISUAL:-geany} $fx >/dev/null 2>&1 &;;
+	text/*|application/json|inode/x-empty|application/x-subrip) setsid -f ${VISUAL:-$OPENER} $fx >/dev/null 2>&1 &;;
 	image/x-xcf) setsid -f gimp $fx >/dev/null 2>&1 &;;
 	image/svg+xml) setsid -f display -- $fx &;;
 	image/*) setsid -f lf-select $f &;;
 	audio/*|video/x-ms-asf) mpv --audio-display=no --force-window=no $fx ;;
 	video/*|application/vnd.rn-realmedia) setsid -f mpv $fx -quiet >/dev/null 2>&1 &;;
-	application/x-rar) setsid -f file-roller $fx >/dev/null 2>&1 &;;
+	application/x-rar) setsid -f xarchiver $fx >/dev/null 2>&1 &;;
 	application/pgp-encrypted) $EDITOR $fx ;;
 	application/vnd.openxmlformats-officedocument.wordprocessingml.document|application/vnd.oasis.opendocument.text|application/vnd.openxmlformats-officedocument.spreadsheetml.sheet|application/octet-stream|application/vnd.oasis.opendocument.spreadsheet|application/vnd.oasis.opendocument.spreadsheet-template|application/vnd.openxmlformats-officedocument.presentationml.presentation|application/vnd.oasis.opendocument.presentation-template|application/vnd.oasis.opendocument.presentation|application/vnd.ms-powerpoint|application/vnd.oasis.opendocument.graphics|application/vnd.oasis.opendocument.graphics-template|application/vnd.oasis.opendocument.formula|application/vnd.oasis.opendocument.database) setsid -f libreoffice $fx >/dev/null 2>&1 &;;
         *) for f in $fx; do
@@ -74,10 +75,19 @@ cmd extract !{{
 		aunpack -D --save-outdir="$tmp_file" -- "$f"
 		out_dir=$(cat -- "$tmp_file")
 		rm -- "$tmp_file"
-		[[ -d $out_dir ]] && find "$out_dir" -type f -exec chmod -x -- {} \;
+		if [[ -d $out_dir ]]; then
+			find "$out_dir" -type f -exec chmod -x -- {} \;
+		fi
 	else
 		echo "Not an archive."
 	fi
+}}
+
+cmd extractall !{{
+	find -type f \
+		-regextype posix-extended -iregex '.*\.(7z|rar|zip|tar|tar\.[a-z]+)$' \
+		-execdir aunpack -D "{}" \; \
+		-delete
 }}
 
 cmd delete ${{
@@ -138,8 +148,6 @@ cmd quickedit ${{
 	esac
 }}
 
-cmd setbg "$1"
-
 #cmd bulkrename $vidir
 cmd bulkrename ${{
     tmpfile_old="$(mktemp)"
@@ -170,6 +178,15 @@ cmd lossless ${{
 	cm lossless "$f"
 }}
 
+cmd flatten ${{
+	mv -n -- ./**/*.* ./ ;
+	find . -empty -delete ;
+}}
+
+cmd remdupes !{{
+	fdupes -rdNI --order=time .
+}}
+
 # Bindings
 map e quickedit
 map sn :set sortby natural; set info size
@@ -181,6 +198,9 @@ map cs $compiler $f
 map d
 map dd cut
 map dc %du -sh $f
+map dp remdupes
+map df flatten
+map de extractall
 map <c-f> $lf -remote "send $id select \"$(fzf)\""
 map D delete
 map E extract
@@ -198,8 +218,8 @@ map <c-s> set hidden!
 map <enter> shell
 map x $$f
 map X !$f
-map o &mimeopen "$f"
-map O $mimeopen --ask "$f"
+map o &mimeopen -- "$f"
+map O $mimeopen --ask -- "$f"
 map y
 map yy copy
 map yp $echo -n "$f" | xclip -selection clipboard
