@@ -5,32 +5,41 @@ set -euo pipefail
 pgrep -x dmenu && exit
 
 readonly prompts=$(cat <<-EOF
-zeal
-duckduckgo
-searx
-sakuraparis
+ZEal
+DUckduckgo
+SEarx
+SAkuraparis
+MANual
 EOF
 )
 
 readonly choice=$(echo "$prompts" | dmenu -i -p "Search:") || exit 1
 readonly s=${choice#* }
+readonly cmd=${choice%% *}
 
 browse() {
 	setsid -f "${BROWSER:-firefox}" "$@"
 }
 
-case $choice in
-'ze '*)
+case $cmd in
+'ze')
 	setsid -f zeal "$s"
 	;;
-'du '*)
+'du')
 	browse "https://duckduckgo.com/?q=${s}&t=ffab&atb=v1-1"
 	;;
-'se '*)
+'se')
 	browse "https://searx.work/search?q=${s}&language=auto&safesearch=0&categories=general"
 	;;
-'sa '*)
+'sa')
 	browse "https://sakura-paris.org/dict/明鏡国語辞典/exact/${s}"
+	;;
+'man')
+	if man -k "^$s$" >/dev/null; then
+		man -Tpdf "${s}" | zathura -;
+	else
+		notify-send "manual" "nothing appropriate" &
+	fi
 	;;
 *)
 	exit 1
