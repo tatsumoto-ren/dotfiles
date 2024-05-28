@@ -229,8 +229,8 @@ map O $mimeopen --ask -- "$f"
 map y
 map yy copy
 map yp $ printf -- "%s" "$f" | xclip -selection clipboard
-map yn $ basename -- "$( printf -- "%s" "$f" )" | xclip -selection clipboard
-map yf $ readlink -f -- "$( printf -- "file://%s" "$f" )" | xclip -selection clipboard -target "text/uri-list"
+map yn $ printf -- "%s" "$( basename -- "$f" )" | xclip -selection clipboard
+map yf $ printf -- "file://%s" "$( readlink -f -- "$f" )" | xclip -selection clipboard -target "text/uri-list"
 map S $clear && $SHELL
 map ZG !filename="$(basename -- "$f")" && tar -I 'gzip -9' -cvf "${filename}.tar.gz" -- "$filename"
 map ZD !filename="$(basename -- "$f")" && tar --zstd -cvf "${filename}.tar.zst" -- "$filename"
