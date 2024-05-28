@@ -26,7 +26,8 @@ Plug 'rhysd/vim-grammarous'
 call plug#end()
 
 set title
-set bg=light
+colorscheme retrobox
+set bg=dark
 set go=a
 set mouse=a
 set nohlsearch
@@ -75,7 +76,7 @@ set noshowcmd
 	nm <leader>i :call ToggleIPA()<CR>
 	imap <leader>i <esc>:call ToggleIPA()<CR>a
 	nm <leader>q :call ToggleProse()<CR>
-	
+
 " vim-airline
 	if !exists('g:airline_symbols')
   	    let g:airline_symbols = {}
