@@ -27,6 +27,7 @@ check_anki_col_available() {
 	fi
 }
 
+_cwebp_alpha() { cwebp -short -sharp_yuv -af -pass 10 -m 6 -mt -sns 100 -f 100 "$@"; }
 _cwebp() { cwebp -blend_alpha '0xffffff' -alpha_q 0 -short -sharp_yuv -af -pass 10 -m 6 -mt -sns 100 -f 100 "$@"; }
 _ffmpeg() { ffmpeg -nostdin -hide_banner -loglevel info "$@"; }
 _findall() { find . -mindepth 1 -maxdepth 1 -type f "$@" -print0; }
@@ -36,14 +37,26 @@ _xargs() { xargs -0 -P "$(nproc)" -I {} "$@"; }
 stwebp() {
 	[[ ! -f $1 ]] && return 1
 	[[ $1 == *.gif ]] && unset -f _cwebp && _cwebp() { gif2webp -mt -lossy -m 6 -min_size -metadata none "$@"; }
-	_cwebp "$1" -o "$(basename -- "${1%.*}").webp" -resize 0 "${WEBP_RESIZE:?}" -q "${WEBP_Q:?}"
+	_cwebp "$1" -resize 0 "${WEBP_RESIZE:?}" -q "${WEBP_Q:?}" -o "${1%.*}.webp"
 }
 
 # Convert a file to webp, specify target quality
 twebp() {
 	[[ ! -f $1 ]] && return 1
 	[[ $1 == *.gif ]] && unset -f _cwebp && _cwebp() { gif2webp -mt -lossy -m 6 -min_size -metadata none "$@"; }
-	_cwebp "$1" -o "$(basename -- "${1%.*}").webp" -q "${2:-$WEBP_Q}"
+	_cwebp "$1" -q "${2:-$WEBP_Q}" -o "${1%.*}.webp"
+}
+
+lossless() {
+	[[ ! -f $1 ]] && return 1
+	[[ $1 == *.gif ]] && return 1
+	_cwebp "$1" -q 100 -lossless -o "${1%.*}.webp"
+}
+
+lossless_alpha() {
+	[[ ! -f $1 ]] && return 1
+	[[ $1 == *.gif ]] && return 1
+	_cwebp_alpha "$1" -q 100 -lossless -o "${1%.*}.webp"
 }
 
 readonly af_filters="
