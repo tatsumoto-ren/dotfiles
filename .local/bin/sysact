@@ -35,8 +35,15 @@ display_off() {
 
 lock_screen() {
 	mpc pause || true
-	i3lock -e -f -c "$(background_color)"
+	i3lock -e -f -c "${1:-$(background_color)}"
 	display_off
+}
+
+cleanup() {
+	for app in qbittorrent goldendict; do
+		killall "$app"
+	done
+	sleep '0.33s'
 }
 
 main() {
@@ -52,17 +59,19 @@ main() {
 		i3-msg -q restart || kill -HUP "$(pgrep -u "$USER" "\bdwm$")"
 		;;
 	*hibernate*)
-		lock_screen
+		lock_screen ee4b2b
 		$(ctl) hibernate
 		;;
 	*sleep* | *suspend*)
-		lock_screen
+		lock_screen ee4b2b
 		$(ctl) suspend
 		;;
 	*reboot*)
+		cleanup
 		$(ctl) reboot -i
 		;;
 	*shutdown* | *poweroff*)
+		cleanup
 		$(ctl) poweroff -i
 		;;
 	*'display off'*)
