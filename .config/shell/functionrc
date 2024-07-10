@@ -103,7 +103,15 @@ anki_test_run() {
 
 sitedl() {
 	local -r url=$1 domain=$2
-	wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --domains "$domain" --no-parent "$url"
+	wget -e robots=off \
+		--recursive \
+		--no-clobber \
+		--page-requisites \
+		--html-extension \
+		--convert-links \
+		--restrict-file-names=windows \
+		--domains "$domain" \
+		--no-parent "$url"
 }
 
 all_but_base() {

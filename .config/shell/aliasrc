@@ -81,7 +81,7 @@ alias \
 
 alias \
 	mecabfurigana="my_mecab '--node-format=%m[%f[7]] ' '--eos-format=\n' '--unk-format=%m '" \
-	mecabanalyze="my_mecab '--node-format=%m,%f[6],%f[7],%f[0],%f[5]\t' '--unk-format=%m\t' '--eos-format=\n'" \
+	mecabanalyze="my_mecab '--node-format=%m,%f[6],%f[7],%f[0],%f[5]\n' '--unk-format=%m\n' '--eos-format=\n'" \
 
 # Pacman / system
 
