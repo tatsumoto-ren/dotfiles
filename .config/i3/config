@@ -544,12 +544,12 @@ for_window [window_role="GtkFileChooserDialog"] resize set 800 600
 for_window [window_role="GtkFileChooserDialog"] move position center
 for_window [class="(?i)anki" title="^Card Types for "]		floating disable
 for_window [class="(?i)org.gnome.DejaDup"]			floating disable
-for_window [class="(?i)Telegram" ]				floating disable
+#for_window [class="(?i)Telegram" ]				floating disable
 
 # Assign workspaces to programs
 assign [class="Thunderbird"]		$ws1
-assign [class="Firefox|LibreWolf"]	$ws1
-assign [class="Chromium"]		$ws1
+assign [class="(?i)Firefox|LibreWolf"]	$ws1
+assign [class="(?i)Chromium"]		$ws1
 assign [class="Anki" title="- Anki$"] 	$ws2
 assign [class="(?i)GoldenDict" title="(?i)GoldenDict"]		$ws2
 assign [class="pycharm"]		$ws3
