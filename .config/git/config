@@ -12,6 +12,7 @@
 	s    = status -s
 	br   = branch
 	dfs  = diff --staged
+	dwc  = diff --word-diff=color
 	type = cat-file -t
 	dump = cat-file -p
 	last = log -1 HEAD
@@ -63,6 +64,7 @@
 	rebase = false
 [diff]
 	submodule = log
+	tool = vimdiff
 [status]
 	submodulesummary = 1
 [init]
