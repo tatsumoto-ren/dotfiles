@@ -193,6 +193,10 @@ cmd remdupes !{{
 	fdupes -rdNI --order=time .
 }}
 
+cmd remdupesr !{{
+	fdupes -rdNI --order=time --reverse .
+}}
+
 # Bindings
 map e quickedit
 map sn :set sortby natural; set info size
