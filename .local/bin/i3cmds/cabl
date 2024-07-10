@@ -11,6 +11,7 @@ readonly tmp_dir=/tmp/cabl && mkdir -p -- "$tmp_dir"
 readonly BROWSER=${BROWSER:-xdg-open}
 readonly ANKI_MODEL=${ANKI_MODEL:-Japanese sentences}
 readonly ANKI_SENTENCE_FIELD=${ANKI_SENTENCE_FIELD:-SentKanji}
+readonly SOCKS5_PROXY="127.0.0.1:9099"
 
 __strip() {
 	sed -e 's/^ *//; s/ *$//;' -e 's/▼//g' -e 's/△//g'
@@ -306,7 +307,8 @@ google_images() {
 	"$BROWSER" "https://www.google.co.jp/search?q=$*&tbm=isch"
 }
 wikipedia() {
-	"$BROWSER" "https://wikiless.org/w/index.php?search=$*&lang=$locale#firstHeading"
+	"$BROWSER" "https://${locale}.wikipedia.org/w/index.php?search=$*"
+
 }
 wiktionary() {
 	"$BROWSER" "https://${locale}.wiktionary.org/wiki/$*"
@@ -335,16 +337,16 @@ mangadex() {
 # Download a streamable video through Tor
 # Enable tor - sudo systemctl start tor
 echo "$search_text" | grep -Fq "streamable.com" &&
-	streamable() { tsp yt-dlp --proxy 'socks5://127.0.0.1:9050/' -f best "$@"; }
+	streamable() { tsp yt-dlp --proxy "socks5://$SOCKS5_PROXY" -f best "$@"; }
 
 # Batch-download all streamable and catbox videos from a thread on 4chan
 if echo "$search_text" | grep -Pq 'boards\.4chan(nel)?\.org'; then
 	download_4chan_media() {
 		cd -- ~/Downloads/ || exit 1
-		local -r page=$(curl --socks5-hostname '127.0.0.1:9050' -s "$*" | sed 's,<wbr>,,g')
+		local -r page=$(curl --socks5-hostname "$SOCKS5_PROXY" -s "$*" | sed 's,<wbr>,,g')
 
 		grep -Po 'https?://streamable\.com/[a-z0-9]+' <<<"$page" |
-			xargs -I{} tsp yt-dlp --proxy 'socks5://127.0.0.1:9050/' -f best "{}"
+			xargs -I{} tsp yt-dlp --proxy "socks5://$SOCKS5_PROXY" -f best "{}"
 
 		grep -Po 'https?://[a-z]+\.catbox\.moe/[a-z0-9]+\.[a-z0-9]{1,5}' <<<"$page" |
 			xargs -I{} tsp curl -LO "{}"
@@ -401,7 +403,7 @@ fi
 echo "$search_text" | grep -Pq "instagram\.com|nitter|/status/|bitchute\.com|worldstar\.com/web/video|twitter\." &&
 	youtubedl() {
 		local -r url=$(sed -E 's,.*/([^\/]+)/status/,https://twitter.com/\1/status/,' <<< "$*")
-		tsp torsocks yt-dlp --add-metadata -ic "$url";
+		tsp yt-dlp --proxy "socks5://127.0.0.1:9099" --add-metadata -ic "$url";
 	}
 
 if echo "$search_text" | grep -q "^.*\.[A-Za-z]\+.*"; then
