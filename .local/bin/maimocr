@@ -40,7 +40,7 @@ installed_languages() {
 take_screenshot() {
 	# https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html#missing-borders
 	maim --select --hidecursor --format=png --quality 1 |
-		convert \
+		magick \
 		png:- \
 		-modulate 100,0 \
 		-resize 400% \
@@ -73,7 +73,7 @@ run_ocr() {
 }
 
 main() {
-	if_installed curl unzip maim convert tesseract xclip || exit 1
+	if_installed curl unzip maim magick tesseract xclip || exit 1
 
 	if [[ -d $TESSDATA_PREFIX ]]; then
 		run_ocr

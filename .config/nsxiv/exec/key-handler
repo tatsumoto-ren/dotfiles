@@ -82,22 +82,22 @@ case "$1" in
 "r")
 	# Rotate the current file by 90 degrees.
 	file=$(first_file)
-	convert -rotate 90 "$file" "$file"
+	magick -rotate 90 "$file" "$file"
 	;;
 "R")
 	# Rotate the current file by -90 degrees.
 	file=$(first_file)
-	convert -rotate -90 "$file" "$file"
+	magick -rotate -90 "$file" "$file"
 	;;
 "f")
 	# Flop the current file.
 	file=$(first_file)
-	convert -flop "$file" "$file"
+	magick -flop "$file" "$file"
 	;;
 "I")
 	# Negate the current file.
 	file=$(first_file)
-	convert "$file" -channel RGB -negate "$file"
+	magick "$file" -channel RGB -negate "$file"
 	;;
 "y")
 	# Copy file name to the clipboard.
