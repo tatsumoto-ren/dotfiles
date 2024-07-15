@@ -74,3 +74,14 @@ set notification-fg		"#151515" #00
 
 set recolor-lightcolor		"#222d32" #00
 set recolor-darkcolor		"#d5c4a1" #06
+
+map [fullscreen] u scroll half-up
+map [fullscreen] d scroll half-down
+map [fullscreen] D toggle_page_mode
+map [fullscreen] r reload
+map [fullscreen] R rotate
+map [fullscreen] K zoom in
+map [fullscreen] J zoom out
+map [fullscreen] i recolor
+map [fullscreen] p print
+map [fullscreen] g goto top
