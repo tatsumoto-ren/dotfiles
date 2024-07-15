@@ -94,9 +94,9 @@ alias \
 	whathaveidone="tail -500 /var/log/pacman.log | grep -i 'installed\|removed\|graded' --color=never" \
 	refl='sudo reflector --protocol https --download-timeout 60 --verbose --age 6 --latest 100 --fastest 10 --sort rate --country "$(curl -Ls "ifconfig.co/country")" --save /etc/pacman.d/mirrorlist' \
 	reflp='sudo reflector --url "https://www.parabola.nu/mirrors/status/json" --protocol https --download-timeout 60 --verbose --age 12 --latest 100 --fastest 10 --sort rate --save /etc/pacman.d/parabola-mirrorlist' \
-	ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME}/shell/shortcutrc ; source ${XDG_CONFIG_HOME}/shell/zshnameddirrc" \
 	printsrcinfo="makepkg --printsrcinfo > .SRCINFO" \
 	unlockme='faillock --user "$USER" --reset' \
 	listkernels='ls -1 /boot/vmli*' \
 	egit='sudo etckeeper vcs' \
 	te='gio trash --empty' \
+	ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME}/shell/shortcutrc ; source ${XDG_CONFIG_HOME}/shell/shortcutenvrc ; source ${XDG_CONFIG_HOME}/shell/zshnameddirrc" \

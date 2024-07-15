@@ -12,7 +12,7 @@
 # See 'man zshoptions' for more info.
 
 # Load aliases and shortcuts if existent.
-for file in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/{aliasrc,shortcutrc,functionrc,zshnameddirrc,localrc}; do
+for file in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/{aliasrc,shortcutrc,shortcutenvrc,functionrc,zshnameddirrc,localrc}; do
 	[[ -f "$file" ]] && source "$file"
 done
 unset file
