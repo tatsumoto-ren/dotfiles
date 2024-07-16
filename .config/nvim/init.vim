@@ -26,8 +26,6 @@ Plug 'rhysd/vim-grammarous'
 call plug#end()
 
 set title
-colorscheme retrobox
-set bg=dark
 set go=a
 set mouse=a
 set nohlsearch
@@ -40,7 +38,9 @@ set noshowmode
 set noruler
 set laststatus=0
 set noshowcmd
-colorscheme vim
+set bg=dark
+colorscheme retrobox
+" colorscheme vim
 
 " Some basics:
 	nnoremap c "_c
