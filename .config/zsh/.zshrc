@@ -178,6 +178,14 @@ bindkey -M visual '^[[P' vi-delete
 # Load powerlevel10k
 # https://github.com/romkatv/powerlevel10k
 [[ $TERM != "$TERMINAL" ]] && return
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
 
 # Powerlvel9k mode
@@ -197,9 +205,15 @@ POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR=""
 POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR=""
 
 # Icons
+# /usr/share/zsh-theme-powerlevel10k/internal/icons.zsh
 POWERLEVEL9K_HOME_ICON="\UF015"
 POWERLEVEL9K_SUB_ICON="\UF07C"
 POWERLEVEL9K_FOLDER_ICON="\UF07B"
+POWERLEVEL9K_BATTERY_ICON="\UF1E6"
+POWERLEVEL9K_BATTERY_CHARGING_ICON="/UF1E6"
+POWERLEVEL9K_BATTERY_CHARGED_ICON="/UF240"
+POWERLEVEL9K_BATTERY_LOW_ICON="/UF240"
+POWERLEVEL9K_VCS_STASH_ICON='\u235F ' # ⍟
 
 # Context
 POWERLEVEL9K_CONTEXT_TEMPLATE="%n@%m"
@@ -341,12 +355,11 @@ POWERLEVEL9K_BATTERY_CHARGING_BACKGROUND="178"
 POWERLEVEL9K_BATTERY_CHARGING_FOREGROUND="235"
 POWERLEVEL9K_BATTERY_LOW_BACKGROUND="88"
 POWERLEVEL9K_BATTERY_LOW_FOREGROUND="235"
-POWERLEVEL9K_BATTERY_CHARGED_ICON="/UF240"
-POWERLEVEL9K_BATTERY_LOW_ICON="/UF240"
-POWERLEVEL9K_BATTERY_CHARGING_ICON="/UF1E6"
 POWERLEVEL9K_BATTERY_DISCONNECTED_FOREGROUND="195"
 POWERLEVEL9K_BATTERY_DISCONNECTED_BACKGROUND="009"
-POWERLEVEL9K_BATTERY_ICON="\UF1E6"
+
+# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 
 # Load syntax highlighting; should be last.
 source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null || true
