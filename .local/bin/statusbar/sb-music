@@ -1,7 +1,13 @@
 #!/bin/sh
 
 filter() {
-	input="$(cat -- - | sed -e '/^volume:/d;' -e 's/ *$//' -e 's/&/&#38;/g')"
+	input=$(
+		cat -- - |
+		sed \
+			-e '/^volume:/d;' -e 's/ *$//' -e 's/&/\&amp;/g' \
+			-e 's/</\&lt;/g' \
+			-e 's/>/\&gt;/g'
+	)
 	songname="$(echo "$input" | head -1)"
 
 	if [ -z "$songname" ]; then
