@@ -25,7 +25,7 @@ class Instance(NamedTuple):
     @classmethod
     def get_health(cls, d: list) -> float:
         try:
-            return float(d[1]['monitor']['30dRatio']['ratio'])
+            return float(d[1]['monitor']['uptime'])
         except (ValueError, TypeError, KeyError):
             return 0
 
@@ -58,9 +58,8 @@ def json_url() -> str:
 async def parse_instances(client: httpx.AsyncClient) -> list[Instance]:
     response = await client.get(json_url())
     return [
-        instance
+        Instance.from_json(entry)
         for entry in response.json()
-        if (instance := Instance.from_json(entry)).active_month > 1
     ]
 
 
