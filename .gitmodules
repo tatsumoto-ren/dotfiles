@@ -13,3 +13,6 @@
 [submodule ".config/mpv/scripts/sub-transition"]
 	path = .config/mpv/scripts/sub-transition
 	url = https://github.com/Ajatt-Tools/sub-transition.git
+[submodule ".config/alacritty/alacritty-theme"]
+	path = .config/alacritty/themes
+	url = git@github.com:alacritty/alacritty-theme.git
