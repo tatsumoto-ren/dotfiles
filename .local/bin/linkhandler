@@ -16,30 +16,7 @@ fi
 
 cd -- ~/Downloads || true
 
-
-find_invidious_instance() {
-	invidious_instance=$(rank-invidious-instances | head -1 | cut -f1)
-	echo "${invidious_instance:-yewtu.be}"
-}
-
 case "${url:?}" in
-*youtube.com/watch?v=*|*redirect.invidious.io/watch?v=*)
-	invidious_url="$(find_invidious_instance)/watch?v=$(grep -Po '/watch\?v=\K[^/?=&]{5,}' <<< "$url")"
-	setsid -f "$BROWSER" -- "$invidious_url" &
-	;;
-*twitter.com/*)
-	nitter_instance=$(rank-nitter-instances | head -5 | cut -f1 | shuf -n1)
-	nitter_url=$(sed -E "s,(https?://)?(www\.)?(vx)?(twitter\.com),$nitter_instance,g" <<< "$url")
-	setsid -f "$BROWSER" -- "$nitter_url" &
-	;;
-*youtube.com/live/* | *youtu.be/*)
-	invidious_url="$(find_invidious_instance)//watch?v=$(grep -Po '(live|be)/\K[^/?=]{10,}' <<< "$url")"
-	setsid -f "$BROWSER" -- "$invidious_url" &
-	;;
-*youtube.com/*)
-	invidious_url=$(sed -E "s,^(https?://)?(www\.)?(m\.)?(youtube\.com|youtu\.be),$(find_invidious_instance),g" <<< "$url")
-	setsid -f "$BROWSER" -- "$invidious_url" &
-	;;
 *.mkv | *.webm | *.mp4 | \
 	*hooktube.com* | *bitchute.com/video* | *instagram.com* | *twitter.com* | \
 	*odysee.com* | \
