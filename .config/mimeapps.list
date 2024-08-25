@@ -59,6 +59,7 @@ application/vnd.oasis.opendocument.text=libreoffice-writer.desktop;
 application/vnd.amazon.mobi8-ebook=org.pwmt.zathura.desktop;
 audio/vnd.wave=mpv.desktop;
 application/x-chrome-extension=chromium.desktop;
+x-scheme-handler/tonsite=org.telegram.desktop.desktop;
 
 [Default Applications]
 x-scheme-handler/chrome=linkhandler.desktop;
@@ -103,3 +104,4 @@ application/xml=org.kde.kdenlive.desktop
 audio/vnd.wave=mpv.desktop
 text/markdown=nvim.desktop
 application/x-xpinstall=firefoxdeveloperedition.desktop
+x-scheme-handler/tonsite=org.telegram.desktop.desktop
