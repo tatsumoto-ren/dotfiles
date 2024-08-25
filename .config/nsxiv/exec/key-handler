@@ -82,17 +82,17 @@ case "$1" in
 "r")
 	# Rotate the current file by 90 degrees.
 	file=$(first_file)
-	magick -rotate 90 "$file" "$file"
+	magick "$file" -rotate 90 "$file"
 	;;
 "R")
 	# Rotate the current file by -90 degrees.
 	file=$(first_file)
-	magick -rotate -90 "$file" "$file"
+	magick "$file" -rotate -90 "$file"
 	;;
 "f")
 	# Flop the current file.
 	file=$(first_file)
-	magick -flop "$file" "$file"
+	magick "$file" -flop "$file"
 	;;
 "I")
 	# Negate the current file.
