@@ -3,6 +3,7 @@
 set -euo pipefail
 
 readonly TESSDATA_PREFIX=$HOME/.local/share/tessdata
+declare eng_mode=false
 
 notify() {
 	echo "$*"
@@ -52,13 +53,21 @@ take_screenshot() {
 
 tesseract_recognize() {
 	# https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html
-	tesseract stdin stdout \
+	local lang=$(installed_languages)
+	result=$(
+		tesseract stdin stdout \
 		--tessdata-dir "$TESSDATA_PREFIX" \
-		-l "$(installed_languages)" \
-		--psm 1 |
-		tr -d ' ' |
-		tr -d '\n' |
-		grep -P '[ｦ-ﾟァ-ヶぁ-ゞＡ-ｚ０-９ｧ-ﾝﾞﾟァ-ンぁ-ん一-龯]+'
+		-l "$lang" \
+		--psm 1
+	)
+	if ! $eng_mode; then
+		result=$(
+			echo "$result" |
+			tr -d ' ' |
+			tr -d '\n' |
+			grep -P '[ｦ-ﾟァ-ヶぁ-ゞＡ-ｚ０-９ｧ-ﾝﾞﾟァ-ンぁ-ん一-龯]+'
+		)
+	fi
 }
 
 run_ocr() {
@@ -75,6 +84,18 @@ run_ocr() {
 main() {
 	if_installed curl unzip maim magick tesseract xclip || exit 1
 
+	while (($# > 0)); do
+		case $1 in
+			--eng)
+				eng_mode=true
+				;;
+			*)
+				;;
+		esac
+		shift
+	done
+	readonly eng_mode
+
 	if [[ -d $TESSDATA_PREFIX ]]; then
 		run_ocr
 	else
@@ -84,4 +105,4 @@ main() {
 	fi
 }
 
-main
+main "$@"
