@@ -62,6 +62,8 @@ application/x-chrome-extension=chromium.desktop;
 x-scheme-handler/tonsite=org.telegram.desktop.desktop;
 
 [Default Applications]
+inode/directory=lf.desktop;
+inode/mount-point=lf.desktop;
 x-scheme-handler/chrome=linkhandler.desktop;
 x-scheme-handler/http=linkhandler.desktop;
 x-scheme-handler/https=linkhandler.desktop;
@@ -87,7 +89,6 @@ image/jpeg=nsxiv.desktop
 image/gif=mpv.desktop;
 application/rss+xml=newsboat-rss-add.desktop;
 video/x-matroska=mpv.desktop;
-inode/directory=lf.desktop;
 audio/x-ms-wma=mpv.desktop
 video/mp4=mpv.desktop
 application/zip=org.gnome.FileRoller.desktop
