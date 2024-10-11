@@ -70,7 +70,14 @@ readonly af_filters="
 # Convert a file to ogg/opus
 # reads OPUS_Q variable
 togg() {
-	[[ ! -f $1 ]] && return 1
+	if ! [[ -f $1 ]]; then
+		return 1
+	fi
+	local -r ogg_name="${1%.*}.ogg"
+	if [[ -f $ogg_name ]]; then
+		echo "already exists: $ogg_name"
+		return
+	fi
 	_ffmpeg \
 		-vn \
 		-sn \
@@ -84,7 +91,7 @@ togg() {
 		-compression_level 10 \
 		-application voip \
 		-af "$af_filters" \
-		"${1%.*}.ogg"
+		"$ogg_name"
 }
 
 # Convert a file to mp3
