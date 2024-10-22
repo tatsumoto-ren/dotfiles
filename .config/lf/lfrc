@@ -107,27 +107,45 @@ cmd delete ${{
 }}
 
 cmd moveto ${{
-	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
-	clear; echo "Move to where?"
-	dest="$(listmarks dirs | fzf)" &&
-	[[ -n "$dest" ]] &&
+	clear
+	dest="$(listmarks dirs | fzf --prompt 'Move to where? ')" &&
+	if [[ -z "$dest" ]]; then
+		exit
+	fi
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	echo "From:"
+	echo "$fx" | sed 's/^/   /'
+	printf "To:\n   %s\n\n\tmove?[y/N]" "$dest"
+	read -r ans
+	if [[ "$ans" != "y" ]]; then
+		exit
+	fi
 	for x in $fx; do
 		mv -iv -- "$x" "$dest"
 	done &&
-	notify-send "🚚 File(s) moved." "File(s) moved to $dest."
+	notify-send "🚚 File(s) moved." "File(s) moved to $destpath."
 }}
 
 cmd copyto ${{
-	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
-	clear; echo "Copy to where?"
-	dest="$(listmarks dirs | fzf)" &&
-	[[ -n "$dest" ]] &&
+	clear
+	dest="$(listmarks dirs | fzf --prompt 'Copy to where? ')"
+	if [[ -z "$dest" ]]; then
+		exit
+	fi
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	echo "From:"
+	echo "$fx" | sed 's/^/   /'
+	printf "To:\n   %s\n\n\tcopy?[y/N]" "$dest"
+	read -r ans
+	if [[ "$ans" != "y" ]]; then
+		exit
+	fi
 	for x in $fx; do
 		cp -ivr -- "$x" "$dest"
 	done &&
-	notify-send "📋 File(s) copied." "File(s) copies to $dest."
+	notify-send "📋 File(s) copied." "File(s) copied to $destpath."
 }}
 
 cmd editfile ${{
