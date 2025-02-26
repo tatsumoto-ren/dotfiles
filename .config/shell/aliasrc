@@ -55,7 +55,7 @@ alias \
 	visoodoo="sudo visudo -f /etc/sudoers.d/01_sudoers" \
 	res_screencast="xrandr --output DP1 --primary --mode 1920x1080" \
 	res_normal="xrandr --output DP1 --primary --mode 1920x1200" \
-	charm="setsid -f pycharm ." \
+	charm="setsid -f pycharm . ; sleep 3s ; exit" \
 
 # dotfiles in git
 # https://wiki.archlinux.org/index.php/Dotfiles
@@ -100,3 +100,4 @@ alias \
 	egit='sudo etckeeper vcs' \
 	te='gio trash --empty' \
 	ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME}/shell/shortcutrc ; source ${XDG_CONFIG_HOME}/shell/shortcutenvrc ; source ${XDG_CONFIG_HOME}/shell/zshnameddirrc" \
+	hogs='ps axch -o cmd:15,%mem --sort=-%mem | head -20' \
