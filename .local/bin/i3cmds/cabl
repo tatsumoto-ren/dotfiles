@@ -7,11 +7,14 @@
 # qrencode required for qrcode generation.
 # groff/zathura required for man pages.
 
-readonly tmp_dir=/tmp/cabl && mkdir -p -- "$tmp_dir"
+readonly tmp_dir=/tmp/cabl
+mkdir -p -- "$tmp_dir"
 readonly BROWSER=${BROWSER:-xdg-open}
 readonly ANKI_MODEL=${ANKI_MODEL:-Japanese sentences}
 readonly ANKI_SENTENCE_FIELD=${ANKI_SENTENCE_FIELD:-SentKanji}
-readonly SOCKS5_PROXY="127.0.0.1:9099"
+readonly SOCKS5_PROXY="127.0.0.1:9050"
+readonly YOUTUBE_PROXY="127.0.0.1:10801"
+readonly USER_AGENT="User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0"
 
 __strip() {
 	sed -e 's/^ *//; s/ *$//;' -e 's/▼//g' -e 's/△//g'
@@ -22,6 +25,9 @@ if [[ $1 == clip* ]]; then
 	search_text="$(xclip -o -selection clipboard | __strip)"
 else
 	search_text="$( { xclip -o || xclip -o -selection clipboard; } | __strip)"
+fi
+if [[ $search_text == '~/'* ]]; then
+	search_text=${search_text/'~/'/"$HOME/"}
 fi
 readonly search_text
 
@@ -198,13 +204,16 @@ else
 		[[ -z "$searchterm" ]] && exit
 		cd -- "$tmp_dir" || exit 1
 
+
 		# Download pronunciations and convert them to opus/ogg
 		{
-			curl -Ls "https://dictionary.cambridge.org/us/dictionary/english/${searchterm// /-}" |
-				grep -o '[^"]*/us_pron[^"]*\.mp3' |
+			curl -Ls \
+				-H "$USER_AGENT" \
+				"https://dictionary.cambridge.org/us/dictionary/english/${searchterm// /-}" |
+				grep -Po 'src="\K/[^"]*/us_pron/[^"]*\.mp3' |
 				sed 's,^,https://dictionary.cambridge.org,'
 		} | while IFS= read -r link; do
-			curl -O "$link"
+			curl -H "$USER_AGENT" -O "$link"
 		done
 
 		for file in ./*.mp3; do
@@ -289,13 +298,19 @@ sankaku_solo() {
 	"$BROWSER" "https://chan.sankakucomplex.com/post/index?tags=$* order:popular solo rating:safe"
 }
 nyaa_search() {
-	"$BROWSER" "https://nyaa.land/?q=$*"
+	"$BROWSER" "https://nyaa.si/?q=$*"
+}
+sukebei_search() {
+	"$BROWSER" "https://sukebei.nyaa.si/?q=$*"
+}
+animebytes_search() {
+	"$BROWSER" "https://animebytes.tv/torrents.php?searchstr=$*"
 }
 duckduckgo() {
 	"$BROWSER" "https://duckduckgo.com/?q=$*&kp=-2&kl=jp-jp"
 }
 searx_search() {
-	"$BROWSER" "https://xo.wtf/search?q=$*&safesearch=0&categories=general"
+	"$BROWSER" "https://search.inetol.net/search?q=$*&safesearch=0&categories=general"
 }
 brave_search() {
 	"$BROWSER" "https://search.brave.com/search?q=$*"
@@ -383,14 +398,22 @@ echo "$search_text" | grep -q "^.*@.*\.[A-Za-z]\+$" &&
 command -v qrencode >/dev/null &&
 	qrcode() {
 		local -r img_path=/tmp/qr.png
-		qrencode "$@" -s 10 -o "$img_path" &&
-			xclip -sel c -target image/png "$img_path" && xdg-open "$img_path"
+		qrencode -s 10 -o "$img_path" -- "$*" &&
+			xclip -sel c -target image/png "$img_path" &&
+			xdg-open "$img_path"
 	}
 
 if echo "$search_text" | grep -q "/watch?v=\|invidious\|youtube\.com\|youtu\.be\|twitch\.tv/video"; then
-	youtubedl() { tsp yt-dlp --add-metadata --write-sub -ic "$@"; }
+	youtubedl() {
+		tsp yt-dlp \
+			--proxy "socks5://${YOUTUBE_PROXY}" \
+			--add-metadata \
+			--write-sub \
+			-ic "$@";
+	}
 	audiodl() {
 		tsp yt-dlp \
+			--proxy "socks5://${YOUTUBE_PROXY}" \
 			--add-metadata -ic \
 			-x \
 			-f bestaudio/best \
@@ -400,10 +423,10 @@ if echo "$search_text" | grep -q "/watch?v=\|invidious\|youtube\.com\|youtu\.be\
 	add_to_impd() { impd add "$*"; }
 fi
 
-echo "$search_text" | grep -Pq "instagram\.com|nitter|/status/|bitchute\.com|worldstar\.com/web/video|twitter\." &&
+echo "$search_text" | grep -Pq "xcancel\.com|instagram\.com|nitter|/status/|bitchute\.com|worldstar\.com/web/video|twitter\." &&
 	youtubedl() {
 		local -r url=$(sed -E 's,.*/([^\/]+)/status/,https://twitter.com/\1/status/,' <<< "$*")
-		tsp yt-dlp --proxy "socks5://127.0.0.1:9099" --add-metadata -ic "$url";
+		tsp yt-dlp --proxy "socks5://${SOCKS5_PROXY}" --add-metadata -ic "$url";
 	}
 
 if echo "$search_text" | grep -q "^.*\.[A-Za-z]\+.*"; then
