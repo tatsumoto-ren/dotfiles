@@ -40,7 +40,7 @@ lock_screen() {
 }
 
 cleanup() {
-	for app in qbittorrent goldendict; do
+	for app in qbittorrent goldendict keepassxc nekobox; do
 		killall "$app"
 	done
 	sleep '0.33s'
