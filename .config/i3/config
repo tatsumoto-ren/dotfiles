@@ -521,7 +521,7 @@ for_window [class="disks"]			focus
 for_window [class="GParted"]			focus
 for_window [class="(?i)Bleachbit"]		focus
 for_window [class="sent"]			border pixel 0px
-for_window [class="mpv"]			move position center, border pixel 3, focus, layout tabbed
+for_window [class="mpv"]			move position center, border pixel 3, focus
 for_window [title="Default - Wine desktop"]	floating enable
 for_window [class="Arandr"]			floating enable
 for_window [class="break-timer"]		floating enable, move position center
@@ -547,10 +547,11 @@ for_window [class="(?i)org.gnome.DejaDup"]			floating disable
 #for_window [class="(?i)Telegram" ]				floating disable
 
 # Assign workspaces to programs
-assign [class="Thunderbird"]		$ws1
-assign [class="(?i)Firefox|LibreWolf"]	$ws1
-assign [class="(?i)Chromium"]		$ws1
-assign [class="Anki" title="- Anki$"] 	$ws2
+# https://i3wm.org/docs/userguide.html#list_of_commands
+assign [class="Thunderbird"]			$ws1
+assign [class="(?i)Firefox|LibreWolf" tiling]	$ws1
+assign [class="(?i)chromium" tiling]		$ws1
+assign [class="Anki" title="Anki$|^Browse"]	$ws2
 assign [class="(?i)GoldenDict" title="(?i)GoldenDict"]		$ws2
 assign [class="pycharm"]		$ws3
 assign [class="QtCreator"]   		$ws3
@@ -577,7 +578,7 @@ bindsym Ctrl+Space			exec dunstctl close
 bindsym $mod+Shift+space		exec dunstctl close-all
 bindsym Ctrl+Shift+period		exec dunstctl context
 bindsym $mod+Shift+grave		exec dunstctl history-pop
-bindsym Ctrl+Shift+grave		exec dunstctl history-pop
+#bindsym Ctrl+Shift+grave		exec dunstctl history-pop
 
 ###############################################################################
 # Extra XF86 Keys
@@ -618,7 +619,7 @@ bindsym XF86Close		kill
 # Audio
 bindsym XF86AudioNext		exec mpc next
 bindsym XF86AudioPrev		exec mpc prev
-bindsym XF86AudioPlay		exec mpc play
+bindsym XF86AudioPlay		exec mpc toggle
 bindsym XF86AudioStop		exec mpc stop
 bindsym XF86AudioPause		exec mpc pause
 bindsym XF86AudioRewind		exec mpc back 10
