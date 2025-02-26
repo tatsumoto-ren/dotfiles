@@ -125,6 +125,9 @@ fi
 if [[ -d "$HOME/.local/share/cargo/bin" ]]; then
 	PATH="$PATH:$HOME/.local/share/cargo/bin"
 fi
+if [[ -d /usr/lib/qt6/bin ]]; then
+	PATH="/usr/lib/qt6/bin:$PATH"
+fi
 export PATH
 
 # Start graphical server on tty1 if not already running.
