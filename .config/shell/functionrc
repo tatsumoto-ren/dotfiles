@@ -141,3 +141,22 @@ bfg_strip_blobs() {
 	git reflog expire --expire=now --all
 	git gc --prune=now --aggressive
 }
+
+print_duration() {
+	local -r duration=$1
+	local -r h=$((duration / 60 / 60));
+	local -r m=$((duration / 60 % 60));
+	local -r s=$((duration % 60));
+	printf -- '%02d:%02d:%02d' "$h" "$m" "$s"
+}
+
+stopwatch() {
+	local -r start=$(date '+%s')
+	local now=""
+	while :; do
+		now=$(date +%s);
+		print_duration "$((now - start))"
+		printf -- '\r'
+		sleep 1s;
+	done
+}
