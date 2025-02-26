@@ -7,6 +7,7 @@
 
 [alias]
 	co   = checkout
+	sw   = switch
 	ci   = commit
 	st   = status
 	s    = status -s
@@ -73,3 +74,5 @@
 	gpgsign = false
 [pager]
 	status = true
+[tag]
+	gpgSign = true
