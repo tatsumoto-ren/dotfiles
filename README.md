@@ -19,6 +19,7 @@ Configuration files and scripts I use in my computing.
 * Manga OCR - [transformers-ocr](https://github.com/Ajatt-Tools/transformers_ocr)
 * Video player - [mpv](https://wiki.archlinux.org/title/Mpv) + [scripts](https://github.com/search?q=topic%3Ampv+org%3AAjatt-Tools+fork%3Atrue&type=repositories)
 * Renaming files - [vidir](https://aur.archlinux.org/packages/vidir)
+* Volume - [pamixer](https://archlinux.org/packages/extra/x86_64/pamixer/)
 * Music - [mpd](https://wiki.archlinux.org/title/Music_Player_Daemon)+[ncmpcpp](https://wiki.archlinux.org/title/Ncmpcpp)
 * Passive immersion - [impd](https://github.com/Ajatt-Tools/impd)
 * Preview images in terminal - [ueberzug](https://archlinux.org/packages/?name=ueberzug) / ueberzugpp
