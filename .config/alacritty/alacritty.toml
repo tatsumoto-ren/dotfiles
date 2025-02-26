@@ -1,3 +1,4 @@
+[general]
 live_config_reload = true
 import = [
     "~/.config/alacritty/themes/themes/gruvbox_dark.toml"
@@ -31,7 +32,8 @@ cyan =    "0x689d6a"
 white =   "0xfbf1c7"
 
 [colors.primary]
-background = "#222d32"
+#background = "#222d32"
+background = "#2f343f"
 foreground = "#f1fcf9"
 
 [env]
