@@ -45,7 +45,7 @@ cmd open ${{
 	return
     fi
     case $(file --mime-type "$(readlink -f -- $f)" -b) in
-	application/vnd.openxmlformats-officedocument.spreadsheetml.sheet) localc $fx ;;
+	application/vnd.openxmlformats-officedocument.spreadsheetml.sheet) setsid -f localc $fx >/dev/null 2>&1 ;;
 	text/rtf|application/ms*|application/*office*|*opendocument*|*powerpoint*|application/vnd.ms*) setsid -f soffice $fx >/dev/null 2>&1 &;;
 	image/vnd.djvu|application/pdf|application/postscript|application/vnd.djvu|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 &;;
 	text/troff) man ./ $fx;;
@@ -62,6 +62,7 @@ cmd open ${{
 			doc|docx|xls|xlsx|odt|ppt|pptx) setsid -f libreoffice $fx >/dev/null 2>&1 ;;
 			ghw) setsid -f gtkwave $f >/dev/null 2>&1 ;;
 			ts) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
+			ankiaddon|zip) setsid -f file-roller $fx >/dev/null 2>&1 ;;
 			*) setsid -f zathura $fx >/dev/null 2>&1 ;;
 	   	esac ;;
         *) for f in $fx; do
@@ -242,6 +243,8 @@ map m
 map ms mark-save
 map -x $chmod -x -- $fx
 map +x $chmod +x -- $fx
+# fix: https://github.com/gokcehan/lf/wiki/Tips#copypaste
+map p :paste; clear
 
 # Half-moves
 map K half-up
