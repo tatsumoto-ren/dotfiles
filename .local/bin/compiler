@@ -9,12 +9,12 @@
 # Note that .tex files which you wish to compile with XeLaTeX should have the
 # string "xelatex" somewhere in a comment/command in the first 5 lines.
 
-file="${1}"
+file=$(readlink -f -- "${1}")
 ext="${file##*.}"
 dir=${file%/*}
 base="${file%.*}"
 
-cd "${dir}" || exit "1"
+cd -- "${dir}" || exit "1"
 
 case "${ext}" in
 	# Try to keep these cases in alphabetical order.
@@ -30,14 +30,15 @@ case "${ext}" in
 	md)
 		if [ -x "$(command -v wkhtmltopdf)" ]; then
 			md2html -f --github "$file" |
-			sed '/^<meta .*>$/a <meta charset="utf-8">' |
-			wkhtmltopdf - "$base.pdf"
+			sed '/^<meta .*>$/a <meta charset="utf-8">' > "${base}.html"
+			# note: image files can be placed in the 'img' directory on in the same directory as $file
+			wkhtmltopdf --allow "${dir}" --allow "${dir}/img" "${base}.html" "${base}.pdf"
+		elif [ -x "$(command -v groffdown)" ]; then
+			groffdown -i "${file}" | groff -T pdf > "${base}.pdf"
 		elif [ -x "$(command -v lowdown)" ]; then
 			lowdown --parse-no-intraemph "${file}" -Tms | groff -mpdfmark -ms -kept -T pdf > "${base}.pdf"
-		elif [ -x "$(command -v groffdown)" ]; then
-				groffdown -i "${file}" | groff -T pdf > "${base}.pdf"
 		else
-				pandoc -t ms --highlight-style="kate" -s -o "${base}.pdf" "${file}"
+			pandoc -t ms --highlight-style="kate" -s -o "${base}.pdf" "${file}"
 		fi ; ;;
 	org) emacs "${file}" --batch -u "${USER}" -f org-latex-export-to-pdf ;;
 	py) python "${file}" ;;
