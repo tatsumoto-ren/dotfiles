@@ -22,8 +22,8 @@ podentr &
 xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources"
 # Start a polkit agent to run software like gparted.
 lxqt-policykit-agent &
-# start byedpi
-ciadpi -s 2 -d 2 -ip 127.0.0.1 --port 10801 &
+# Map right Super key to Menu
+xmodmap -e "keysym Super_R = Menu"
 
 # Autostart
 for program in mpd xcompmgr dunst unclutter pipewire remapd; do
