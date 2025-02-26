@@ -30,9 +30,12 @@
     # The geometry of the window:
     # Notice: default height of the i3bar is 21 pixels.
     width = 320
-    height = 1000
     origin = top-right
-    offset = 0x21
+    offset = (0, 21)
+
+    # The height of a single notification, excluding the frame.
+    # dynamic height from 0 to 300
+    height = (0, 600)
 
     # Show how many messages are currently hidden (because of geometry).
     indicate_hidden = yes
