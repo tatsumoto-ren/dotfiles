@@ -4,8 +4,8 @@
 
 export TZ=UTC
 
-for _brwsr in "$BROWSER" librewolf icecat firefox chromium; do
-	if command -v "$_brwsr" && [ "$_brwsr" != "$(basename "$0")" ]; then
-		exec "$_brwsr" "$@"
+for browser in "$BROWSER" librewolf icecat firefox chromium; do
+	if command -v "$browser" && [ "$browser" != "$(basename -- "$0")" ]; then
+		exec "$browser" "$@"
 	fi
 done
