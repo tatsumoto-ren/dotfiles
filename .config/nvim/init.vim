@@ -42,6 +42,11 @@ set bg=dark
 colorscheme retrobox
 " colorscheme vim
 
+" Search options
+set ic
+set hlsearch
+set incsearch
+
 " Some basics:
 	nnoremap c "_c
 	filetype plugin on
@@ -57,7 +62,7 @@ colorscheme retrobox
 " Goyo plugin makes text more readable when writing prose:
 	map <leader>f :Goyo \| set bg=light \| set linebreak<CR>
 " Spell-check set to <leader>o, 'o' for 'orthography':
-	map <leader>o :setlocal spell! spelllang=en_us<CR>
+	map <leader>o :setlocal spell! spelllang=en_us,ru_ru<CR>
 " Splits open at the bottom and right, which is non-retarded, unlike vim defaults.
 	set splitbelow splitright
 
@@ -159,6 +164,7 @@ autocmd FileType lua set tabstop=4|set shiftwidth=4|set expandtab
 autocmd FileType python set tabstop=4|set shiftwidth=4|set expandtab
 autocmd FileType json set tabstop=4|set shiftwidth=4|set expandtab
 autocmd FileType javascript set sw=4 ts=4 expandtab
+autocmd FileType css set sw=2 ts=2 expandtab
 autocmd FileType html set sw=4 ts=4 expandtab
 
 " Function for toggling the bottom statusbar:
