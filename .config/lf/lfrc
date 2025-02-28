@@ -108,8 +108,8 @@ cmd delete ${{
 
 cmd moveto ${{
 	set -f
-	clear
-	dest="$(listmarks dirs | fzf --prompt 'Move to where? ')" &&
+	clear; tput cup $(($(tput lines)/3))
+	dest="$(listmarks dirs | fzf --layout=reverse --height 40% --prompt 'Move to where? ')"
 	if [[ -z "$dest" ]] || [[ ! -d "$dest" ]] ; then
 		exit 1
 	fi
@@ -129,8 +129,8 @@ cmd moveto ${{
 
 cmd copyto ${{
 	set -f
-	clear
-	dest="$(listmarks dirs | fzf --prompt 'Copy to where? ')"
+	clear; tput cup $(($(tput lines)/3))
+	dest="$(listmarks dirs | fzf --layout=reverse --height 40% --prompt 'Copy to where? ')"
 	if [[ -z "$dest" ]] || [[ ! -d "$dest" ]] ; then
 		exit 1
 	fi
