@@ -1,7 +1,14 @@
 #!/usr/bin/bash
 
+list_cpu_hogs() {
+	ps axch -o cmd,%cpu |
+		awk '{cmd[$1]+=$2} END {for (i in cmd) print i, cmd[i]}' |
+		sort -nrk2  |
+		head
+}
+
 notify_hogs() {
-	notify-send "CPU hogs" "$(ps axch -o cmd:15,%cpu --sort=-%cpu | head -25)"
+	notify-send "CPU hogs" "$(list_cpu_hogs)\\n(100% per core)"
 }
 
 if [[ $BLOCK_BUTTON == 1 ]]; then

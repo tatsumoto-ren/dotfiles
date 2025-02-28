@@ -1,7 +1,14 @@
 #!/bin/sh
 
+list_memory_hogs() {
+	ps axch -o cmd,%mem |
+		awk '{cmd[$1]+=$2} END {for (i in cmd) print i, cmd[i]}' |
+		sort -nrk2 |
+		head
+}
+
 case $BLOCK_BUTTON in
-1) notify-send "Memory hogs" "$(ps axch -o cmd:15,%mem --sort=-%mem | head)" ;;
+1) notify-send "Memory hogs" "$(list_memory_hogs)" ;;
 2) notify-send "Memory module" "\- Shows Memory Used/Total.
 - Click to show memory hogs.
 - Middle click to open htop." &;;
