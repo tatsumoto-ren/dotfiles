@@ -9,6 +9,13 @@ ctl() {
 	esac
 }
 
+silence_all() {
+	mpc pause || true
+	pauseallmpv
+	lmc mute
+	lmc mute-mic
+}
+
 ask_action() {
 	cat <<-EOF | dmenu -l 30 -i -p "Action:"
 		🔒 lock screen
@@ -34,7 +41,7 @@ display_off() {
 }
 
 lock_screen() {
-	mpc pause || true
+	silence_all
 	i3lock -e -f -c "${1:-$(background_color)}"
 	display_off
 }
