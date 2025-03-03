@@ -9,7 +9,7 @@ notify_stats() {
 		df -hl --output=target,used,size,pcent -x devtmpfs -x tmpfs -x efivarfs |
 			sed 's/^\/home.*$/<b><span color=\"white\">&<\/span><\/b>/'
 	)
-	notify-send -t 0 " Disk space" "$stats" &
+	setsid -f notify-send -t 30000 " Disk space" "$stats" &
 }
 
 case $BLOCK_BUTTON in
