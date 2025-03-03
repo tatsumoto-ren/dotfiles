@@ -111,7 +111,7 @@ cmd moveto ${{
 	clear
 	dest="$(listmarks dirs | fzf --prompt 'Move to where? ')" &&
 	if [[ -z "$dest" ]]; then
-		exit
+		exit 1
 	fi
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	echo "From:"
@@ -119,12 +119,12 @@ cmd moveto ${{
 	printf "To:\n   %s\n\n\tmove?[y/N]" "$dest"
 	read -r ans
 	if [[ "$ans" != "y" ]]; then
-		exit
+		exit 1
 	fi
 	for x in $fx; do
 		mv -iv -- "$x" "$dest"
 	done &&
-	notify-send "🚚 File(s) moved." "File(s) moved to $destpath."
+	notify-send "🚚 File(s) moved." "File(s) moved to $dest."
 }}
 
 cmd copyto ${{
@@ -132,7 +132,7 @@ cmd copyto ${{
 	clear
 	dest="$(listmarks dirs | fzf --prompt 'Copy to where? ')"
 	if [[ -z "$dest" ]]; then
-		exit
+		exit 1
 	fi
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	echo "From:"
@@ -140,12 +140,12 @@ cmd copyto ${{
 	printf "To:\n   %s\n\n\tcopy?[y/N]" "$dest"
 	read -r ans
 	if [[ "$ans" != "y" ]]; then
-		exit
+		exit 1
 	fi
 	for x in $fx; do
 		cp -ivr -- "$x" "$dest"
 	done &&
-	notify-send "📋 File(s) copied." "File(s) copied to $destpath."
+	notify-send "📋 File(s) copied." "File(s) copied to $dest."
 }}
 
 cmd editfile ${{
