@@ -17,6 +17,18 @@ fi
 cd -- ~/Downloads || true
 
 case "${url:?}" in
+"https://t.me/"*|"t.me/")
+	domain=${url##"https://t.me/"}
+	domain=${domain##"t.me/"}
+	post=""
+	if [[ $domain == */* ]]; then
+		post="${domain##*/}"
+	fi
+	domain="${domain%%/*}"
+	url="tg://resolve?domain=${domain}${post:+"&post="}${post}"
+	echo "opening with xdg-open: $url"
+	setsid -f xdg-open "$url"
+	;;
 *.mkv | *.webm | *.mp4 | \
 	*hooktube.com* | *bitchute.com/video* | *instagram.com* | *twitter.com* | \
 	*odysee.com* | \
