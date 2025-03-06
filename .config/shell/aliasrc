@@ -4,9 +4,9 @@
 [ -x "$(command -v nvim)" ] && alias vim="nvim" vimdiff="nvim -d"
 
 # Use $XINITRC variable if file exists.
-[ -f "$XINITRC" ] && alias startx="startx $XINITRC"
+[ -f "$XINITRC" ] && alias startx='startx $XINITRC'
 
-[ -f "$MBSYNCRC" ] && alias mbsync="mbsync -c $MBSYNCRC"
+[ -f "$MBSYNCRC" ] && alias mbsync='mbsync -c $MBSYNCRC'
 
 # Verbosity and settings that you pretty much just always are going to want.
 alias \
@@ -99,5 +99,5 @@ alias \
 	listkernels='ls -1 /boot/vmli*' \
 	egit='sudo etckeeper vcs' \
 	te='gio trash --empty' \
-	ref="shortcuts >/dev/null; source ${XDG_CONFIG_HOME}/shell/shortcutrc ; source ${XDG_CONFIG_HOME}/shell/shortcutenvrc ; source ${XDG_CONFIG_HOME}/shell/zshnameddirrc" \
+	ref='shortcuts >/dev/null; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutenvrc ; source ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc'
 	hogs='ps axch -o cmd:15,%mem --sort=-%mem | head -20' \
