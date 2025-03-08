@@ -76,7 +76,8 @@ set incsearch
 	endif
 	let g:airline_symbols.colnr = ' C:'
 	let g:airline_symbols.linenr = ' L:'
-	let g:airline_symbols.maxlinenr = '☰ '
+	let g:airline_symbols.maxlinenr = ' '
+	let g:airline#extensions#whitespace#symbol = '!'
 
 " Shortcutting split navigation, saving a keypress:
 	map <C-h> <C-w>h
