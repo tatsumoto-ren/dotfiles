@@ -16,6 +16,7 @@ if [[ $* =~ ^(dirs|files)$ ]]; then
 		-e 's/\s*#.*$//' \
 		-e '/^\s*$/d' \
 		-e 's/^\S*\s*//' \
+		-e 's|~|$HOME|' \
 		"${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-$*" |
 	while read -r line; do
 		eval "echo $line"
