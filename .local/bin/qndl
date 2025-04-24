@@ -8,5 +8,7 @@ cmd="$2"
 [ -z "$cmd" ] && cmd="yt-dlp --embed-metadata -ic"
 idnum="$(tsp $cmd "$1")"
 realname="$(echo "$base" | sed "s/?\(source\|dest\).*//;s/%20/ /g")"
-tsp -D "$idnum" mv "$base" "$realname"
+if [ "$base" != "$realname" ]; then
+	tsp -D "$idnum" mv "$base" "$realname"
+fi
 tsp -D "$idnum" notify-send "👍 $realname done."
