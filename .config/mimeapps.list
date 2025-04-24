@@ -1,6 +1,6 @@
 [Added Associations]
 application/epub+zip=org.pwmt.zathura.desktop;
-application/json=geany.desktop;codium.desktop;nvim.desktop;vscodium.desktop;
+application/json=nvim.desktop;geany.desktop;codium.desktop;vscodium.desktop;
 application/ogg=mpv.desktop;
 application/pdf=libreoffice-draw.desktop;gimp.desktop;org.inkscape.Inkscape.desktop;org.pwmt.zathura.desktop;
 application/postscript=org.pwmt.zathura.desktop;geany.desktop;
@@ -41,7 +41,7 @@ text/tab-separated-values=libreoffice-calc.desktop;geany.desktop;
 text/x-log=geany.desktop;
 text/x-python=geany.desktop;pycharm.desktop;
 text/x-shellscript=nvim.desktop;
-video/mp4=org.kde.kdenlive.desktop;audacity.desktop;firefox.desktop;Alacritty.desktop;mpv.desktop;
+video/mp4=audacity.desktop;org.kde.kdenlive.desktop;firefox.desktop;Alacritty.desktop;mpv.desktop;
 video/webm=mpv.desktop;
 video/x-matroska=mpv.desktop;audacity.desktop;
 x-scheme-handler/chrome=linkhandler.desktop;
@@ -60,6 +60,7 @@ application/vnd.amazon.mobi8-ebook=org.pwmt.zathura.desktop;
 audio/vnd.wave=mpv.desktop;
 application/x-chrome-extension=chromium.desktop;
 x-scheme-handler/tonsite=org.telegram.desktop.desktop;
+text/x-c++src=vscodium.desktop;
 
 [Default Applications]
 inode/directory=lf.desktop;
