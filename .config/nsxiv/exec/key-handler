@@ -94,6 +94,12 @@ case "$1" in
 	file=$(first_file)
 	magick "$file" -flop "$file"
 	;;
+"F")
+	# Copy file path to the clipboard.
+	file=$( readlink -f -- "$( first_file )" )
+	lf-file-op --uri "$file" &&
+		notify-send -i "$file" "${0##*/}" "$file URI copied to clipboard" &
+	;;
 "I")
 	# Negate the current file.
 	file=$(first_file)
@@ -101,15 +107,15 @@ case "$1" in
 	;;
 "y")
 	# Copy file name to the clipboard.
-	file=$(first_file)
-	printf -- "%s" "$file" | tr -d '\n' | xclip -selection clipboard &&
-		notify-send -i "$file" "$file copied to clipboard" &
+	file=$( readlink -f -- "$( first_file )" )
+	lf-file-op --name "$file" &&
+		notify-send -i "$file" "$file name copied to clipboard" &
 	;;
 "Y")
 	# Copy file path to the clipboard.
-	file=$(first_file)
-	readlink -f -- "$file" | tr -d '\n' | xclip -selection clipboard &&
-		notify-send -i "$file" "${0##*/}" "$(readlink -f -- "$file") copied to clipboard" &
+	file=$( readlink -f -- "$( first_file )" )
+	lf-file-op --path "$file" &&
+		notify-send -i "$file" "${0##*/}" "$file path copied to clipboard" &
 	;;
 "g")
 	# Edit the current file in gimp.
