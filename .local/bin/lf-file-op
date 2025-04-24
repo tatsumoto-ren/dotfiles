@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Take file path and copy it to the clipboard in one of the three formats: uri, path, filename.
+
+rawurlencode() {
+	# /questions/296536/how-to-urlencode-data-for-curl-command
+	local -r string=${1}
+	local -r strlen=${#string}
+	local encoded=""
+	local pos c o
+
+	for (( pos=0 ; pos<strlen ; pos++ )); do
+		c=${string:$pos:1}
+		case "$c" in
+		[-_.~/a-zA-Z0-9] )
+			o=$c
+			;;
+		* )
+			o=$( printf -- "%s" "$c" | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
+			;;
+		esac
+		encoded+="${o}"
+	done
+	echo "$encoded"
+}
+
+main() {
+	local -r op=$1
+	local -r f=$( readlink -f -- "$2" )
+	case $op in
+	--name)
+		printf -- "%s" "$( basename -- "$f" )" |
+			xclip -selection clipboard
+		;;
+	--path)
+		printf -- "%s" "$f" |
+			xclip -selection clipboard
+		;;
+	--uri)
+		local -r encoded=$( rawurlencode "$f" )
+		printf -- "file://%s" "$encoded" |
+			xclip -selection clipboard -target "text/uri-list"
+		;;
+	esac
+}
+
+main "$@"
