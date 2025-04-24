@@ -26,7 +26,6 @@ Plug 'rhysd/vim-grammarous'
 call plug#end()
 
 set title
-set go=a
 set mouse=a
 set nohlsearch
 set clipboard+=unnamedplus
