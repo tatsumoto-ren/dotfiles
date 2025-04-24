@@ -177,6 +177,7 @@ if [[ $locale == ja ]]; then
 	youglish() { "$BROWSER" "https://youglish.com/pronounce/$*/japanese"; }
 	youreijp() { "$BROWSER" "http://yourei.jp/$*"; }
 	gooexamples() { "$BROWSER" "https://dictionary.goo.ne.jp/word/$*/example/"; }
+	goo() { "$BROWSER" "https://dictionary.goo.ne.jp/word/$*/"; }
 	massif() { "$BROWSER" "https://massif.la/ja/search?q=$*"; }
 	simplytranslate() { "$BROWSER" "https://simplytranslate.vern.cc/?engine=google&text=$*&sl=ja&tl=en"; }
 	most_common_spelling() {
