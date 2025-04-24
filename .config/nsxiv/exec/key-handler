@@ -68,7 +68,7 @@ case "$1" in
 	;;
 "i")
 	# Display detailed media info for the current image.
-	notify-send -t 0 "File information" "$(mediainfo -- "$(first_file)" | sed "s/[ ]\+:/:/g;s/: /: <b>/;s/$/<\/b>/" | grep "<b>")"
+	notify-send -t 9999 "File information" "$(mediainfo -- "$(first_file)" | sed "s/[ ]\+:/:/g;s/: /: <b>/;s/$/<\/b>/" | grep "<b>")"
 	;;
 "w")
 	# Set the current file as a desktop background image.
