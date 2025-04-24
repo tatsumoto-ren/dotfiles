@@ -110,7 +110,7 @@ cmd moveto ${{
 	set -f
 	clear
 	dest="$(listmarks dirs | fzf --prompt 'Move to where? ')" &&
-	if [[ -z "$dest" ]]; then
+	if [[ -z "$dest" ]] || [[ ! -d "$dest" ]] ; then
 		exit 1
 	fi
 	clear; tput cup $(($(tput lines)/3)); tput bold
@@ -131,7 +131,7 @@ cmd copyto ${{
 	set -f
 	clear
 	dest="$(listmarks dirs | fzf --prompt 'Copy to where? ')"
-	if [[ -z "$dest" ]]; then
+	if [[ -z "$dest" ]] || [[ ! -d "$dest" ]] ; then
 		exit 1
 	fi
 	clear; tput cup $(($(tput lines)/3)); tput bold
@@ -251,9 +251,10 @@ map o &mimeopen -- "$f"
 map O $mimeopen --ask -- "$f"
 map y
 map yy copy
-map yp $ printf -- "%s" "$f" | xclip -selection clipboard
-map yn $ printf -- "%s" "$( basename -- "$f" )" | xclip -selection clipboard
-map yf $ printf -- "file://%s" "$( readlink -f -- "$f" )" | xclip -selection clipboard -target "text/uri-list"
+# Note: lf-file-op is a bash-script in my ~/.local/bin/
+map yp $ lf-file-op --path "$f"
+map yn $ lf-file-op --name "$f"
+map yf $ lf-file-op --uri "$f"
 map S $clear && $SHELL
 map ZG !filename="$(basename -- "$f")" && tar -I 'gzip -9' -cvf "${filename}.tar.gz" -- "$filename"
 map ZD !filename="$(basename -- "$f")" && tar --zstd -cvf "${filename}.tar.zst" -- "$filename"
