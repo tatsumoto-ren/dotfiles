@@ -139,6 +139,8 @@ set incsearch
 	autocmd BufWritePost ~/.local/src/dwmblocks/config.h !cd ~/.local/src/dwmblocks/; sudo make install && { killall -q dwmblocks;setsid -f dwmblocks }
 " Restart Tor on config edit
 	autocmd BufWritePost /etc/tor/torrc !sudo systemctl restart tor
+" Compile Typst on file edit
+	autocmd BufWritePost *.typ !compiler "%:p"
 " Grammar check
 	map <leader>g :GrammarousCheck<CR>
 

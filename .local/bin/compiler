@@ -58,6 +58,9 @@ case "${ext}" in
 		${command} --output-directory="${textarget%/*}" "${textarget%.*}" &&
 		${command} --output-directory="${textarget%/*}" "${textarget%.*}"
 		;;
+	typ)
+		typst compile "$file" "${base}.pdf"
+		;;
 	*) sed -n '/^#!/s/^#!//p; q' "${file}" | xargs -r -I % "${file}" ;;
 esac
 
