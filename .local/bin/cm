@@ -61,9 +61,9 @@ lossless_alpha() {
 
 readonly af_filters="
 	areverse,
-	silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-50dB,
+	silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-70dB,
 	areverse,
-	silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-50dB,
+	silenceremove=start_periods=1:start_duration=0.02:start_silence=0.04:start_threshold=-70dB,
 	loudnorm=I=-16:TP=-6.2:LRA=11:dual_mono=true,
 "
 
