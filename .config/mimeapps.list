@@ -39,7 +39,7 @@ text/markdown=geany.desktop;nvim.desktop;
 text/plain=geany.desktop;nvim.desktop;
 text/tab-separated-values=libreoffice-calc.desktop;geany.desktop;
 text/x-log=geany.desktop;
-text/x-python=geany.desktop;pycharm.desktop;
+text/x-python=nvim.desktop;geany.desktop;pycharm.desktop;
 text/x-shellscript=nvim.desktop;
 video/mp4=audacity.desktop;org.kde.kdenlive.desktop;firefox.desktop;Alacritty.desktop;mpv.desktop;
 video/webm=mpv.desktop;
@@ -61,6 +61,7 @@ audio/vnd.wave=mpv.desktop;
 application/x-chrome-extension=chromium.desktop;
 x-scheme-handler/tonsite=org.telegram.desktop.desktop;
 text/x-c++src=vscodium.desktop;
+font/ttf=com.github.FontManager.FontViewer.desktop;
 
 [Default Applications]
 inode/directory=lf.desktop;
@@ -107,3 +108,4 @@ audio/vnd.wave=mpv.desktop
 text/markdown=nvim.desktop
 application/x-xpinstall=firefox-developer-edition.desktop
 x-scheme-handler/tonsite=org.telegram.desktop.desktop
+font/ttf=com.github.FontManager.FontViewer.desktop
