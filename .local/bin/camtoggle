@@ -11,5 +11,5 @@ if ! pkill -f /dev/video; then
 	--profile=low-latency \
 	--untimed \
 	--no-cache \
-	"$(ls /dev/video* | tail -n 1)" || notify-send "Camtoggle" "Failed."
+	"$(ls /dev/video* | head -n 1)" || notify-send "Camtoggle" "Failed."
 fi
