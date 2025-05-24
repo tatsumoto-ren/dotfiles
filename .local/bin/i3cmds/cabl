@@ -327,7 +327,6 @@ google_images() {
 }
 wikipedia() {
 	"$BROWSER" "https://${locale}.wikipedia.org/w/index.php?search=$*"
-
 }
 wiktionary() {
 	"$BROWSER" "https://${locale}.wiktionary.org/wiki/$*"
