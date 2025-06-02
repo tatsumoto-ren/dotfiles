@@ -20,6 +20,13 @@ image() {
 	fi
 }
 
+if command -v batcat >/dev/null 2>&1; then
+	# Ubuntu workaround
+	bat() {
+		batcat "$@"
+	}
+fi
+
 batorcat() {
     file="$1"
     shift
