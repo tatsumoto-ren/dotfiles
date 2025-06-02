@@ -36,6 +36,7 @@ cfL	${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope
 cfX	${XDG_CONFIG_HOME:-$HOME/.config}/nsxiv/exec/key-handler
 
 cfx	${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources
+cfxp	${XDG_CONFIG_HOME:-$HOME/.config}/x11/xprofile
 cfi	${XDG_CONFIG_HOME:-$HOME/.config}/i3/config
 cfb	${XDG_CONFIG_HOME:-$HOME/.config}/i3blocks/config
 cft	${XDG_CONFIG_HOME:-$HOME/.config}/termite/config
