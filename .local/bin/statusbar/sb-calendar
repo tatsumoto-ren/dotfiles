@@ -15,11 +15,13 @@ mark_day() {
 		-e "s/..0m/<\/span><\/b>/;"
 }
 
-readonly cal=$(cal -m -c1 -1 --color=always | mark_weekend)
+show_cal() {
+	cal -m -c1 -3 --color=always | mark_weekend | mark_day
+}
 
 case $BLOCK_BUTTON in
 	1)
-		notify-send "$(head -1 <<< "$cal")" "$(tail +2 <<< "$cal" | mark_day)"
+		notify-send Calendar "$(show_cal)"
 		command -v calcurse && notify-send "Appointments" "$(calcurse -D ~/.config/calcurse -d3)" ;;
 	2)
 		setsid -f i3-sensible-terminal -e 'calcurse -D ~/.config/calcurse' & ;;
