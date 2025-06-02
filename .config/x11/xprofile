@@ -3,6 +3,10 @@
 # This file runs when a DM logs you into a graphical session.
 # If you use startx/xinit like a Chad, this file will also be sourced.
 
+# Keyboard layouts
+# If fcitx is installed, it will be used.
+. "${XDG_CONFIG_HOME:-$HOME/.config}/x11/keyboard_layouts"
+
 # Fix Gnome Apps Slow  Start due to failing services
 # Add this when you include flatpak in your system
 dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY
