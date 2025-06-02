@@ -117,7 +117,7 @@
     #   %p  progress value if set ([  0%] to [100%]) or nothing
     #   %n  progress value if set without any extra characters
     # Markup is allowed
-    format = "<span foreground='#F3F4F5'><b>%s %p</b></span>\n%b"
+    format = "<span foreground='#F3F4F5'><b>%a - %s %p</b></span>\n%b"
 
     # Alignment of message text.
     # Possible values are "left", "center" and "right".
@@ -192,10 +192,9 @@
     force_xinerama = false
 
     # Defines list of actions for each mouse event
-    mouse_left_click = close_current
-    mouse_middle_click = do_action
-    mouse_right_click = close_all
-
+    mouse_left_click = do_action
+    mouse_right_click = close_current
+    mouse_middle_click = close_all
 
 
 # Experimental features that may or may not work correctly. Do not expect them
