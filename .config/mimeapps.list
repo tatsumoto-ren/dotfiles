@@ -15,7 +15,7 @@ application/x-extension-xhtml=linkhandler.desktop;
 application/x-extension-xhtml=linkhandler.desktop;geany.desktop;
 application/xhtml+xml=linkhandler.desktop;geany.desktop;linkhandler.desktop;
 application/xml=geany.desktop;org.kde.kdenlive.desktop;
-application/x-shellscript=nvim.desktop;geany.desktop;
+application/x-shellscript=nvim.desktop;geany.desktop;org.gnome.gedit.desktop;
 application/x-xdg-protocol-tg=telegramdesktop.desktop;
 application/x-xpinstall=org.gnome.FileRoller.desktop;firefoxdeveloperedition.desktop;firefox-developer-edition.desktop;
 audio/aac=mpv.desktop;
@@ -36,7 +36,7 @@ text/css=geany.desktop;codium.desktop;nvim.desktop;
 text/csv=geany.desktop;codium.desktop;nvim.desktop;libreoffice-calc.desktop;
 text/html=firefox.desktop;geany.desktop;codium.desktop;linkhandler.desktop;
 text/markdown=geany.desktop;nvim.desktop;
-text/plain=geany.desktop;nvim.desktop;
+text/plain=org.gnome.gedit.desktop;geany.desktop;nvim.desktop;
 text/tab-separated-values=libreoffice-calc.desktop;geany.desktop;
 text/x-log=geany.desktop;
 text/x-python=nvim.desktop;geany.desktop;pycharm.desktop;
@@ -62,6 +62,7 @@ application/x-chrome-extension=chromium.desktop;
 x-scheme-handler/tonsite=org.telegram.desktop.desktop;
 text/x-c++src=vscodium.desktop;
 font/ttf=com.github.FontManager.FontViewer.desktop;
+application/x-desktop=org.gnome.gedit.desktop;
 
 [Default Applications]
 inode/directory=lf.desktop;
