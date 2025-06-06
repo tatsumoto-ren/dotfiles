@@ -11,7 +11,9 @@ Configuration files and scripts I use in my computing.
 * Distro - [Arch Linux](https://archlinux.org/)
 * Shell - zsh + [zsh-theme-powerlevel10k](https://archlinux.org/packages/community/x86_64/zsh-theme-powerlevel10k/)
 * Terminal - [Alacritty](https://wiki.archlinux.org/title/Alacritty)
-* Font - [Hack Nerd Font Mono](https://archlinux.org/packages/extra/any/ttf-hack-nerd/)
+* Font -
+  [Hack Nerd Font Mono](https://archlinux.org/packages/extra/any/ttf-hack-nerd/),
+  [FontAwesome](https://archlinux.org/packages/extra/any/awesome-terminal-fonts/)
 * WM - [i3-wm](https://archlinux.org/packages/community/x86_64/i3-wm/).
 * Status bar - [i3blocks](https://archlinux.org/packages/community/x86_64/i3blocks/)
 * Launcher - [rofi](https://archlinux.org/packages/community/x86_64/rofi/)
