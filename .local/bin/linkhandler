@@ -8,6 +8,11 @@ set -euo pipefail
 # if a music file or pdf, it will download,
 # otherwise it opens link in browser.
 
+# Add this to ~/.config/mimeapps.list
+# x-scheme-handler/chrome=linkhandler.desktop;
+# x-scheme-handler/http=linkhandler.desktop;
+# x-scheme-handler/https=linkhandler.desktop;
+
 if [ -z "${1-}" ]; then
 	url="$(xclip -o)"
 else
