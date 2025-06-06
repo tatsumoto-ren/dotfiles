@@ -273,6 +273,12 @@ map J half-down
 map <c-t> &i3-msg layout tabbed && setsid -f i3-sensible-terminal -e lf
 map <f-4> &setsid -f i3-sensible-terminal
 
+cmd go_to_current_song ${{
+	music_dir=$( grep -Po 'music_directory\s*"\K.*(?="$)' ~/.config/mpd/mpd.conf )
+	playing_file=$( mpc -f %file% | head -1 )
+	lf -remote " send $id select '${music_dir}/${playing_file}' "
+}}
+
 # Ranger-like moves
 map g/ cd /
 map gM cd /mnt
@@ -280,7 +286,7 @@ map ge cd /etc
 map gp cd /tmp
 map gu cd /usr
 map <insert> push %touch<space>
-map gs $lf -remote "send $id select \"/mnt/archive/audio/$(mpc -f %file% | head -1)\""
+map gs go_to_current_song
 map gr $lf -remote "send $id cd \"/run/media/${USER}\""
 
 # Move to trash
