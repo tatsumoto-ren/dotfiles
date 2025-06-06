@@ -1,10 +1,14 @@
 #!/bin/bash
 
 p() { sudo pacman "$@"; notify-pacman-block; }
-see() {
-	choice="$(find ~/.local/bin -mindepth 1 -printf '%P\n' | fzf)"
-	[ -f "$HOME/.local/bin/$choice" ] && $EDITOR "$HOME/.local/bin/$choice"
+se_() {
+	# quickly select and edit files in base dir
+	local -r base_dir=${1:?}
+	choice="$( find "$base_dir" -mindepth 1 -printf '%P\n' | fzf )"
+	[ -f "$base_dir/$choice" ] && "$EDITOR" "$base_dir/$choice"
 }
+see() { se_ ~/.local/bin; }
+seconf() { se_ ~/.config; }
 vf() { find . -type f | fzf | xargs -r -I % "$EDITOR" % ;}
 calc() { awk "BEGIN{ print $* }" ;}
 kitsudown() { curl "$@" | grep -Eo 'subtitles[^"]+\.(srt|ass)' | xargs -n 1 -P 26 -I{} wget --no-clobber 'http://kitsunekko.net/{}' ;}
