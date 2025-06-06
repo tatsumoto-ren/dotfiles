@@ -2,8 +2,17 @@
 
 # View files with nsxiv and and select them in lf.
 
-readonly first_file=$1
-readonly exe=$(basename -- "$0")
+readonly first_file="$1"
+exe=$(basename -- "$0")
+readonly exe
+
+where_is_sxiv() {
+	for cmd in nsxiv sxiv; do
+		command -v "$cmd" >/dev/null 2>&1 && echo "$cmd"
+	done
+	echo "sxiv is not found in this system." >&2
+	exit 1
+}
 
 if ! [ -f "$first_file" ]; then
 	notify-send "$exe" "first arg is not a file!"
@@ -17,7 +26,7 @@ fi
 
 rotdir "$first_file" |
 grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|avif\|tif\|ico\)\(_large\)*$" |
-nsxiv -aio 2>/dev/null |
+"$(where_is_sxiv)" -aio 2>/dev/null |
 while read -r file; do
 	if [ -n "$file" ]; then
 		lf -remote "send $id select  \"$file\"  "
