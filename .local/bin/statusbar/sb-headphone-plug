@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# This loop will update the volume statusbar module whenever headphones
+# are connected or disconnected.
+# https://linux.die.net/man/8/acpid
+# https://unix.stackexchange.com/a/128007
+
+acpi_listen | grep --line-buffered -F 'jack/headphone HEADPHONE' | while read -r line; do
+	pkill -RTMIN+10 "${STATUSBAR:-i3blocks}"
+done
