@@ -544,12 +544,14 @@ for_window [title="WebP viewer"]		floating enable, move position center
 for_window [window_role="GtkFileChooserDialog"] resize set 800 600
 for_window [window_role="GtkFileChooserDialog"] move position center
 for_window [class="(?i)anki" title="^Card Types for "]		floating disable
+for_window [class="(?i)anki" title="^Options for "]		floating disable
 for_window [class="(?i)org.gnome.DejaDup"]			floating disable
 #for_window [class="(?i)Telegram" ]				floating disable
 
 # Assign workspaces to programs
 # https://i3wm.org/docs/userguide.html#list_of_commands
-assign [class="Thunderbird"]			$ws1
+assign [class="(?i)Thunderbird"]		$ws1
+assign [class="yandex-browser"]			$ws1
 assign [class="(?i)Firefox|LibreWolf" tiling]	$ws1
 assign [class="(?i)chromium" tiling]		$ws1
 assign [class="Anki" title="Anki$|^Browse"]	$ws2
@@ -560,6 +562,7 @@ assign [class="Eclipse"]   		$ws3
 assign [class="Element|SchildiChat"] 	$ws4
 assign [class="nheko"]		 	$ws4
 assign [class="TelegramDesktop"]  	$ws4
+assign [class="(?i)SimpleX"]	  	$ws4
 assign [class="VirtualBox"]  		$ws5
 assign [title="GIMP Startup"]		$ws5
 assign [class="Gimp"]			$ws5
