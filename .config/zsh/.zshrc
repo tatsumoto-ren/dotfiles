@@ -177,7 +177,9 @@ bindkey -M visual '^[[P' vi-delete
 
 # Load powerlevel10k
 # https://github.com/romkatv/powerlevel10k
-[[ $TERM != "$TERMINAL" ]] && return
+if [[ $TERM != "$TERMINAL" ]] && [[ $TERM != "xterm-256color" ]]; then
+	return
+fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -186,7 +188,9 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
+for theme in /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme ~/powerlevel10k/powerlevel10k.zsh-theme; do
+	[[ -f $theme ]] && source "$theme"
+done
 
 # Powerlvel9k mode
 # https://github.com/bhilburn/powerlevel9k/wiki/About-Fonts
