@@ -5,7 +5,12 @@ notify_pacman_i3_block() {
 }
 
 pac_upgrade() {
-	if pacman -Qq trizen >/dev/null; then
+	if command -v pacapt >/dev/null 2>&1; then
+		# On Ubuntu, pacapt can be used to upgrade system packages.
+		# Snap is heavily utilized on Ubuntu. Upgrade snap packages as well.
+		sudo pacapt -Syu
+		sudo snap refresh
+	elif pacman -Qq trizen >/dev/null; then
 		trizen -Syu
 	elif pacman -Qq paru >/dev/null; then
 		paru -Syu
@@ -15,12 +20,15 @@ pac_upgrade() {
 }
 
 pipx_upgrade() {
-	if pacman -Qq python-pipx 2>/dev/null; then
+	if command -v pipx >/dev/null 2>&1; then
 		pipx upgrade-all
 	fi
 }
 
-archnews || exit 1
+if ! command -v pacapt >/dev/null 2>&1; then
+	archnews || exit 1
+fi
+
 echo "Beginning upgrade."
 pac_upgrade
 notify_pacman_i3_block
