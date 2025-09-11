@@ -7,5 +7,9 @@ command -v mpc || exit # Exit if no mpc
 # music player's status. mpd must be running on X's start for this to work.
 
 while :; do
-	mpc idle && pkill -RTMIN+11 "${STATUSBAR:-i3blocks}" || break
+	if mpc idle; then
+		pkill -RTMIN+11 "${STATUSBAR:-i3blocks}"
+	else
+		break
+	fi
 done
