@@ -10,6 +10,24 @@
 # If there is already a running instance, user will be prompted to end it.
 # https://trac.ffmpeg.org/wiki/Encode/H.264
 
+set -euo pipefail
+
+die() {
+	setsid -f notify-send "${0##*/}" "$*" &
+	echo "$*" >&2
+	exit 1
+}
+
+if ! xrandr | grep -qF 'connected primary'; then
+	die "No primary display assigned"
+fi
+
+dest_dir=$(xdg-user-dir VIDEOS)
+readonly dest_dir
+if [[ -z $dest_dir ]] || [[ ! -d $dest_dir ]] ; then
+	die "Can't find the Videos directory."
+fi
+
 screen_resolution() {
 	# first monitor only
 	xrandr | grep -Po 'connected primary \K[^ ]*?(?=\+)'
@@ -17,7 +35,7 @@ screen_resolution() {
 
 getdim() { xrandr | grep -oP '(?<=current ).*(?=,)' | tr -d ' ' ;}
 
-notify_end() { notify-send "$(basename "$0")" "Stopped recording."; }
+notify_end() { notify-send "$(basename -- "$0")" "Stopped recording."; }
 
 updateicon() {
 	echo "$1" >/tmp/recordingicon
@@ -29,15 +47,38 @@ timestamp() {
 }
 
 killrecording() {
-	recpid="$(cat /tmp/recordingpid)"
+	recpid="$(cat -- /tmp/recordingpid)"
+	if [[ -z $recpid ]]; then
+		return
+	fi
 	# kill with SIGTERM, allowing finishing touches.
-	kill -15 "$recpid" && notify_end
-	rm -f /tmp/recordingpid
+	if kill -15 "$recpid"; then notify_end; fi
+	rm -f -- /tmp/recordingpid
 	updateicon ""
 	# even after SIGTERM, ffmpeg may still run, so SIGKILL it.
 	sleep 3
-	kill -9 "$recpid" && notify_end
+	if kill -9 "$recpid"; then notify_end; fi
 	exit
+}
+
+trim_spaces() {
+	sed 's/^ *//g; s/ *$//g;'
+}
+
+find_monitor() {
+	pactl list sources |
+		grep -i -B 1 -P 'Description:.*monitor.*speaker' |
+		cut -d: -f2 |
+		head -1 |
+		trim_spaces || die "No monitor found"
+}
+
+find_microphone() {
+	pactl list sources |
+		grep -i -B 1 -P 'Description:.*digital microphone' |
+		cut -d: -f2 |
+		head -1 |
+		trim_spaces || die "No microphone found"
 }
 
 __ffmpeg() {
@@ -45,15 +86,25 @@ __ffmpeg() {
 	local -r video_resolution=${2:?}
 	local -r output=${3:?}
 
+	# Run `pactl list sources`
+	local -r PA_MONITOR=$(find_monitor)
+	local -r PA_MIC=$(find_microphone)
+
+	if [[ -z $PA_MONITOR ]] || [[ -z $PA_MIC ]]; then
+		die "Audio inputs weren't discovered correctly."
+	fi
+
 	exec ffmpeg -y \
 		-f x11grab \
 		-framerate 30 \
 		-s "$video_resolution" \
 		-i "$input" \
 		-use_wallclock_as_timestamps 1 \
-		-f alsa \
-		-thread_queue_size 1024 \
-		-i default \
+		-f pulse -thread_queue_size 1024 -i "$PA_MONITOR" \
+		-f pulse -thread_queue_size 1024 -i "$PA_MIC" \
+		-filter_complex "[1:a][2:a]amix=inputs=2:duration=longest:dropout_transition=0[aout]" \
+		-map 0:v \
+		-map "[aout]" \
 		-r 30 \
 		-c:v libx264 \
 		-crf 10 \
@@ -74,7 +125,7 @@ screen_offset() {
 }
 
 screencast() {
-	__ffmpeg "$DISPLAY+$(screen_offset)" "$(screen_resolution)" "$HOME/screencast-$(timestamp).mp4" &
+	__ffmpeg "$DISPLAY+$(screen_offset)" "$(screen_resolution)" "$dest_dir/screencast-$(timestamp).mp4" &
 	echo $! >/tmp/recordingpid
 	updateicon "⏺️🎙️"
 }
@@ -82,7 +133,7 @@ screencast() {
 selected_area() {
 	set -x
 	read -r X Y W H <<<"$(slop -f "%x %y %w %h")"
-	__ffmpeg "${DISPLAY}+${X},${Y}" "${W}x${H}" "$HOME/screencast-area-$(timestamp).mp4" &
+	__ffmpeg "${DISPLAY}+${X},${Y}" "${W}x${H}" "$dest_dir/screencast-area-$(timestamp).mp4" &
 	echo $! >/tmp/recordingpid
 	updateicon "⏺️🎙️"
 }
@@ -101,7 +152,7 @@ video() {
 		-vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" \
 		-movflags +faststart \
 		-profile:v baseline \
-		"$HOME/video-$(timestamp).mkv" &
+		"$dest_dir/video-$(timestamp).mkv" &
 	echo $! >/tmp/recordingpid
 	updateicon "⏺️"
 }
@@ -111,7 +162,7 @@ webcamhidef() {
 		-f v4l2 \
 		-i /dev/video0 \
 		-s 1920x1080 \
-		"$HOME/webcam-$(timestamp).mkv" &
+		"$dest_dir/webcam-$(timestamp).mkv" &
 	echo $! >/tmp/recordingpid
 	updateicon "🎥"
 }
@@ -121,13 +172,13 @@ webcam() {
 		-f v4l2 \
 		-i /dev/video0 \
 		-s 640x480 \
-		"$HOME/webcam-$(timestamp).mkv" &
+		"$dest_dir/webcam-$(timestamp).mkv" &
 	echo $! >/tmp/recordingpid
 	updateicon "🎥"
 }
 
 audio() {
-	FILE_PATH="$HOME/audio-$(timestamp).flac"
+	FILE_PATH="$dest_dir/audio-$(timestamp).flac"
 	ffmpeg \
 		-f alsa -i default \
 		-c:a flac \
@@ -166,7 +217,7 @@ audio_anki() {
 
 	audacity "${FILE_PATH:?}"
 
-	! ls ./*.* && return
+	if ! ls ./*.*; then return; fi
 	cm ftogg
 
 	local audiofiles bn path
@@ -181,19 +232,20 @@ audio_anki() {
 	rm -- "${FILE_PATH:?}"
 }
 
+dmenu_recording_style() {
+	cat <<-EOF | dmenu -l 30 -i -p "Select recording style:"
+		screencast
+		video
+		audio
+		audio+add to anki
+		webcam
+		webcam (hi-def)
+		selected area
+	EOF
+}
+
 askrecording() {
-	local -r choice=$(
-		cat <<-EOF | dmenu -l 30 -i -p "Select recording style:"
-			screencast
-			video
-			audio
-			audio+add to anki
-			webcam
-			webcam (hi-def)
-			selected area
-		EOF
-	)
-	case "$choice" in
+	case "$(dmenu_recording_style)" in
 	'screencast') screencast ;;
 	'video') video ;;
 	'audio') audio ;;
@@ -206,10 +258,12 @@ askrecording() {
 
 asktoend() {
 	local -r response=$(printf "No\\nYes" | dmenu -i -p "Recording still active. End recording?")
-	[ "$response" = "Yes" ] && killrecording
+	if [[ "$response" = "Yes" ]]; then
+		killrecording
+	fi
 }
 
-case "$1" in
+case "${1-}" in
 screencast) screencast ;;
 audio) audio ;;
 video) video ;;
