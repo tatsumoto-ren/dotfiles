@@ -24,13 +24,13 @@ alias \
 
 # Youtube
 alias \
-	yt="yt-dlp --embed-metadata -i" \
-	ytautosub="yt --write-auto-sub --sub-lang ja" \
-	yta="yt -x -f bestaudio/best" \
+	ytd="yt-dlp --embed-metadata -i" \
+	ytautosub="ytd --write-auto-sub --sub-lang ja" \
+	yta="ytd -x -f bestaudio/best" \
 	mp3dl="yta --audio-quality 1 --audio-format mp3" \
 	ytv="youtube-viewer" \
-	ytt="yt --skip-download --write-thumbnail" \
-	ytw="yt --merge-output-format webm -f 'bestvideo[ext=webm]+bestaudio/best[ext=webm]'" \
+	ytt="ytd --skip-download --write-thumbnail" \
+	ytw="ytd --merge-output-format webm -f 'bestvideo[ext=webm]+bestaudio/best[ext=webm]'" \
 
 # Colorize commands when possible.
 alias \
@@ -49,7 +49,7 @@ alias \
 	timer='echo "Timer started. Stop with Ctrl-D." && date "+%a, %d %b %H:%M:%S" && time cat && date "+%a, %d %b %H:%M:%S"' \
 	updxrdb="xrdb -merge \${XDG_CONFIG_HOME}/Xresources" \
 	genpasswd="openssl rand -base64 21" \
-	update-grub="sudo grub-mkconfig -o /boot/grub/grub.cfg" \
+	update-grub="sudo grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --recheck ; sudo grub-mkconfig -o /boot/grub/grub.cfg" \
 	trim="sudo fstrim -v / && sudo fstrim -v /home" \
 	showpath="echo \$PATH | sed 's/:/\n/g'" \
 	visoodoo="sudo visudo -f /etc/sudoers.d/01_sudoers" \
