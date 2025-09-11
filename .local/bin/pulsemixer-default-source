@@ -1,0 +1,5 @@
+#!/bin/bash
+
+pulsemixer --list-sources |
+	awk -F':|,' '/, Default$/ { print $3; exit; }' |
+	sed 's/^\s*//g; s/\s*$//g'
