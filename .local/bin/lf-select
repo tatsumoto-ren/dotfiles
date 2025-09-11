@@ -8,7 +8,10 @@ readonly exe
 
 where_is_sxiv() {
 	for cmd in nsxiv sxiv; do
-		command -v "$cmd" >/dev/null 2>&1 && echo "$cmd"
+		if command -v "$cmd" >/dev/null 2>&1; then
+			echo "$cmd"
+			return
+		fi
 	done
 	echo "sxiv is not found in this system." >&2
 	exit 1
