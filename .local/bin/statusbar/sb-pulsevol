@@ -7,6 +7,8 @@
 # --list-sources        list the sources
 # "instance" field of the block should be "sink 0", "source 1", etc.
 
+{ pidof -x sb-headphone-plug || setsid -f sb-headphone-plug; } >/dev/null 2>&1 &
+
 instance() {
 	pamixer "${DEVICE[@]}" "$@"
 }
@@ -42,7 +44,7 @@ esac
 # Output status
 case $(instance --get-mute) in
 "0" | "false")
-	echo "$block_icon $(instance --get-volume)%"
+	echo "$block_icon $(instance --get-volume | cut -d' ' -f1)%"
 	;;
 "1" | "true")
 	echo "$block_icon_mute MUTE"
