@@ -1,2 +1,2 @@
 #!/bin/sh
-rofi -dmenu "$@"
+rofi -dmenu -i "$@"
