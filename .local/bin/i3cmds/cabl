@@ -194,6 +194,9 @@ if [[ $locale == ja ]]; then
 	}
 	furiganainfo() { "$BROWSER" "https://furigana.info/w/$*"; }
 else
+	yandex_search() {
+		"$BROWSER" "https://ya.ru/search/?text=$*&search_source=yaru_desktop_common&search_domain=yaru"
+	}
 	duckduckgo_search() {
 		"$BROWSER" "https://duckduckgo.com/?q=$*&kp=-2&kl=us-en"
 	}
