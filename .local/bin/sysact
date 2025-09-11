@@ -32,7 +32,7 @@ ask_action() {
 background_color() {
 	{
 		xrdb -query -all | awk -F'#' '/background:|color0:/{print $2; exit;}'
-		echo 1d2021
+		echo 1d2021 # fallback
 	} | head -1
 }
 
@@ -43,11 +43,16 @@ display_off() {
 lock_screen() {
 	silence_all
 	i3lock -e -f -c "${1:-$(background_color)}"
-	display_off
 }
 
 cleanup() {
-	for app in qbittorrent goldendict keepassxc nekobox; do
+	dmenurecord kill
+	fcitx-remote -e &
+	ibus exit
+	local -ra apps=(
+		qbittorrent goldendict keepassxc telegram-desktop Throne
+	)
+	for app in "${apps[@]}"; do
 		killall "$app"
 	done
 	sleep '0.33s'
@@ -58,8 +63,10 @@ main() {
 	case ${*:-$(ask_action)} in
 	*lock*)
 		lock_screen
+		silence_all
 		;;
 	*leave*)
+		cleanup
 		i3-msg -q exit || kill -TERM "$(pgrep -u "$USER" "\bdwm$")"
 		;;
 	*renew*)
@@ -83,6 +90,9 @@ main() {
 		;;
 	*'display off'*)
 		display_off
+		;;
+	*silence*)
+		silence_all
 		;;
 	*)
 		exit 1
