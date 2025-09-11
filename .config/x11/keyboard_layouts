@@ -17,7 +17,7 @@ if [ -n "${fcitx:=$(find_fcitx)}" ]; then
 		  -layout us \
 		  -variant altgr-intl \
 		  -option terminate:ctrl_alt_bksp,caps:escape
-	"$fcitx" -dr &
+	"$fcitx" -dr 2>/dev/null &
 else
 	setxkbmap -model pc104 \
 		  -layout us,ru \
