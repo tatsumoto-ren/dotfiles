@@ -1,13 +1,23 @@
 #!/bin/sh
 
 # $1 is a url; $2 is a command
-[ -z "$1" ] && exit
-base="$(basename "$1")"
-notify-send "⏳ Queuing $base..."
+
+if [ -z "$1" ]; then
+	exit 1
+fi
+
+base="$(basename -- "$1")"
 cmd="$2"
-[ -z "$cmd" ] && cmd="yt-dlp --embed-metadata -ic"
+
+notify-send "qndl" "⏳ Queuing $base..."
+
+if [ -z "$cmd" ]; then
+	cmd="yt-dlp --embed-metadata -ic"
+fi
+
 idnum="$(tsp $cmd "$1")"
 realname="$(echo "$base" | sed "s/?\(source\|dest\).*//;s/%20/ /g")"
+
 if [ "$base" != "$realname" ]; then
 	tsp -D "$idnum" mv "$base" "$realname"
 fi
