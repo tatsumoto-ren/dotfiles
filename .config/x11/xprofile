@@ -15,7 +15,7 @@ xrandr --dpi 96
 # Set the background with the `setbg` script
 setbg &
 # File synchronization
-syncthing -no-browser &
+syncthing serve --no-browser &
 # Backups. Install deja-dup.
 /usr/lib/deja-dup/deja-dup-monitor &
 # Podboat automatic queue and download. Requires entr.
@@ -35,6 +35,10 @@ for program in mpd xcompmgr dunst unclutter pipewire remapd; do
 		"$program" &
 	fi
 done
+
+if command -v gnome-keyring-daemon; then
+	gnome-keyring-daemon --start --components=ssh
+fi
 
 # Ensure that xrdb has finished running before moving on to start the WM/DE.
 [ -n "$xrdbpid" ] && wait "$xrdbpid"
