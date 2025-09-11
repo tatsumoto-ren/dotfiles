@@ -1,6 +1,6 @@
 [Added Associations]
 application/epub+zip=org.pwmt.zathura.desktop;
-application/json=nvim.desktop;geany.desktop;codium.desktop;vscodium.desktop;
+application/json=vscodium.desktop;nvim.desktop;geany.desktop;codium.desktop;
 application/ogg=mpv.desktop;
 application/pdf=libreoffice-draw.desktop;gimp.desktop;org.inkscape.Inkscape.desktop;org.pwmt.zathura.desktop;
 application/postscript=org.pwmt.zathura.desktop;geany.desktop;
@@ -63,6 +63,7 @@ x-scheme-handler/tonsite=org.telegram.desktop.desktop;
 text/x-c++src=vscodium.desktop;
 font/ttf=com.github.FontManager.FontViewer.desktop;
 application/x-desktop=org.gnome.gedit.desktop;
+video/quicktime=mpv.desktop;
 
 [Default Applications]
 inode/directory=lf.desktop;
@@ -110,3 +111,5 @@ text/markdown=nvim.desktop
 application/x-xpinstall=firefox-developer-edition.desktop
 x-scheme-handler/tonsite=org.telegram.desktop.desktop
 font/ttf=com.github.FontManager.FontViewer.desktop
+application/x-shellscript=org.gnome.gedit.desktop
+video/quicktime=mpv.desktop
