@@ -21,6 +21,7 @@ choose_from_cwds() {
 }
 humantime() { date -d "@$1" ;}
 wait-notify() {
+	# usage: wait-notify 10m, wait-notify 123s, etc.
 	sleep "$@"
 	setsid -f notify-send -t 9999 --icon alarm-timer "Timer ended" "$* passed"
 	setsid -f paplay /usr/share/sounds/freedesktop/stereo/complete.oga
