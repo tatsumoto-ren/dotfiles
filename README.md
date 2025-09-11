@@ -36,6 +36,7 @@ Configuration files and scripts I use in my computing.
 * Passive immersion - [impd](https://github.com/Ajatt-Tools/impd)
 * Preview images in terminal - [ueberzug](https://archlinux.org/packages/?name=ueberzug) / ueberzugpp
 * RSS reader - [newsboat](https://wiki.archlinux.org/title/Newsboat)
+* Archives - atool
 * Various scripts in [~/.local/bin/](.local/bin)
 * Handy [aliases](.config/shell/aliasrc) and [functions](.config/shell/functionrc)
 
@@ -52,6 +53,7 @@ git clone --depth 1 --recurse-submodules "https://github.com/tatsumoto-ren/dotfi
 cp -rfT ~/dots ~/
 cp -rf ~/.git ~/.config/dotfiles
 rm -rf -- ~/dots ~/.git
+echo '*' >> ~/.config/dotfiles/info/exclude
 ```
 
 Then relogin.
