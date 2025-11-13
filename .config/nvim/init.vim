@@ -25,6 +25,7 @@ Plug 'davidhalter/jedi-vim'
 Plug 'rhysd/vim-grammarous'
 call plug#end()
 
+set notermguicolors
 set title
 set mouse=a
 set nohlsearch
