@@ -11,9 +11,12 @@ Configuration files and scripts I use in my computing.
 * Distro - [Arch Linux](https://archlinux.org/)
 * Shell - zsh + [zsh-theme-powerlevel10k](https://archlinux.org/packages/community/x86_64/zsh-theme-powerlevel10k/)
 * Terminal - [Alacritty](https://wiki.archlinux.org/title/Alacritty)
-* Font -
-  [Hack Nerd Font Mono](https://archlinux.org/packages/extra/any/ttf-hack-nerd/),
-  [FontAwesome](https://archlinux.org/packages/extra/any/awesome-terminal-fonts/)
+* Fonts:
+  - [Hack Nerd Font Mono](https://archlinux.org/packages/extra/any/ttf-hack-nerd/)
+  - [FontAwesome](https://archlinux.org/packages/extra/any/awesome-terminal-fonts/)
+  - `fonts-noto`:
+    [Ubuntu](https://launchpad.net/ubuntu/+source/fonts-noto),
+    [Arch](https://archlinux.org/packages/extra/any/noto-fonts/)
 * WM - [i3-wm](https://archlinux.org/packages/community/x86_64/i3-wm/).
 * Status bar - [i3blocks](https://archlinux.org/packages/community/x86_64/i3blocks/)
 * Launcher - [rofi](https://archlinux.org/packages/community/x86_64/rofi/)
@@ -29,12 +32,16 @@ Configuration files and scripts I use in my computing.
   [xwallpaper](https://archlinux.org/packages/extra/x86_64/xwallpaper/),
   [xdotool](https://archlinux.org/packages/extra/x86_64/xdotool/),
   [xbacklight](https://archlinux.org/packages/extra/x86_64/xorg-xbacklight/)
+* brightness - brightnessctl.
+  To use without sudo, add yourself to the video group: `sudo usermod -a -G video $USER`
 * Manga OCR - [transformers-ocr](https://github.com/Ajatt-Tools/transformers_ocr)
 * Video player - [mpv](https://wiki.archlinux.org/title/Mpv) + [scripts](https://github.com/search?q=topic%3Ampv+org%3AAjatt-Tools+fork%3Atrue&type=repositories)
 * Renaming files - [vidir](https://aur.archlinux.org/packages/vidir)
 * Music - [mpd](https://wiki.archlinux.org/title/Music_Player_Daemon)+[ncmpcpp](https://wiki.archlinux.org/title/Ncmpcpp)
 * Passive immersion - [impd](https://github.com/Ajatt-Tools/impd)
-* Preview images in terminal - [ueberzug](https://archlinux.org/packages/?name=ueberzug) / ueberzugpp
+* Preview images in terminal:
+  - [ueberzug](https://archlinux.org/packages/?name=ueberzug) or ueberzugpp
+  - Ubuntu: [ueberzug](https://packages.ubuntu.com/noble/ueberzug)
 * RSS reader - [newsboat](https://wiki.archlinux.org/title/Newsboat)
 * Archives - atool
 * Various scripts in [~/.local/bin/](.local/bin)

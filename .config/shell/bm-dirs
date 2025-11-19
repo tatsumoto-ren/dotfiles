@@ -1,12 +1,13 @@
 # You can add comments to these files with #
 
 # Home
-D	~/Downloads
-P	~/Pictures
-d	~/Documents
-S	~/Documents/syncthing
+downloads	~/Downloads
+pictures	~/Pictures
+documents	~/Documents
+syncthing	~/Documents/syncthing
 proj	~/Documents/Projects
 blog	~/Documents/Projects/bashblog/site/blog
+addons  ~/Documents/anki_addons
 
 # Dotfiles
 cf	~/.config
@@ -16,11 +17,12 @@ sr	~/.local/share
 rr	~/.local/src
 
 # External drives
-mn	/mnt
-v	/mnt/archive/video
-a	/mnt/archive/audio
-o	/mnt/d/ongoing
-m	/mnt/d/video
+mnt	/mnt
+avideo	/mnt/archive/video
+audio	/mnt/archive/audio
+ongoing	/mnt/d/ongoing
+dvideo	/mnt/d/video
 ytdl	/mnt/archive/video/ytdl
 books	/mnt/archive/books
 subs	/mnt/archive/japanese/kitsunekko-mirror/subtitles
+japanese	/mnt/archive/japanese/

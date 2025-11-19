@@ -11,6 +11,8 @@
 # https://grml.org/zsh
 # See 'man zshoptions' for more info.
 
+fpath+="$ZDOTDIR/.zfunc"
+
 # Load aliases and shortcuts if existent.
 for file in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/{aliasrc,shortcutrc,shortcutenvrc,functionrc,zshnameddirrc,localrc}; do
 	[[ -f "$file" ]] && source "$file"

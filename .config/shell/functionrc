@@ -133,11 +133,35 @@ silenceremove() {
 		"${2:?Output is not set}"
 }
 
+find_mecab_exe() {
+	if command -v mecab >/dev/null 2>&1; then
+		echo mecab
+	else
+		# mecab binary installed with AJT Japanese
+		find ~/.local/share/Anki2/addons21 -type f -name 'mecab.lin' -print -quit
+	fi
+}
+
 my_mecab() {
-	local -r support_dir=$(dirname -- "$(find /usr/lib/mecab/dic/mecab-ipadic-neologd /usr/lib/mecab/dic ~/.local/share/Anki2/addons21 -type f -name dicrc -print -quit)")
+	local -r support_dir=$(
+		dirname -- "$(
+			find \
+				/usr/lib/mecab/dic/mecab-ipadic-neologd \
+				/usr/lib/mecab/dic \
+				~/.local/share/Anki2/addons21 \
+				-type f -name dicrc -print -quit
+		)"
+	)
 	local -r user_dic=$(find "$support_dir" -type f -name "user_dic.dic")
-	local -a command=(mecab -d "$support_dir" "$@")
-	[[ -f $user_dic ]] && command+=(-u "$user_dic")
+	local -r mecab_exe=$(find_mecab_exe)
+	local -a command=( "$mecab_exe" -d "$support_dir" "$@" )
+	if [[ -f $user_dic ]]; then
+		command+=( -u "$user_dic" )
+	fi
+	if [[ $mecab_exe != mecab ]]; then
+		export LD_LIBRARY_PATH="$( dirname -- "$mecab_exe" ):$LD_LIBRARY_PATH"
+		command+=( -r "$( dirname -- "$mecab_exe" )/mecabrc" )
+	fi
 	"${command[@]}"
 }
 

@@ -1,6 +1,6 @@
 [Added Associations]
 application/epub+zip=org.pwmt.zathura.desktop;
-application/json=vscodium.desktop;nvim.desktop;geany.desktop;codium.desktop;
+application/json=nvim.desktop;vscodium.desktop;geany.desktop;codium.desktop;
 application/ogg=mpv.desktop;
 application/pdf=libreoffice-draw.desktop;gimp.desktop;org.inkscape.Inkscape.desktop;org.pwmt.zathura.desktop;
 application/postscript=org.pwmt.zathura.desktop;geany.desktop;

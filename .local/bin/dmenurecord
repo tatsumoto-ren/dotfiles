@@ -67,10 +67,10 @@ trim_spaces() {
 
 find_monitor() {
 	pactl list sources |
-		grep -i -B 1 -P 'Description:.*monitor.*speaker' |
+		grep -i -B 1 -P 'Description:.*monitor.*speaker|Description: Monitor of Built-in Audio Analog Stereo' |
 		cut -d: -f2 |
 		head -1 |
-		trim_spaces || die "No monitor found"
+		trim_spaces
 }
 
 find_microphone() {
@@ -78,7 +78,7 @@ find_microphone() {
 		grep -i -B 1 -P 'Description:.*digital microphone' |
 		cut -d: -f2 |
 		head -1 |
-		trim_spaces || die "No microphone found"
+		trim_spaces
 }
 
 __ffmpeg() {
@@ -90,8 +90,19 @@ __ffmpeg() {
 	local -r PA_MONITOR=$(find_monitor)
 	local -r PA_MIC=$(find_microphone)
 
-	if [[ -z $PA_MONITOR ]] || [[ -z $PA_MIC ]]; then
-		die "Audio inputs weren't discovered correctly."
+	local -a inputs=()
+	if [[ -n $PA_MONITOR ]]; then
+		inputs+=(  -f pulse -thread_queue_size 1024 -i "$PA_MONITOR"  )
+
+	else
+		die "Monitor wasn't found."
+	fi
+	if [[ -n $PA_MIC ]]; then
+		inputs+=(  -f pulse -thread_queue_size 1024 -i "$PA_MIC"  )
+		inputs+=(  -filter_complex "[1:a][2:a]amix=inputs=2:duration=longest:dropout_transition=0[aout]"   )
+		inputs+=( -map "[aout]"  )
+	else
+		inputs+=( -map "1:a"  )
 	fi
 
 	exec ffmpeg -y \
@@ -100,11 +111,8 @@ __ffmpeg() {
 		-s "$video_resolution" \
 		-i "$input" \
 		-use_wallclock_as_timestamps 1 \
-		-f pulse -thread_queue_size 1024 -i "$PA_MONITOR" \
-		-f pulse -thread_queue_size 1024 -i "$PA_MIC" \
-		-filter_complex "[1:a][2:a]amix=inputs=2:duration=longest:dropout_transition=0[aout]" \
+		"${inputs[@]}" \
 		-map 0:v \
-		-map "[aout]" \
 		-r 30 \
 		-c:v libx264 \
 		-crf 10 \

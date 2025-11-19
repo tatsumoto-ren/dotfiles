@@ -4,7 +4,7 @@
 command=~/.local/bin/statusbar/$BLOCK_NAME
 separator_block_width=10
 markup=none
-full_text="  "
+full_text= 
 align=left
 color=#f3f4f5
 separator=true

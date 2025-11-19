@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This script will compile or run another finishing operation on a document. I
 # have this script run via vim.
@@ -12,6 +12,18 @@ dir=${file%/*}
 base="${file%.*}"
 
 cd -- "${dir}" || exit "1"
+
+_md2html() {
+	if [[ -x $(command -v md2html) ]]; then
+		md2html -f --github "$file" |
+		sed '/^<meta .*>$/a <meta charset="utf-8">' > "${base}.html"
+	elif [[ -x $(command -v mkd2html) ]]; then
+		mkd2html "$file" "${base}.html"
+	else
+		echo "Install md2html (md4c) or mkd2html (discount)." >&2
+		exit 1
+	fi
+}
 
 case "${ext}" in
 	# Try to keep these cases in alphabetical order.
@@ -27,8 +39,7 @@ case "${ext}" in
 	m) octave "${file}" ;;
 	md)
 		if [ -x "$(command -v wkhtmltopdf)" ]; then
-			md2html -f --github "$file" |
-			sed '/^<meta .*>$/a <meta charset="utf-8">' > "${base}.html"
+			_md2html
 			# note: image files can be placed in the 'img' directory on in the same directory as $file
 			wkhtmltopdf --allow "${dir}" --allow "${dir}/img" "${base}.html" "${base}.pdf"
 		elif [ -x "$(command -v groffdown)" ]; then

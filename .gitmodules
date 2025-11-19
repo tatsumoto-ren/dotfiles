@@ -15,4 +15,4 @@
 	url = https://github.com/Ajatt-Tools/sub-transition.git
 [submodule ".config/alacritty/alacritty-theme"]
 	path = .config/alacritty/themes
-	url = git@github.com:alacritty/alacritty-theme.git
+	url = https://github.com/alacritty/alacritty-theme.git

@@ -95,7 +95,6 @@ exec --no-startup-id	pgrep NetworkManager && nm-applet
 exec --no-startup-id	$term --title htop -e htop
 exec --no-startup-id	$term --title journalctl -e journalctl -f
 exec --no-startup-id	$term --title terminal
-exec --no-startup-id	transformers_ocr listen
 
 ###############################################################################
 # Colors

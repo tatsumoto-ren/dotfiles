@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+set -euo pipefail
 
 notify_pacman_i3_block() {
 	pkill -RTMIN+8 "${STATUSBAR:-i3blocks}"
@@ -25,18 +27,22 @@ pipx_upgrade() {
 	fi
 }
 
-if ! command -v pacapt >/dev/null 2>&1; then
-	archnews || exit 1
-fi
+main() {
+	if ! command -v pacapt >/dev/null 2>&1; then
+		archnews || exit 1
+	fi
 
-echo "Beginning upgrade."
-pac_upgrade
-notify_pacman_i3_block
-remaps
-pipx_upgrade
-echo "Upgrade complete."
+	echo "Beginning upgrade."
+	pac_upgrade
+	notify_pacman_i3_block
+	remaps
+	pipx_upgrade
+	echo "Upgrade complete."
 
-if [ "$1" != "--no-wait" ]; then
-	echo "Press <Enter> to exit window."
-	read -r _
-fi
+	if [ "$1" != "--no-wait" ]; then
+		echo "Press <Enter> to exit window."
+		read -r _
+	fi
+}
+
+main "$@"

@@ -41,13 +41,14 @@ display_off() {
 }
 
 lock_screen() {
+	fcitx-remote -s fcitx-keyboard-us-altgr-intl
 	silence_all
 	i3lock -e -f -c "${1:-$(background_color)}"
 }
 
 cleanup() {
 	dmenurecord kill
-	fcitx-remote -e &
+	fcitx-remote -e
 	ibus exit
 	local -ra apps=(
 		qbittorrent goldendict keepassxc telegram-desktop Throne
