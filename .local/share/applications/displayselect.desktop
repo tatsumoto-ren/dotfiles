@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Display Select
+Comment=Select Display
+GenericName=Settings
+Icon=utilities-terminal
+Exec=displayselect
+Categories=ConsoleOnly;System;
+MimeType=inode/directory;

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Exec=mpv "https://gitflic.ru/project/utako/utako/blob/raw?file=jp.m3u"
+Name=IPTV-JP
+GenericName=IPTV-JP
+Comment=Watch TV
+Icon=mpv
+Terminal=false
+StartupNotify=true
+Categories=Video;Player;TV;
+StartupWMClass=mpv
