@@ -6,3 +6,6 @@
 /.local/share/applications/firefox-*
 # Everyone has their own bookmarks
 /.config/newsboat/urls
+
+# Cache
+mimeinfo.cache

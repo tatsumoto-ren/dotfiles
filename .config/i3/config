@@ -224,6 +224,7 @@ bindsym $mod+Shift+u		resize shrink height 10 px or 10 ppt
 # Start the program launcher
 bindsym $alt+F2	$rofi_desktop
 bindsym $mod+d	$rofi_desktop
+bindsym $mod+Shift+d exec rofi -show run
 
 # Swap focus between the tiling area and the floating area
 bindsym $mod+f			focus mode_toggle

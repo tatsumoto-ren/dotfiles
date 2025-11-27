@@ -251,10 +251,13 @@ map o &mimeopen -- "$f"
 map O $mimeopen --ask -- "$f"
 map y
 map yy copy
+
+# Copies the selected filepath, filename, or URI, to the clipboard.
 # Note: lf-file-op is a bash-script in my ~/.local/bin/
 map yp $ lf-file-op --path "$f"
 map yn $ lf-file-op --name "$f"
 map yf $ lf-file-op --uri "$f"
+
 map S $clear && $SHELL
 map ZG !filename="$(basename -- "$f")" && tar -I 'gzip -9' -cvf "${filename}.tar.gz" -- "$filename"
 map ZD !filename="$(basename -- "$f")" && tar --zstd -cvf "${filename}.tar.zst" -- "$filename"
@@ -313,10 +316,6 @@ map V push :!nvim<space>
 map L &$TERMINAL -e "nvim $fx"
 
 map W $setsid -f $TERMINAL >/dev/null 2>&1
-
-# Copies the selected filename (instead of the filepath) to clipboard.
-map U $ printf -- "%s" "$fx" | xclip -selection clipboard
-map u $ printf -- "%s" "$fx" | sed 's/.*\///' | xclip -selection clipboard
 
 # Copies the selected filename and if it matches the yt-dlp downloaded video format [1234567891011],
 # gets the full youtube URL and pipes it to cl  ipboard.

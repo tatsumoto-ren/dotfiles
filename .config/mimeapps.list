@@ -51,7 +51,7 @@ x-scheme-handler/magnet=org.qbittorrent.qBittorrent.desktop;
 x-scheme-handler/mailto=neomutt.desktop;thunderbird.desktop;
 x-scheme-handler/tg=telegramdesktop.desktop;
 audio/x-ms-wma=mpv.desktop;
-application/zip=cr3.desktop;org.gnome.FileRoller.desktop;xarchiver.desktop;
+application/zip=anki-desktop_anki-desktop.desktop;cr3.desktop;org.gnome.FileRoller.desktop;xarchiver.desktop;
 application/rtf=libreoffice-writer.desktop;
 application/msword=libreoffice-writer.desktop;
 application/vnd.openxmlformats-officedocument.wordprocessingml.document=libreoffice-writer.desktop;
@@ -64,6 +64,7 @@ text/x-c++src=vscodium.desktop;
 font/ttf=com.github.FontManager.FontViewer.desktop;
 application/x-desktop=org.gnome.gedit.desktop;
 video/quicktime=mpv.desktop;
+application/vnd.debian.binary-package=snap-store_snap-store.desktop;
 
 [Default Applications]
 inode/directory=lf.desktop;

@@ -189,3 +189,9 @@ stopwatch() {
 		sleep 1s;
 	done
 }
+
+getlf() {
+	# on Ubuntu you can't get LF from the repos.
+	# https://github.com/gokcehan/lf/wiki/Tutorial
+	curl -L 'https://github.com/gokcehan/lf/releases/latest/download/lf-linux-amd64.tar.gz' | tar xzC ~/.local/bin
+}

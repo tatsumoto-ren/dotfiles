@@ -9,7 +9,15 @@ notify_stats() {
 		df -hl --output=target,used,size,pcent -x devtmpfs -x tmpfs -x efivarfs |
 			sed 's/^\/home.*$/<b><span color=\"white\">&<\/span><\/b>/'
 	)
-	setsid -f notify-send -t 30000 " Disk space" "$stats" &
+	local -r swap_stats=$(
+		{
+			printf -- "Device\tUsed\tSize\tUse%%\n"
+			swapon -s |
+				sed '1d' |
+				awk '{ printf "%s\t%0.2fG\t%0.2fG\t%d%\n", $1, $4 / 1024 / 1024, $3 / 1024 / 1024, $4 / $3 * 100; }';
+		} | column -t -s$'\t'
+	)
+	setsid -f notify-send -t 30000 " Disk space" "$stats\n\n$swap_stats" &
 }
 
 case $BLOCK_BUTTON in

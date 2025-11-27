@@ -21,6 +21,7 @@ Configuration files and scripts I use in my computing.
 * Status bar - [i3blocks](https://archlinux.org/packages/community/x86_64/i3blocks/)
 * Launcher - [rofi](https://archlinux.org/packages/community/x86_64/rofi/)
 * File Manager - [lf](https://github.com/gokcehan/lf)
+  ([Tutorial](https://github.com/gokcehan/lf/wiki/Tutorial))
 * Fuzzy finder - [fzf](https://wiki.archlinux.org/title/Fzf)
 * Image viewer and manga reader - [nsxiv](https://wiki.archlinux.org/title/Sxiv)
 * Volume -
