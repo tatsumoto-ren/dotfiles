@@ -6,7 +6,7 @@ readonly anki_image_field=${MAIMPICK_ANKI_FIELD:-Image}
 readonly selections_cache=$HOME/.cache/previous_selections
 
 take_screenshot() {
-	maim --hidecursor --format=png --quality 10 "$@"
+	maim --hidecursor --format=png --quality 10 --quiet --delay="${DELAY_SECONDS:-0}" "$@"
 }
 
 ask_command() {
@@ -21,6 +21,7 @@ ask_command() {
 		current window → clipboard
 		full screen
 		full screen → clipboard
+		delay:5
 	EOF
 }
 
@@ -228,6 +229,9 @@ main() {
 	full*)
 		take_screenshot "$file_path"
 		notify "Whole screen captured."
+		;;
+	delay*)
+		DELAY_SECONDS=${command#*:} main
 		;;
 	*)
 		notify "No appropriate action."
