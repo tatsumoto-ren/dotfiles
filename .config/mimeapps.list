@@ -65,6 +65,7 @@ font/ttf=com.github.FontManager.FontViewer.desktop;
 application/x-desktop=org.gnome.gedit.desktop;
 video/quicktime=mpv.desktop;
 application/vnd.debian.binary-package=snap-store_snap-store.desktop;
+application/octet-stream=keepassxc_keepassxc.desktop;
 
 [Default Applications]
 inode/directory=lf.desktop;
@@ -100,7 +101,7 @@ application/zip=org.gnome.FileRoller.desktop
 application/x-xdg-protocol-tg=telegramdesktop.desktop
 x-scheme-handler/tg=telegramdesktop.desktop
 audio/mpeg=mpv.desktop
-application/json=vscodium.desktop
+application/json=nvim.desktop
 audio/ogg=mpv.desktop
 audio/x-opus+ogg=mpv.desktop
 application/msword=libreoffice-writer.desktop
