@@ -141,7 +141,7 @@ if [[ -z "${DISPLAY}" ]] && [[ "${XDG_VTNR}" -eq 1 ]]; then
 	exec startx "$XINITRC"
 fi
 
-if [[ "$(tty)" == "/dev/tty2" ]]; then
+if [[ "$(tty)" == "/dev/tty2" ]] && [[ -x /usr/bin/sway ]] ; then
 	exec startsway
 fi
 
