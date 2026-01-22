@@ -34,16 +34,8 @@ case "${url:?}" in
 	echo "opening with xdg-open: $url"
 	setsid -f xdg-open "$url"
 	;;
-#http*youtube.com* | http*youtu.be*)
-#	ifinstalled jq || exit 1
-#	inv=$(  curl -s 'https://api.invidious.io/instances.json?sort_by=type,users' |
-#		jq -r '.[0][1].uri'  )
-#	get_params=${url##*/}
-#	setsid -f "$BROWSER" -- "${inv}/${get_params}" >/dev/null 2>&1 &
-#	;;
 *.mkv | *.webm | *.mp4 | \
 	*hooktube.com* | *bitchute.com/video* | *instagram.com* | *twitter.com* | \
-	*odysee.com* | \
 	*videos.lukesmith.xyz* | \
 	*tiktok.com/* | *streamable.com/* | \
 	*worldstar.com/web/video*)
