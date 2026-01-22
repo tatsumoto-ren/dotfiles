@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+set -euo pipefail
 
 # Prints the current volume.
 #
@@ -7,7 +9,12 @@
 # --list-sources        list the sources
 # "instance" field of the block should be "sink 0", "source 1", etc.
 
-{ pidof -x sb-headphone-plug || setsid -f sb-headphone-plug; } >/dev/null 2>&1 &
+readonly BLOCK_INSTANCE="${BLOCK_INSTANCE:-}"
+readonly BLOCK_BUTTON="${BLOCK_BUTTON:-}"
+
+{ if ! pidof -x sb-headphone-plug; then
+	setsid -f sb-headphone-plug
+fi; } >/dev/null 2>&1
 
 instance() {
 	pamixer "${DEVICE[@]}" "$@"
