@@ -1,4 +1,12 @@
-#!/bin/sh
+#!/bin/bash
+
+set -euo pipefail
+
+readonly BLOCK_BUTTON="${BLOCK_BUTTON:-}"
+
+{ if ! pidof -x sb-mpdup; then
+	setsid -f sb-mpdup
+fi; } >/dev/null 2>&1
 
 filter() {
 	input=$(
@@ -25,8 +33,6 @@ filter() {
 		echo "<span color=\"gray\" font_style=\"italic\">$(echo " $songname" | colrm 30)</span>"
 	fi
 }
-
-{ pidof -x sb-mpdup || setsid -f sb-mpdup; } >/dev/null 2>&1 &
 
 case $BLOCK_BUTTON in
 1) # left click, launch ncmpcpp
