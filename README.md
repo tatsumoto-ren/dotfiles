@@ -41,7 +41,8 @@ Configuration files and scripts I use in my computing.
 * Music - [mpd](https://wiki.archlinux.org/title/Music_Player_Daemon)+[ncmpcpp](https://wiki.archlinux.org/title/Ncmpcpp)
 * Passive immersion - [impd](https://github.com/Ajatt-Tools/impd)
 * Preview images in terminal:
-  - [ueberzug](https://archlinux.org/packages/?name=ueberzug) or ueberzugpp
+  - [ueberzug](https://archlinux.org/packages/?name=ueberzug)
+  - [ueberzugpp](https://github.com/jstkdng/ueberzugpp)
   - Ubuntu: [ueberzug](https://packages.ubuntu.com/noble/ueberzug)
 * RSS reader - [newsboat](https://wiki.archlinux.org/title/Newsboat)
 * Archives - atool
