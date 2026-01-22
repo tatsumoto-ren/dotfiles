@@ -10,6 +10,7 @@
 # Then send a test notification:
 #     $ notify-send "Title" "Message" --urgency=[critical|normal|low]
 #
+# https://github.com/dunst-project/dunst/blob/master/dunstrc
 # https://dunst-project.org/
 # https://wiki.archlinux.org/index.php/Dunst
 
@@ -229,6 +230,17 @@
     frame_color = "#d64e4e"
     timeout = 0
     icon = /usr/share/icons/Papirus/16x16/emblems/emblem-error.svg
+
+# Disable the transient hint so that idle_threshold cannot be bypassed from the client
+[transient_disable]
+    match_transient = yes
+    set_transient = no
+
+# Make the handling of transient notifications more strict by making them not
+# be placed in history.
+[transient_history_ignore]
+    match_transient = yes
+    history_ignore = no
 
 # Every section that isn't one of the above is interpreted as a rules to
 # override settings for certain messages.
