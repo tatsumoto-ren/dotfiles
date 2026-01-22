@@ -66,7 +66,7 @@ cmd open ${{
 			*) setsid -f zathura $fx >/dev/null 2>&1 ;;
 	   	esac ;;
         *) for f in $fx; do
-	       setsid -f $OPENER $f >/dev/null 2>&1 &;
+	       setsid -f "${OPENER:-xdg-open}" $f >/dev/null 2>&1 &;
 	   done;;
     esac
 }}
@@ -273,7 +273,7 @@ map K half-up
 map J half-down
 
 # New tab
-map <c-t> &i3-msg layout tabbed && setsid -f i3-sensible-terminal -e lf
+map <c-t> &i3-msg layout tabbed && setsid -f i3-sensible-terminal -e lfub
 map <f-4> &setsid -f i3-sensible-terminal
 
 cmd go_to_current_song ${{
