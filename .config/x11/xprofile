@@ -3,10 +3,6 @@
 # This file runs when a DM logs you into a graphical session.
 # If you use startx/xinit like a Chad, this file will also be sourced.
 
-# Keyboard layouts
-# If fcitx is installed, it will be used.
-. "${XDG_CONFIG_HOME:-$HOME/.config}/x11/keyboard_layouts"
-
 # Fix Gnome Apps Slow  Start due to failing services
 # Add this when you include flatpak in your system
 dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY
@@ -36,9 +32,14 @@ for program in mpd xcompmgr dunst unclutter pipewire remapd; do
 	fi
 done
 
-if command -v gnome-keyring-daemon; then
+if command -v gnome-keyring-daemon && ! pidof -sx gnome-keyring-daemon; then
+	# https://wiki.archlinux.org/title/GNOME/Keyring#Terminal_gives_the_message_%22discover_other_daemon:_1%22
 	gnome-keyring-daemon --start --components=ssh
 fi
+
+# Keyboard layouts
+# If fcitx is installed, it will be used.
+. "${XDG_CONFIG_HOME:-$HOME/.config}/x11/keyboard_layouts"
 
 # Ensure that xrdb has finished running before moving on to start the WM/DE.
 [ -n "$xrdbpid" ] && wait "$xrdbpid"
