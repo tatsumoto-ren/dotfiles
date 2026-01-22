@@ -55,7 +55,7 @@ alias \
 	visoodoo="sudo visudo -f /etc/sudoers.d/01_sudoers" \
 	res_screencast="xrandr --output DP1 --primary --mode 1920x1080" \
 	res_normal="xrandr --output DP1 --primary --mode 1920x1200" \
-	charm="setsid -f pycharm . ; sleep 3s ; exit" \
+	charm='setsid -f "$(  whence -p pycharm pycharm-community | head -1  )" . & ; sleep 3s ; exit' \
 
 # dotfiles in git
 # https://wiki.archlinux.org/index.php/Dotfiles
@@ -91,7 +91,7 @@ alias \
 	upd="sb-popupgrade --no-wait" \
 	trimlogs='sudo journalctl --vacuum-size=150M' \
 	pacclean="remorphans && sudo pacman -Sc && trimlogs" \
-	whathaveidone="tail -500 /var/log/pacman.log | grep -i 'installed\|removed\|graded' --color=never" \
+	whathaveidone="tail -3000 /var/log/pacman.log | grep -i 'installed\|removed\|graded' --color=never" \
 	refl='sudo reflector --protocol https --download-timeout 60 --verbose --age 6 --latest 100 --fastest 10 --sort rate --country "$(curl -Ls "ifconfig.co/country")" --save /etc/pacman.d/mirrorlist' \
 	reflp='sudo reflector --url "https://www.parabola.nu/mirrors/status/json" --protocol https --download-timeout 60 --verbose --age 12 --latest 100 --fastest 10 --sort rate --save /etc/pacman.d/parabola-mirrorlist' \
 	printsrcinfo="makepkg --printsrcinfo > .SRCINFO" \
