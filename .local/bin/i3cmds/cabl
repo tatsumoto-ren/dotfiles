@@ -200,9 +200,6 @@ else
 	duckduckgo_search() {
 		"$BROWSER" "https://duckduckgo.com/?q=$*&kp=-2&kl=us-en"
 	}
-	nitter() {
-		"$BROWSER" "https://nitter.net/search?f=tweets&q=$*"
-	}
 	thesaurus() { "$BROWSER" "https://www.thesaurus.com/browse/$*"; }
 	elsa() { "$BROWSER" "https://elsaspeak.com/en/learn-english/how-to-pronounce/$*"; }
 	reverso() { "$BROWSER" "https://context.reverso.net/translation/english-japanese/$*"; }
@@ -353,9 +350,11 @@ myanimelist() {
 dlraws() {
 	"$BROWSER" "https://dlraw.to/search/${*// /+}/"
 }
-
 mangadex() {
 	"$BROWSER" "https://mangadex.org/search?q=$*"
+}
+nitter() {
+	"$BROWSER" "https://nitter.net/search?f=tweets&q=$*"
 }
 
 # Download a streamable video through Tor
