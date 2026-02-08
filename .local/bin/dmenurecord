@@ -215,7 +215,7 @@ audio_anki() {
 	}
 	workdir="/tmp/audacity"
 
-	mkdir "$workdir"
+	mkdir -p -- "$workdir"
 	cd "$workdir" || return 1
 
 	audio

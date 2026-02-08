@@ -5,9 +5,14 @@
 # All other args are terminal settings.
 # Terminal names are in dropdown_* to allow easily setting i3 settings.
 
-ifinstalled xwininfo || exit
+ifinstalled xwininfo || exit 1
 
-[ -z "$1" ] && exit
+[ -z "$1" ] && exit 1
+
+_error() {
+	echo "$*" >&2
+	notify-send "${0##*/}" "$*" &
+}
 
 case $TERMINAL in
 	st)
@@ -18,8 +23,10 @@ case $TERMINAL in
 		nameopt='--name=';;
 	alacritty)
 		nameopt='--class=';;
+	kitty)
+		nameopt='--class=';;
 	*)
-		echo "Could not recognize your TERMINAL \"$TERMINAL\". Please add it to $0.">&2
+		_error "Could not recognize your TERMINAL \"$TERMINAL\". Please add it to $0."
 		exit 1
 esac
 

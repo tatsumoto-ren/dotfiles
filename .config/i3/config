@@ -203,7 +203,7 @@ bindsym $alt+Shift+o		exec --no-startup-id transformers_ocr hold
 
 # Toggle music pause
 bindsym $mod+p			exec --no-startup-id mpc toggle
-bindsym $mod+Shift+p		exec --no-startup-id mpc pause && pauseallmpv
+bindsym $mod+Shift+p		exec --no-startup-id mpc stop && pauseallmpv
 
 # Open clipboard content with dmenu
 bindsym $mod+Shift+v		exec --no-startup-id cabl clip
@@ -546,10 +546,11 @@ for_window [window_role="GtkFileChooserDialog"] move position center
 for_window [class="(?i)anki" title="^Card Types for "]		floating disable
 for_window [class="(?i)anki" title="^Options for "]		floating disable
 for_window [class="(?i)org.gnome.DejaDup"]			floating disable
-#for_window [class="(?i)Telegram" ]				floating disable
+for_window [class="(?i)navigator|chromium|librewolf" ]		border pixel 3
 
 # Assign workspaces to programs
 # https://i3wm.org/docs/userguide.html#list_of_commands
+assign [class="Throne"]				$ws1
 assign [class="(?i)Thunderbird"]		$ws1
 assign [class="yandex-browser"]			$ws1
 assign [class="(?i)Firefox|LibreWolf" tiling]	$ws1

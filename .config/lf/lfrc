@@ -72,7 +72,7 @@ cmd open ${{
 }}
 
 # https://github.com/gokcehan/lf/wiki/Tips#commandmapping-to-create-new-directories
-cmd mkdir $mkdir -p "$@"
+cmd mkdir $mkdir -p -- "$@"
 
 cmd extract !{{
 	if [[ $(file -b --mime-type -- "$f") == application/* ]]; then
@@ -215,6 +215,8 @@ cmd remdupes !{{
 cmd remdupesr !{{
 	fdupes -rdNI --order=time --reverse .
 }}
+
+cmd q quit
 
 # Bindings
 map e quickedit

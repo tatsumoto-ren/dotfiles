@@ -29,7 +29,7 @@ unsetopt PROMPT_SP 2>/dev/null
 export WM="i3"
 export STATUSBAR="${WM}blocks"
 export EDITOR="nvim"
-export TERMINAL="alacritty"
+export TERMINAL="kitty"
 export TERMINAL_PROG=$TERMINAL
 export BROWSER="fingerbox"
 export READER="zathura"
@@ -132,6 +132,11 @@ if [[ -d "$HOME/.local/share/cargo/bin" ]]; then
 fi
 if [[ -d /usr/lib/qt6/bin ]]; then
 	PATH="/usr/lib/qt6/bin:$PATH"
+fi
+if [[ -d "$HOME/.local/share/hatch/pythons/" ]]; then
+	for python in "$HOME/.local/share/hatch/pythons/"*"/python/bin"; do
+		PATH="$PATH:$python"
+	done
 fi
 export PATH
 

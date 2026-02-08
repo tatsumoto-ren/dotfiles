@@ -22,8 +22,8 @@ notify_stats() {
 
 case $BLOCK_BUTTON in
 1) notify_stats ;;
-3) setsid -f "$TERMINAL" -e ncdu "$DIR" ;;
-6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+3) setsid -f "$TERMINAL" -e ncdu "$DIR" &;;
+6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" &;;
 esac
 
 df -h "$DIR" --output=avail,pcent,target | awk '

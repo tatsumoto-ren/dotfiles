@@ -1,8 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 
 # https://github.com/jstkdng/ueberzugpp/blob/master/scripts/lf/cleaner
-#ueberzugpp cmd -s "$UB_SOCKET" -a remove -i PREVIEW
 
-if [ -n "$FIFO_UEBERZUG" ]; then
+killall mediainfo
+if command -v ueberzugpp; then
+	ueberzugpp cmd -s $UB_SOCKET -a remove -i PREVIEW
+fi
+if [[ -n "$FIFO_UEBERZUG" ]]; then
 	printf '{"action": "remove", "identifier": "PREVIEW"}\n' > "$FIFO_UEBERZUG"
+fi
+if command -v kitten && [[ $TERM == *kitty ]]; then
+	kitten icat --clear --stdin no --transfer-mode memory </dev/null >/dev/tty
 fi

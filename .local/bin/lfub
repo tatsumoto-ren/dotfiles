@@ -1,30 +1,67 @@
-#!/bin/sh
-
-# https://github.com/jstkdng/ueberzugpp/blob/master/scripts/lf/lfub
+#!/bin/bash
 
 # This is a wrapper script for lf that allows it to create image previews with
 # ueberzug. This works in concert with the lf configuration file and the
 # lf-cleaner script.
 
+# https://github.com/jstkdng/ueberzugpp/blob/master/scripts/lf/lfub
+# https://github.com/LukeSmithxyz/voidrice/blob/7a96fb100cf385e05c211937b509d2bf166299e6/.local/bin/lfub
+
 set -e
 
-if ! command -v ueberzug >/dev/null 2>&1; then
-	exec lf "$@"
-fi
+UB_PID=0
+UB_SOCKET=""
 
 cleanup() {
-    exec 3>&-
-	rm "$FIFO_UEBERZUG"
+	exec 3>&-
+	if command -v ueberzugpp >/dev/null 2>&1; then
+		ueberzugpp cmd -s "$UB_SOCKET" -a exit
+	fi
+	if [[ -n ${FIFO_UEBERZUG:-} ]]; then
+		rm -- "$FIFO_UEBERZUG"
+	fi
 }
 
-if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-	lf "$@"
+is_installed() {
+	command -v "$1" >/dev/null 2>&1
+}
+
+is_ssh() {
+	[[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]
+}
+
+is_kitty() {
+	[[ $TERM == *kitty ]]
+}
+
+case "$(uname -a)" in
+	*Darwin*) UEBERZUG_TMP_DIR="$TMPDIR" ;;
+	*) UEBERZUG_TMP_DIR="/tmp" ;;
+esac
+
+if [[ ! -d "$HOME/.cache/lf" ]]; then
+	mkdir -p -- "$HOME/.cache/lf"
+fi
+
+if ! is_ssh && ! is_kitty; then
+	if is_installed ueberzugpp; then
+		UB_PID_FILE="$UEBERZUG_TMP_DIR/.$(uuidgen)"
+		ueberzugpp layer --silent --no-stdin --use-escape-codes --pid-file "$UB_PID_FILE"
+		UB_PID=$(cat "$UB_PID_FILE")
+		rm -- "$UB_PID_FILE"
+		UB_SOCKET="$UEBERZUG_TMP_DIR/ueberzugpp-${UB_PID}.socket"
+		export UB_PID UB_SOCKET
+		trap cleanup HUP INT QUIT TERM EXIT
+		lf "$@" 3>&-
+	elif is_installed ueberzug; then
+		export FIFO_UEBERZUG="$HOME/.cache/lf/ueberzug-$$"
+		mkfifo "$FIFO_UEBERZUG"
+		ueberzug layer -s <"$FIFO_UEBERZUG" -p json &
+		exec 3>"$FIFO_UEBERZUG"
+		trap cleanup HUP INT QUIT TERM PWR EXIT
+		lf "$@" 3>&-
+	fi
 else
-	[ ! -d "$HOME/.cache/lf" ] && mkdir -p "$HOME/.cache/lf"
-	export FIFO_UEBERZUG="$HOME/.cache/lf/ueberzug-$$"
-	mkfifo "$FIFO_UEBERZUG"
-	ueberzug layer -s <"$FIFO_UEBERZUG" -p json &
-	exec 3>"$FIFO_UEBERZUG"
-	trap cleanup HUP INT QUIT TERM PWR EXIT
-	lf "$@" 3>&-
+	echo "executing lf without ueberzug" >&2
+	exec lf "$@"
 fi

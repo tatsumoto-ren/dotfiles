@@ -23,7 +23,7 @@ xset \
 setxkbmap -option terminate:ctrl_alt_bksp,caps:super,altwin:menu_win
 
 # When caps lock is pressed only once, treat it as escape.
-killall xcape || true
+killall xcape 2>/dev/null || true
 xcape -e 'Super_L=Escape'
 
 # Turn off caps lock if on since there is no longer a key for it.

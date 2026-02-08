@@ -37,7 +37,7 @@ filter() {
 case $BLOCK_BUTTON in
 1) # left click, launch ncmpcpp
 	mpc status | filter
-	setsid -f "$TERMINAL" -e ncmpcpp -s playlist
+	setsid -f "$TERMINAL" -e ncmpcpp -s playlist &
 	;;
 
 3) # right click, pause/unpause
@@ -51,7 +51,7 @@ case $BLOCK_BUTTON in
 
 6) # edit
 	mpc status | filter
-	setsid -f "$TERMINAL" -e "$EDITOR" "$0"
+	setsid -f "$TERMINAL" -e "$EDITOR" "$0" &
 	;;
 
 *)

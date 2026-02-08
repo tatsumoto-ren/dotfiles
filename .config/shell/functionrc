@@ -4,11 +4,17 @@ p() { sudo pacman "$@"; notify-pacman-block; }
 se_() {
 	# quickly select and edit files in base dir
 	local -r base_dir=${1:?}
-	choice="$( find "$base_dir" -mindepth 1 -printf '%P\n' | fzf )"
+	choice="$( find "$base_dir" -mindepth 1 -type f -printf '%P\n' | fzf )"
 	[ -f "$base_dir/$choice" ] && "$EDITOR" "$base_dir/$choice"
 }
 see() { se_ ~/.local/bin; }
 seconf() { se_ ~/.config; }
+charm() {
+	local -r exe=$(  whence -p pycharm pycharm-community | head -1  )
+	setsid -f "$exe" . &
+	sleep 3s
+	exit
+}
 vf() { find . -type f | fzf | xargs -r -I % "$EDITOR" % ;}
 calc() { awk "BEGIN{ print $* }" ;}
 kitsudown() { curl "$@" | grep -Eo 'subtitles[^"]+\.(srt|ass)' | xargs -n 1 -P 26 -I{} wget --no-clobber 'http://kitsunekko.net/{}' ;}

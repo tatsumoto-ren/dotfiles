@@ -179,7 +179,9 @@ bindkey -M visual '^[[P' vi-delete
 
 # Load powerlevel10k
 # https://github.com/romkatv/powerlevel10k
-if [[ $TERM != "$TERMINAL" ]] && [[ $TERM != "xterm-256color" ]]; then
+declare -A _allow_terminals
+_allow_terminals=( [contour]=true [xterm-kitty]=true [alacritty]=true )
+if [[ $_allow_terminals[$TERM] != true ]]; then
 	return
 fi
 

@@ -143,6 +143,8 @@ set incsearch
 	autocmd BufWritePost /etc/tor/torrc !sudo systemctl restart tor
 " Compile Typst on file edit
 	autocmd BufWritePost *.typ !compiler "%:p"
+" Restart i3 on config edit
+	autocmd BufWritePost ~/.config/i3/config !i3-msg reload;
 " Grammar check
 	map <leader>g :GrammarousCheck<CR>
 
