@@ -10,8 +10,6 @@ dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XA
 xrandr --dpi 96
 # Set the background with the `setbg` script
 setbg &
-# File synchronization
-syncthing serve --no-browser &
 # Backups. Install deja-dup.
 /usr/lib/deja-dup/deja-dup-monitor &
 # Podboat automatic queue and download. Requires entr.
@@ -26,7 +24,14 @@ lxqt-policykit-agent &
 xmodmap -e "keysym Super_R = Menu"
 
 # Autostart
-for program in mpd xcompmgr dunst unclutter pipewire remapd; do
+
+# Pipewire uses systemd/User for management of the server and automatic socket activation
+# so you don't need to do anything because it starts automatically when needed.
+#if ! systemctl --quiet --user is-enabled pipewire; then
+#	systemctl --user --now enable pipewire pipewire-pulse wireplumber
+#fi
+
+for program in xcompmgr dunst unclutter remapd; do
 	if ! pidof -sx "$program" && command -v "$program"; then
 		"$program" &
 	fi

@@ -81,14 +81,6 @@ readme() {
 	done
 }
 
-# Full system backup
-# https://wiki.archlinux.org/index.php/Rsync#Full_system_backup
-backup_everything() {
-	if mount -l | grep -F "/mnt/system_backup"; then
-		sudo rsync -aAXvHS --delete --info=progress2 --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found","/home/*/.thumbnails/*","/home/*/.cache/*","/home/*/.local/share/Trash/*","/home/*/.gvfs","/var/cache/pacman/pkg/*"} / /mnt/system_backup
-	fi
-}
-
 # Test different versions of Anki
 anki_test_install() {
 	local -r version=${1:?No version provided.}
@@ -165,7 +157,8 @@ my_mecab() {
 		command+=( -u "$user_dic" )
 	fi
 	if [[ $mecab_exe != mecab ]]; then
-		export LD_LIBRARY_PATH="$( dirname -- "$mecab_exe" ):$LD_LIBRARY_PATH"
+		LD_LIBRARY_PATH="$( dirname -- "$mecab_exe" ):$LD_LIBRARY_PATH"
+		export LD_LIBRARY_PATH
 		command+=( -r "$( dirname -- "$mecab_exe" )/mecabrc" )
 	fi
 	"${command[@]}"

@@ -49,12 +49,18 @@ alias \
 	timer='echo "Timer started. Stop with Ctrl-D." && date "+%a, %d %b %H:%M:%S" && time cat && date "+%a, %d %b %H:%M:%S"' \
 	updxrdb="xrdb -merge \${XDG_CONFIG_HOME}/Xresources" \
 	genpasswd="openssl rand -base64 21" \
-	update-grub="sudo grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --recheck ; sudo grub-mkconfig -o /boot/grub/grub.cfg" \
 	trim="sudo fstrim -v / && sudo fstrim -v /home" \
 	showpath="echo \$PATH | sed 's/:/\n/g'" \
 	visoodoo="sudo visudo -f /etc/sudoers.d/01_sudoers" \
 	res_screencast="xrandr --output DP1 --primary --mode 1920x1080" \
 	res_normal="xrandr --output DP1 --primary --mode 1920x1200" \
+
+# GRUB
+# https://wiki.archlinux.org/title/GRUB#Installation
+# https://wiki.archlinux.org/title/GRUB/Tips_and_tricks#EFI
+alias \
+	install-grub="sudo grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --removable --recheck" \
+	update-grub="sudo grub-mkconfig -o /boot/grub/grub.cfg" \
 
 # dotfiles in git
 # https://wiki.archlinux.org/index.php/Dotfiles

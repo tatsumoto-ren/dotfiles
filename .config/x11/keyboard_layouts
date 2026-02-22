@@ -4,7 +4,10 @@
 # https://wiki.archlinux.org/index.php/Fcitx
 find_fcitx() {
 	for cmd in fcitx5 fcitx; do
-		command -v "$cmd" && return
+		if [ -x "$(command -v "$cmd")" ]; then
+			echo "$cmd"
+			return
+		fi
 	done
 }
 
@@ -13,11 +16,16 @@ if [ -n "${fcitx:=$(find_fcitx)}" ]; then
 	export GTK_IM_MODULE=fcitx
 	export QT_IM_MODULE=fcitx
 	export XMODIFIERS=@im=fcitx
+
+	# kitty workaround
+	# https://github.com/kovidgoyal/kitty/issues/469#issuecomment-778814173
+	export GLFW_IM_MODULE=ibus
+
 	setxkbmap -model pc104 \
 		  -layout us \
 		  -variant altgr-intl \
 		  -option terminate:ctrl_alt_bksp,caps:escape
-	"$fcitx" -dr 2>/dev/null &
+	# run fcitx from i3's config: ~/.config/i3/config, or here: "$fcitx" 2>/dev/null &
 else
 	setxkbmap -model pc104 \
 		  -layout us,ru \

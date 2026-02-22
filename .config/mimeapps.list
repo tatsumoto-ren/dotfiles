@@ -42,7 +42,7 @@ text/x-log=geany.desktop;
 text/x-python=nvim.desktop;geany.desktop;pycharm.desktop;
 text/x-shellscript=nvim.desktop;
 video/mp4=audacity.desktop;org.kde.kdenlive.desktop;firefox.desktop;Alacritty.desktop;mpv.desktop;
-video/webm=mpv.desktop;
+video/webm=mpv.desktop;firefox-developer-edition.desktop;
 video/x-matroska=mpv.desktop;audacity.desktop;
 x-scheme-handler/chrome=linkhandler.desktop;
 x-scheme-handler/http=linkhandler.desktop;
@@ -66,6 +66,7 @@ application/x-desktop=org.gnome.gedit.desktop;
 video/quicktime=mpv.desktop;
 application/vnd.debian.binary-package=snap-store_snap-store.desktop;
 application/octet-stream=keepassxc_keepassxc.desktop;
+application/x-zerosize=nvim.desktop;
 
 [Default Applications]
 inode/directory=lf.desktop;
@@ -115,3 +116,5 @@ x-scheme-handler/tonsite=org.telegram.desktop.desktop
 font/ttf=com.github.FontManager.FontViewer.desktop
 application/x-shellscript=org.gnome.gedit.desktop
 video/quicktime=mpv.desktop
+application/x-zerosize=nvim.desktop
+video/webm=mpv.desktop

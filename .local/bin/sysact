@@ -51,7 +51,7 @@ cleanup() {
 	fcitx-remote -e
 	ibus exit
 	local -ra apps=(
-		qbittorrent goldendict keepassxc telegram-desktop Throne
+		qbittorrent goldendict keepassxc telegram-desktop Throne simplex-desktop Telegram
 	)
 	for app in "${apps[@]}"; do
 		killall "$app"
