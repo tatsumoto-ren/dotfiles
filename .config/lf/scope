@@ -5,81 +5,88 @@
 
 # File preview handler for lf.
 
-if [[ ${1} == *'.!qB' ]]; then
+set -euo pipefail
+set -C -f
+
+readonly FILE=$1
+readonly W=$2
+readonly MW=$(( $2 - 1 ))
+readonly H=$3
+readonly MH=$(( $3 - 1 ))
+readonly X=$4
+readonly Y=$5
+
+if [[ ${FILE} == *'.!qB' ]]; then
 	exit
 fi
 
-
-set -C -f
 IFS="$(printf '%b_' '\n')"; IFS="${IFS%_}"
 
-killall mediainfo
+killall mediainfo || true
 
-_has_ueberzug() {
-	[[ -n "$FIFO_UEBERZUG" ]] && command -V ueberzug >/dev/null 2>&1
+is_installed() {
+	[[ -x "$(command -v "$1")" ]]
 }
 
-_has_ueberzugpp() {
-	command -V ueberzugpp >/dev/null 2>&1
+has_ueberzug() {
+	[[ -n "${FIFO_UEBERZUG:-}" ]] && is_installed ueberzug
 }
 
-_has_kitten() {
-	command -V kitten >/dev/null 2>&1
+has_ueberzugpp() {
+	is_installed ueberzugpp
 }
 
-if _has_ueberzug; then
-	printf '{"action": "remove", "identifier": "PREVIEW"}\n' > "$FIFO_UEBERZUG"
-elif _has_ueberzugpp; then
+if has_ueberzug; then
+	printf -- '{"action": "remove", "identifier": "PREVIEW"}\n' > "$FIFO_UEBERZUG"
+elif has_ueberzugpp; then
 	ueberzugpp cmd -s "$UB_SOCKET" -a remove -i PREVIEW
 fi
 
 kitten_draw() {
-	kitten icat --stdin no --transfer-mode memory \
-		--place "${MW}x${MH}@${X}x${Y}" "$FILE_PATH" </dev/null >/dev/tty
+	kitten icat --stdin no --transfer-mode memory --engine builtin \
+		--place "${MW}x${MH}@${X}x${Y}" "$1" </dev/null >/dev/tty
 }
 
 ueberzug_preview() {
 	if [[ $TERM == *kitty ]]; then
-		kitten_draw
+		kitten_draw "$1"
 	elif [[ $TERM == contour ]]; then
 		chafa -f sixel -s "${MW}x${MH}" \
 			--animate off --polite on -t 1 --bg black \
-			"$FILE_PATH"
-	elif _has_ueberzugpp; then
+			"$1"
+	elif has_ueberzugpp; then
 		ueberzugpp cmd -s "$UB_SOCKET" -a add -i PREVIEW -x "$X" -y "$Y" \
-			--max-width "$MW" --max-height "$MH" -f "$FILE_PATH"
-	elif _has_ueberzug; then
+			--max-width "$MW" --max-height "$MH" -f "$1"
+	elif has_ueberzug; then
 		printf -- '{
 			"action": "add", "identifier": "PREVIEW", "x": "%s", "y": "%s",
 			"width": "%s", "height": "%s", "scaler": "contain", "path": "%s"
-		}\n' "$X" "$Y" "$MW" "$((MH-1))" "$FILE_PATH" > "$FIFO_UEBERZUG"
+		}\n' "$X" "$Y" "$MW" "$MH" "$1" > "$FIFO_UEBERZUG"
 	else
-		mediainfo "$FILE_PATH"
+		mediainfo "$FILE"
 	fi
 }
 
 image() {
-	FILE_PATH="$1"
-	MW=$(( $2 - 1 ))
-	MH=$3
-	X=$4
-	Y=$5
-	if [[ -f "$FILE_PATH" ]] && [[ -n "$DISPLAY" ]] && [[ -z "$WAYLAND_DISPLAY" ]]; then
-		ueberzug_preview
+	if [[ -f "$1" ]] && [[ -n "${DISPLAY:-}" ]] && [[ -z "${WAYLAND_DISPLAY:-}" ]]; then
+		ueberzug_preview "$1"
 	else
-		mediainfo "$FILE_PATH"
+		mediainfo "$FILE"
 	fi
 }
 
 batorcat() {
-	file="$1"
+	local -r file="$1"
 	shift
-	if command -v bat >/dev/null 2>&1; then
-		bat    --color=always --style=plain --pager=never "$file" "$@"
-	elif command -v batcat >/dev/null 2>&1; then
-		batcat --color=always --style=plain --pager=never "$file" "$@"
+
+	bat_args=( --line-range :100 --style=plain --pager=never "$@" -- "$file")
+	if is_installed bat; then
+		bat    "${bat_args[@]}"
+	elif is_installed batcat; then
+		batcat "${bat_args[@]}"
 	else
-		cat -- "$file"
+		echo "bat is not installed. using cat."
+		head -100 -- "$file"
 	fi
 }
 
@@ -87,59 +94,56 @@ batorcat() {
 # an image appears in multiple places across the machine, it will not have to
 # be regenerated once seen.
 
-case "$(file --dereference --brief --mime-type -- "$1")" in
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumb.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f -- "$FILE")" | sha256sum | cut -d' ' -f1).jpg"
+mime_type=$( file --dereference --brief --mime-type -- "$FILE" )
+readonly CACHE mime_type
+case "$mime_type" in
 	image/avif)
-		CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumb.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | cut -d' ' -f1)"
-		[ ! -f "$CACHE" ] && magick "$1" "$CACHE.jpg"
-		image "$CACHE.jpg" "$2" "$3" "$4" "$5" "$1" ;;
+		if [[ ! -f "$CACHE" ]]; then magick "$FILE" "$CACHE"; fi
+		image "$CACHE" "$W" "$H" "$X" "$Y" "$FILE" ;;
 	image/vnd.djvu)
-		CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumb.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | cut -d' ' -f1)"
-		[ ! -f "$CACHE" ] && djvused "$1" -e 'select 1; save-page-with /dev/stdout' | magick -density 200 - "$CACHE.jpg" > /dev/null 2>&1
-		image "$CACHE.jpg" "$2" "$3" "$4" "$5" "$1" ;;
+		if [[ ! -f "$CACHE" ]]; then djvused "$FILE" -e 'select 1; save-page-with /dev/stdout' | magick -density 200 - "$CACHE" > /dev/null 2>&1; fi
+		image "$CACHE" "$W" "$H" "$X" "$Y" "$FILE" ;;
 	image/svg+xml)
-		CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumb.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | cut -d' ' -f1)"
-		[ ! -f "$CACHE" ] && inkscape --convert-dpi-method=none -o "$CACHE.png" --export-overwrite -D --export-png-color-mode=RGBA_16 "$1"
-		image "$CACHE.png" "$2" "$3" "$4" "$5" "$1"
+		if [[ ! -f "$CACHE" ]]; then inkscape --convert-dpi-method=none -o "$CACHE.png" --export-overwrite -D --export-png-color-mode=RGBA_16 "$FILE"; fi
+		image "$CACHE.png" "$W" "$H" "$X" "$Y" "$FILE"
 		;;
 	image/x-xcf)
-		CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumb.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | awk '{print $1}')"
-		[ ! -f "$CACHE.jpg" ] && magick "$1[0]" "$CACHE.jpg"
-		image "$CACHE.jpg" "$2" "$3" "$4" "$5" "$1"
+		if [[ ! -f "$CACHE" ]]; then magick "$1[0]" "$CACHE"; fi
+		image "$CACHE" "$W" "$H" "$X" "$Y" "$FILE"
 		;;
 	image/*)
-		image "$1" "$2" "$3" "$4" "$5" "$1" ;;
+		image "$FILE" "$W" "$H" "$X" "$Y" "$FILE" ;;
 	text/html)
-		lynx -width="$4" -display_charset=utf-8 -dump "$1" ;;
+		lynx -width="$X" -display_charset=utf-8 -dump "$FILE" ;;
 	text/troff)
-		man ./ "$1" | col -b ;;
+		man ./ "$FILE" | col -b ;;
 	text/* | */xml | application/json | application/x-ndjson)
-		bat -p --theme ansi --terminal-width "$(($4-2))" -f "$1" ;;
+		batorcat "$FILE" --terminal-width "$(( X - 2 ))" --theme ansi --force-colorization ;;
 	audio/* | application/octet-stream | *djvu)
-		mediainfo "$1"
+		mediainfo "$FILE"
 		;;
 	video/* )
-		CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumb.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | cut -d' ' -f1)"
-		[ ! -f "$CACHE" ] && ffmpegthumbnailer -i "$1" -o "$CACHE" -s 0
-		image "$CACHE" "$2" "$3" "$4" "$5" "$1"
+		if [[ ! -f "$CACHE" ]]; then ffmpegthumbnailer -s 0 -i "$FILE" -o "$CACHE"; fi
+		image "$CACHE" "$W" "$H" "$X" "$Y" "$FILE"
 		;;
 	*/pdf)
-		CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumb.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | cut -d' ' -f1)"
-		[ ! -f "$CACHE.jpg" ] && pdftoppm -jpeg -f 1 -singlefile "$1" "$CACHE"
-		image "$CACHE.jpg" "$2" "$3" "$4" "$5" "$1"
+		if [[ ! -f "$CACHE" ]]; then pdftoppm -jpeg -f 1 -singlefile "$FILE" "$CACHE"; fi
+		image "$CACHE" "$W" "$H" "$X" "$Y" "$FILE"
 		;;
 	*/epub+zip|*/mobi*)
-		CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumb.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | cut -d' ' -f1)"
-		[ ! -f "$CACHE.jpg" ] && gnome-epub-thumbnailer "$1" "$CACHE.jpg"
-		image "$CACHE.jpg" "$2" "$3" "$4" "$5" "$1"
+		if [[ ! -f "$CACHE" ]]; then gnome-epub-thumbnailer "$FILE" "$CACHE"; fi
+		image "$CACHE" "$W" "$H" "$X" "$Y" "$FILE"
 		;;
 	application/*zip | application/*tar)
-		atool --list -- "$1" ;;
+		atool --list -- "$FILE" ;;
 	*opendocument*)
-		odt2txt "$1" ;;
+		odt2txt "$FILE" ;;
 	application/pgp-encrypted)
-		gpg -d -- "$1" ;;
+		gpg -d -- "$FILE" ;;
 	*)
-		batorcat "$1"
+		echo "Unknown file type: $mime_type"
+		batorcat "$FILE" --color=always
 		;;
 esac
 exit 1
