@@ -76,7 +76,7 @@
     # Don't remove messages, if the user is idle (no mouse or keyboard input)
     # for longer than idle_threshold seconds.
     # Set to 0 to disable.
-    idle_threshold = 120
+    idle_threshold = 30
 
     ### Text ###
     font = Hack 9
@@ -161,7 +161,7 @@
     sticky_history = yes
 
     # Maximum amount of notifications kept in history
-    history_length = 20
+    history_length = 100
 
     ### Misc/Advanced ###
 
@@ -216,13 +216,13 @@
     background = "#222d32"
     foreground = "#a8a8a8"
     frame_color = "#222d32"
-    timeout = 5
+    timeout = 30
 
 [urgency_normal]
     background = "#222d32"
     foreground = "#a8a8a8"
     frame_color = "#75dbe1"
-    timeout = 10
+    timeout = 60
 
 [urgency_critical]
     background = "#d64e4e"
