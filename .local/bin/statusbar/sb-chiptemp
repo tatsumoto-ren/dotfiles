@@ -1,0 +1,62 @@
+#!/bin/bash
+
+set -euo pipefail
+
+case ${BLOCK_BUTTON:-} in
+1)
+	notify-send "🖥 CPU hogs" "$(ps axch -o cmd:15,%cpu --sort=-%cpu | head)\\n(100% per core)"
+	;;
+3)
+	i3-msg -q exec "i3-sensible-terminal -e htop"
+	;;
+6)
+	i3-msg -q exec "i3-sensible-terminal -e ${EDITOR:-nvim} $0"
+	;;
+esac
+
+chip_label=${chip_label:-GPU}
+hwmon_name=${hwmon_name:-amdgpu}
+hwmon_label=${hwmon_label:-junction}
+
+find_junction() {
+	for dir in /sys/class/hwmon/hwmon*; do
+		[[ -d $dir ]] || continue
+		if [[ $(<"$dir/name") == "$hwmon_name" ]]; then
+			for label in "$dir"/temp*_label; do
+				[[ -f "$label" ]] || continue
+				if [[ $(<"$label") == "$hwmon_label" ]]; then
+					echo "${label%_label}_input"
+					return 0
+				fi
+			done
+		fi
+	done
+	return 1
+}
+
+input_file=$(find_junction)
+
+if ! [[ -f $input_file ]]; then
+	echo "JUNCTION NOT FOUND"
+	exit
+fi
+
+temp=$( <"$input_file" )
+temp=$(( temp / 1000 ))
+
+# print temp
+echo "$chip_label $temp°C"
+
+# compact
+if [[ $temp -gt 60 ]]; then
+	echo "$chip_label $temp°C"
+fi
+
+# color
+if [[ $temp -gt 90 ]]; then
+	echo "#FF0000"
+elif [[ $temp -gt 80 ]]; then
+	echo "#FFAE00"
+elif [[ $temp -gt 70 ]]; then
+	echo "#FFF600"
+fi

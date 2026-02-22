@@ -1,62 +1,45 @@
-#!/usr/bin/perl
-#
-# Copyright 2014 Pierre Mavro <deimos@deimos.fr>
-# Copyright 2014 Vivien Didelot <vivien@didelot.org>
-# Copyright 2014 Andreas Guldstrand <andreas.guldstrand@gmail.com>
-#
-# Licensed under the terms of the GNU GPL v3, or any later version.
+#!/bin/bash
 
-use strict;
-use warnings;
-use utf8;
-use Getopt::Long;
+set -euo pipefail
+
+case ${BLOCK_BUTTON:-} in
+1)
+	notify-send "🖥 CPU hogs" "$(ps axch -o cmd:15,%cpu --sort=-%cpu | head)\\n(100% per core)"
+	;;
+3)
+	i3-msg -q exec "i3-sensible-terminal -e htop"
+	;;
+6)
+	i3-msg -q exec "i3-sensible-terminal -e ${EDITOR:-nvim} $0"
+	;;
+esac
 
 # default values
-my $t_warn = $ENV{T_WARN} // 50;
-my $t_crit = $ENV{T_CRIT} // 80;
-my $cpu_usage = -1;
-my $decimals = $ENV{DECIMALS} // 2;
-my $label = $ENV{LABEL} // "";
+readonly T_WARN="${T_WARN:-50}"
+readonly T_CRIT="${T_CRIT:-80}"
+readonly LABEL="${LABEL:-}"
 
-sub help {
-    print "Usage: cpu_usage [-w <warning>] [-c <critical>] [-d <decimals>]\n";
-    print "-w <percent>: warning threshold to become yellow\n";
-    print "-c <percent>: critical threshold to become red\n";
-    print "-d <decimals>:  Use <decimals> decimals for percentage (default is $decimals) \n";
-    exit 0;
-}
+# Get CPU usage from mpstat (100% - %idle).
+# if mpstat is not run under en_US locale, things may break, so make sure it is
+# $NF = number of fields = the last field = average idle
+cpu_usage=$(LC_ALL="en_US.UTF-8" mpstat 1 1 | awk 'END { print 100 - $NF }')
 
-GetOptions("help|h" => \&help,
-           "w=i"    => \$t_warn,
-           "c=i"    => \$t_crit,
-           "d=i"    => \$decimals,
-);
+if [[ -z "$cpu_usage" ]]; then
+	echo "Can't find CPU information" >&2
+	exit 1
+fi
 
-# Get CPU usage
-$ENV{LC_ALL}="en_US"; # if mpstat is not run under en_US locale, things may break, so make sure it is
-open (MPSTAT, 'mpstat 1 1 |') or die;
-while (<MPSTAT>) {
-    if (/^.*\s+(\d+\.\d+)[\s\x00]?$/) {
-        $cpu_usage = 100 - $1; # 100% - %idle
-        last;
-    }
-}
-close(MPSTAT);
-
-$cpu_usage eq -1 and die 'Can\'t find CPU information';
-
-# Print short_text, full_text
-print "${label} ";
-printf "%.${decimals}f%%\n", $cpu_usage;
-print "${label} ";
-printf "%.${decimals}f%%\n", $cpu_usage;
+# Print full_text and short_text
+formatted=$(printf -- '%s%s%.2f%%\n' "$LABEL" "${LABEL:+ }" "$cpu_usage")
+printf -- '%s\n%s\n' "$formatted" "$formatted"
 
 # Print color, if needed
-if ($cpu_usage >= $t_crit) {
-    print "#FF0000\n";
-    exit 33;
-} elsif ($cpu_usage >= $t_warn) {
-    print "#FFFC00\n";
-}
-
-exit 0;
+cpu_int="${cpu_usage%.*}"
+if (( cpu_int >= T_CRIT )); then
+	printf -- '#FF0000\n'
+	exit 33
+elif (( cpu_int >= T_WARN )); then
+	printf -- '#FFFC00\n'
+else
+	printf -- '#66CCFF\n'
+fi
