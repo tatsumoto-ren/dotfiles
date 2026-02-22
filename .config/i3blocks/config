@@ -31,8 +31,8 @@ interval=30
 interval=5
 
 [sb-cpu_usage]
-LABEL=CPU
-interval=2
+LABEL=USE
+interval=3
 separator=false
 
 [sb-cpu_freq]
@@ -41,15 +41,18 @@ interval=5
 [sb-load_average]
 interval=3
 
-[sb-chip_temp]
+[sb-chiptemp]
 chip_label=CPU
-query=sensors coretemp-isa-0000 | awk '/^Package/ {print $4}'
-interval=5
+hwmon_label=CPUTIN
+hwmon_name=nct6796
+interval=7
+separator=false
 
-#[chip_temp]
-#chip_label=GPU
-#query=sensors amdgpu-pci-0300 | awk '/^junction/ {print $2}'
-#interval=7
+[sb-chiptemp]
+chip_label=GPU
+hwmon_name=amdgpu
+hwmon_label=junction
+interval=10
 
 [sb-pacpackages]
 interval=3600

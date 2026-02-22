@@ -83,18 +83,24 @@ default_floating_border	normal 3
 # Autostart
 ###############################################################################
 
+exec --no-startup-id	fcitx5 -dr
+exec --no-startup-id	redshift -l $(curl -s 'https://location.services.mozilla.com/v1/geolocate?key=geoclue' | sed -rn 's/^.*"lat": *([0-9.]+), *"lng": *([0-9.]+).*$/\1:\2/p')
+exec --no-startup-id	thunar --daemon
+exec --no-startup-id	pgrep NetworkManager && nm-applet
+
 # Restore workspace
 # i3 layout saving requires perl-anyevent-i3
 exec --no-startup-id	i3-msg 'workspace $ws10;\
 				append_layout ~/.config/i3/ws10.json;\
 				workspace $ws1;'
 
-exec --no-startup-id	redshift -l $(curl -s 'https://location.services.mozilla.com/v1/geolocate?key=geoclue' | sed -rn 's/^.*"lat": *([0-9.]+), *"lng": *([0-9.]+).*$/\1:\2/p')
-exec --no-startup-id	thunar --daemon
-exec --no-startup-id	pgrep NetworkManager && nm-applet
+# Monitoring
 exec --no-startup-id	$term --title htop -e htop
 exec --no-startup-id	$term --title journalctl -e journalctl -f
 exec --no-startup-id	$term --title terminal
+
+# File synchronization
+exec --no-startup-id	syncthing serve --no-browser
 
 ###############################################################################
 # Colors
@@ -135,7 +141,7 @@ bar {
 	colors {
 		background $black
 		statusline $lightgray
-		separator  $darkblue
+		separator  $blue
 
 		#                  border      background text
 		focused_workspace  $blue       $blue      $black
@@ -147,6 +153,7 @@ bar {
 	position top
 	mode dock
 	modifier None
+	separator_symbol "|"
 
 	status_command		i3blocks
 	strip_workspace_numbers yes
@@ -194,7 +201,7 @@ bindsym $mod+e			layout toggle split
 # Split in horizontal orientation
 bindsym $mod+Shift+backslash	splith
 # Split in vertical orientation
-bindsym $mod+v			splitv
+bindsym $mod+backslash		splitv
 
 # Sticky floating windows (stay on screen even if you switch to another workspace)
 bindsym $mod+o			sticky toggle
@@ -260,7 +267,7 @@ bindsym $mod+semicolon		workspace next
 bindsym $mod+apostrophe		split horizontal ;; exec $term
 bindsym $mod+slash		split vertical ;; exec $term
 bindsym $mod+Shift+slash	kill
-bindsym $mod+backslash		workspace back_and_forth
+bindsym $mod+v			workspace back_and_forth
 bindsym $mod+g			workspace prev
 bindsym $mod+Escape		workspace prev
 
@@ -385,7 +392,7 @@ bindsym $mod+Print		exec maimpick
 bindsym $mod+Shift+Print	exec --no-startup-id $startrec
 bindsym $mod+Delete		exec --no-startup-id $stoprec
 bindsym XF86Launch1		exec --no-startup-id xset dpms force off
-bindsym $mod+Scroll_Lock	exec --no-startup-id "killall screenkey || screenkey -t 0.5 -p center"
+bindsym $mod+Scroll_Lock	exec --no-startup-id "killall screenkey || screenkey -t 0.5 -p bottom"
 
 # The right mouse button and Alt over any part of the window kills the window
 #bindsym --whole-window $alt+button3 kill
