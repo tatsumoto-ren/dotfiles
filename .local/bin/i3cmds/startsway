@@ -1,0 +1,35 @@
+#!/bin/bash
+
+export GDK_BACKEND=wayland
+export CLUTTER_BACKEND=wayland
+export XKB_DEFAULT_LAYOUT=us,ru
+export XKB_DEFAULT_MODEL=pc104
+export XKB_DEFAULT_VARIANT=altgr-intl,winkeys
+export XKB_DEFAULT_OPTIONS=grp:win_space_toggle,terminate:ctrl_alt_bksp,caps:escape
+
+export MOZ_ENABLE_WAYLAND=1
+export MOZ_WEBRENDER=1
+export MOZ_DBUS_REMOTE=1
+
+export QT_QPA_PLATFORM=wayland
+export XDG_SESSION_TYPE=wayland
+export XDG_CURRENT_DESKTOP=sway
+
+is_installed() {
+	[[ -x "$(command -v "$1")" ]]
+}
+
+if is_installed fcitx || is_installed fcitx5; then
+	# Define the environment variables to register the input method modules.
+	# https://wiki.archlinux.org/title/Fcitx5#IM_modules
+	export GTK_IM_MODULE=fcitx
+	export QT_IM_MODULE=fcitx
+	# https://wiki.archlinux.org/title/Fcitx5#XIM
+	export XMODIFIERS=@im=fcitx
+
+	# kitty workaround
+	# https://github.com/kovidgoyal/kitty/issues/469#issuecomment-778814173
+	export GLFW_IM_MODULE=ibus
+fi
+
+exec dbus-launch ssh-agent sway

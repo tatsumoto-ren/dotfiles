@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# https://wiki.archlinux.org/title/GNOME/Keyring#Terminal_gives_the_message_%22discover_other_daemon:_1%22
+if [[ -x $(command -v gnome-keyring-daemon) ]] && ! pidof -sx gnome-keyring-daemon; then
+	gnome-keyring-daemon --start --components=ssh
+fi

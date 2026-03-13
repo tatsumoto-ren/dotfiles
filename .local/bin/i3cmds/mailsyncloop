@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Run mailsync periodically
+
+if [[ -x "$(command -v "mailsync")" ]]; then
+	while :; do
+		mailsync
+		sleep 15m
+	done
+fi
