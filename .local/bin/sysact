@@ -68,10 +68,10 @@ main() {
 		;;
 	*leave*)
 		cleanup
-		i3-msg -q exit || kill -TERM "$(pgrep -u "$USER" "\bdwm$")"
+		i3-msg -q exit
 		;;
 	*renew*)
-		i3-msg -q restart || kill -HUP "$(pgrep -u "$USER" "\bdwm$")"
+		i3-msg -q restart
 		;;
 	*hibernate*)
 		lock_screen ee4b2b

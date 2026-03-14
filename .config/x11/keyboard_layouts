@@ -21,6 +21,7 @@ if [ -n "${fcitx:=$(find_fcitx)}" ]; then
 	# https://github.com/kovidgoyal/kitty/issues/469#issuecomment-778814173
 	export GLFW_IM_MODULE=ibus
 
+	# only one layout. the rest is controlled by Fcitx.
 	setxkbmap -model pc104 \
 		  -layout us \
 		  -variant altgr-intl \

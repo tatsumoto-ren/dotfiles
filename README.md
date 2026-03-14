@@ -36,6 +36,10 @@ Configuration files and scripts that I use on my computer.
     It's probably one of the few decent WMs.
     No gaps, no animations, no transparency, no blur, no rounded borders, no shadows,
     and no unnecessary visual clutter.
+* Multi-monitor:
+  - [autorandr](https://github.com/phillipberndt/autorandr)
+  - [xrandr](https://wiki.archlinux.org/title/Xrandr)
+  - [arandr](https://archlinux.org/packages/?name=arandr)
 * Status bar
   - [i3blocks](https://archlinux.org/packages/community/x86_64/i3blocks/)
 * Launcher

@@ -36,7 +36,7 @@ update() {
 
 case "$BLOCK_BUTTON" in
 1)
-	notify-send " Connection info" "$(local_info)\\n$(public_info)" &
+	setsid -f notify-send " Connection info" "$(local_info)\\n$(public_info)" &
 	;;
 2)
 	setsid -f "$TERMINAL" -e bmon &

@@ -67,6 +67,7 @@ video/quicktime=mpv.desktop;
 application/vnd.debian.binary-package=snap-store_snap-store.desktop;
 application/octet-stream=keepassxc_keepassxc.desktop;
 application/x-zerosize=nvim.desktop;
+application/vnd.ms-publisher=nvim.desktop;
 
 [Default Applications]
 inode/directory=lf.desktop;

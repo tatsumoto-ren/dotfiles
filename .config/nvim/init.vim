@@ -145,6 +145,8 @@ set incsearch
 	autocmd BufWritePost *.typ !compiler "%:p"
 " Restart i3 on config edit
 	autocmd BufWritePost ~/.config/i3/config !i3-msg reload;
+" Restart sway on config edit
+	autocmd BufWritePost ~/.config/sway/config !swaymsg reload;
 " Grammar check
 	map <leader>g :GrammarousCheck<CR>
 

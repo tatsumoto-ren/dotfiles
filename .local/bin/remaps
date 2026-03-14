@@ -2,6 +2,9 @@
 
 # This script is called on startup to remap keys.
 
+# Map right Super key to Menu
+xmodmap -e "keysym Super_R = Menu"
+
 # 1. Power saving behaviour of monitors when the computer is not in use
 # Disable screen saver blanking and set all the DPMS timeouts to zero.
 # https://wiki.archlinux.org/index.php/Display_Power_Management_Signaling
@@ -18,6 +21,12 @@ xset \
 	m 0 0 \
 	r rate 300 50 \
 	b off
+
+# Note that setxkbmap adds  options  specified in the command line to the options that were set before
+# (as saved in root window properties).
+# If you want to replace all previously specified options,
+# use the -option flag with an empty argument first.
+setxkbmap -option
 
 # Map the caps lock key to super, and map the menu key to right super.
 setxkbmap -option terminate:ctrl_alt_bksp,caps:super,altwin:menu_win

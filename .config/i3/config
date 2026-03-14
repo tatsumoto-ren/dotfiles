@@ -1,4 +1,4 @@
-# vim: filetype=i3
+# vim:ft=i3config:
 # Copy this to ~/.config/i3/config and edit it to your liking.
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
@@ -19,6 +19,12 @@ set $super		Mod4
 # Main modifier
 set $mod		Mod4
 
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+# Despite the name, also works for non-floating windows.
+# https://i3wm.org/docs/userguide.html#floating_modifier
+floating_modifier $super
+
 # Home row direction keys, like vim
 set $left		h
 set $down		j
@@ -26,8 +32,9 @@ set $up			k
 set $right		l
 
 # Applications
-set $term		$TERMINAL
-set $explorer		$TERMINAL --title 'File Manager' -e $FILE
+# Note: i3-sensible-terminal launches $TERMINAL with fallbacks
+set $term		i3-sensible-terminal
+set $explorer		i3-sensible-terminal --title 'File Manager' -e $FILE
 set $browser		$BROWSER
 set $calc		ddspawn dropdowncalc
 set $stoprec		dmenurecord kill
@@ -57,11 +64,6 @@ set $dmenu_desktop	exec i3-dmenu-desktop --dmenu="dmenu -i -l 30 -fn 'Hack-9'"
 set $rofi_desktop	exec rofi -show drun
 set $rofi_desktop_alt	exec i3-dmenu-desktop --dmenu='rofi -dmenu -i'
 
-# Drag floating windows by holding down $mod and left mouse button.
-# Resize them with right mouse button + $mod.
-# Despite the name, also works for non-floating windows.
-floating_modifier	$mod
-
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 font pango:		Hack, IPAPGothic, Noto Sans Mono CJK JP, FontAwesome, Hack Nerd Font Mono 9
@@ -83,16 +85,17 @@ default_floating_border	normal 3
 # Autostart
 ###############################################################################
 
+# Fcitx5 is an input method framework for typing in Japanese.
 exec --no-startup-id	fcitx5 -dr
-exec --no-startup-id	redshift -l $(curl -s 'https://location.services.mozilla.com/v1/geolocate?key=geoclue' | sed -rn 's/^.*"lat": *([0-9.]+), *"lng": *([0-9.]+).*$/\1:\2/p')
-exec --no-startup-id	thunar --daemon
-exec --no-startup-id	pgrep NetworkManager && nm-applet
 
-# Restore workspace
-# i3 layout saving requires perl-anyevent-i3
-exec --no-startup-id	i3-msg 'workspace $ws10;\
-				append_layout ~/.config/i3/ws10.json;\
-				workspace $ws1;'
+# Redshift adjusts the color temperature of your screen according to your surroundings.
+#exec --no-startup-id	redshift -l $(curl -s 'https://location.services.mozilla.com/v1/geolocate?key=geoclue' | sed -rn 's/^.*"lat": *([0-9.]+), *"lng": *([0-9.]+).*$/\1:\2/p')
+
+# Detect USB drives when they're inserted and mount them automatically.
+exec --no-startup-id	thunar --daemon
+
+# If using networkmanager, show a tray icon with network settings.
+exec --no-startup-id	pgrep NetworkManager && nm-applet
 
 # Monitoring
 exec --no-startup-id	$term --title htop -e htop
@@ -101,6 +104,38 @@ exec --no-startup-id	$term --title terminal
 
 # File synchronization
 exec --no-startup-id	syncthing serve --no-browser
+
+# Mute mic
+exec --no-startup-id	sleep 3s; lmc mute-mic
+
+# Activate dbus variables
+exec --no-startup-id	dbus-update-activation-environment --all
+
+# Fix Gnome Apps Slow  Start due to failing services
+# Add this when you include flatpak in your system
+exec --no-startup-id	dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY
+
+# Backups. Install deja-dup.
+exec --no-startup-id	/usr/lib/deja-dup/deja-dup-monitor
+
+# Start a polkit agent to run software like gparted.
+exec --no-startup-id	lxqt-policykit-agent
+
+# Dunst is a lightweight replacement for the notification-daemons provided by most desktop environments.
+exec --no-startup-id	dunst
+
+# Sync mail (if mutt wizard is installed)
+exec --no-startup-id	mailsyncloop
+
+# Run gnome-keyring-daemon
+exec --no-startup-id	run-gnome-keyring-daemon
+
+# Restore workspace
+# https://i3wm.org/docs/layout-saving.html
+# i3 layout saving requires perl-anyevent-i3
+exec --no-startup-id	i3-msg 'workspace $ws10;\
+				append_layout ~/.config/i3/ws10.json;\
+				workspace $ws1;'
 
 ###############################################################################
 # Colors
@@ -152,7 +187,7 @@ bar {
 	}
 	position top
 	mode dock
-	modifier None
+	modifier none # used when mode=hide
 	separator_symbol "|"
 
 	status_command		i3blocks
@@ -205,8 +240,8 @@ bindsym $mod+backslash		splitv
 
 # Sticky floating windows (stay on screen even if you switch to another workspace)
 bindsym $mod+o			sticky toggle
-bindsym $alt+o			exec --no-startup-id transformers_ocr recognize
-bindsym $alt+Shift+o		exec --no-startup-id transformers_ocr hold
+#bindsym $alt+o
+#bindsym $alt+Shift+o
 
 # Toggle music pause
 bindsym $mod+p			exec --no-startup-id mpc toggle
@@ -491,7 +526,8 @@ bindsym $mod+i exec $explorer
 bindsym $mod+u exec thunar
 
 set $freeze Distraction-free mode (super+Shift+f to reactivate bindings)
-mode "$freeze" { bindsym $mod+Shift+f mode "default"
+mode "$freeze" {
+	bindsym $mod+Shift+f mode "default"
 }
 bindsym $mod+Shift+f			mode "$freeze"
 

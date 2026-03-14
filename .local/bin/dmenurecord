@@ -9,6 +9,7 @@
 #
 # If there is already a running instance, user will be prompted to end it.
 # https://trac.ffmpeg.org/wiki/Encode/H.264
+# https://dt.iki.fi/screencast-ffmpeg
 
 set -euo pipefail
 
@@ -110,17 +111,15 @@ __ffmpeg() {
 		-framerate 30 \
 		-s "$video_resolution" \
 		-i "$input" \
-		-use_wallclock_as_timestamps 1 \
 		"${inputs[@]}" \
 		-map 0:v \
 		-r 30 \
 		-c:v libx264 \
-		-crf 10 \
+		-crf 21 \
 		-preset ultrafast \
 		-c:a aac \
 		-b:a 256k \
 		-ac 2 \
-		-qp 0 \
 		-profile:v baseline \
 		-movflags +faststart \
 		-pix_fmt yuv420p \

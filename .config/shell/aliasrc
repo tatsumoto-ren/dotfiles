@@ -43,6 +43,7 @@ alias \
 
 # Other stuff
 alias \
+	s="kitten ssh" \
 	lf="lfub" \
 	magit="nvim -c MagitOnly" \
 	tmux="tmux -f \${XDG_CONFIG_HOME}/tmux/tmux.conf" \

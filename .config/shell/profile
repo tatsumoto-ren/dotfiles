@@ -12,17 +12,6 @@
 # see /usr/share/doc/bash/examples/startup-files for examples.
 # the files are located in the bash-doc package.
 
-# Sway startup function
-startsway () {
-	export GDK_BACKEND=wayland
-	export CLUTTER_BACKEND=wayland
-	export XKB_DEFAULT_LAYOUT=us,ru
-	export XKB_DEFAULT_MODEL=pc104
-	export XKB_DEFAULT_VARIANT=altgr-intl,winkeys
-	export XKB_DEFAULT_OPTIONS=grp:win_space_toggle,terminate:ctrl_alt_bksp,caps:escape
-	exec sway
-}
-
 unsetopt PROMPT_SP 2>/dev/null
 
 # Default programs:
@@ -89,6 +78,10 @@ export AWT_TOOLKIT="MToolkit wmname LG3D" # May have to install wmname
 export _JAVA_AWT_WM_NONREPARENTING=1      # Fix for Java applications in dwm
 export TDESKTOP_USE_GTK_FILE_DIALOG=1
 
+# https://forum.manjaro.org/t/how-to-theme-gtk4-apps-in-manjaro-xfce/100189/7
+# https://forum.manjaro.org/t/setting-theme-for-gtk4-applications/165845
+export GTK_THEME='Arc-Darker'
+
 # TSP settings
 # https://aur.archlinux.org/packages/task-spooler/
 export TS_SLOTS=10		# the maximum number of jobs running at once with task-spooler.
@@ -146,7 +139,8 @@ if [[ -z "${DISPLAY}" ]] && [[ "${XDG_VTNR}" -eq 1 ]]; then
 	exec startx "$XINITRC"
 fi
 
-if [[ "$(tty)" == "/dev/tty2" ]] && [[ -x /usr/bin/sway ]] ; then
+# https://wiki.archlinux.org/title/Sway#Automatically_on_TTY_login
+if [ -z "$WAYLAND_DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 2 ] && [ -x /usr/bin/sway ]; then
 	exec startsway
 fi
 
