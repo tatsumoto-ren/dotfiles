@@ -40,14 +40,14 @@
 *color15:	#ebdbb2
 
 Xcursor.theme:	Adwaita
-Xcursor.size:	24
+Xcursor.size:	48
 
 ! https://wiki.archlinux.org/index.php/Font_configuration
 ! Some applications like URxvt ignore fontconfig settings.
 ! You can work around this by using ~/.Xresources.
 Xft.antialias:	1
 Xft.autohint:	0
-Xft.dpi:	96
+Xft.dpi:	192
 Xft.hinting:	1
 Xft.hintstyle:	hintslight
 Xft.lcdfilter:	lcddefault

@@ -8,6 +8,13 @@
 # autorandr -c --default default &
 # NOTE: autorandr is started by systemd
 
+# xinitrc runs automatically when you run startx.
+# https://wiki.archlinux.org/index.php/Xinit#xinitrc
+export GDK_BACKEND=x11
+export XDG_SESSION_TYPE=x11
+# Fix for Xft.dpi=192
+export XCURSOR_SIZE=48
+
 # Set DPI. User may want to use a larger number for larger screens.
 xrandr --dpi 96
 
@@ -27,11 +34,11 @@ remapd &
 # Xcompmgr is a simple compositor capable of rendering drop shadows and, with the use of the transset utility, primitive window transparency.
 xcompmgr &
 
-# Use Xresources colors/settings on startup
-xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources"
-
 # Set the background with the `setbg` script
 setbg &
+
+# Use Xresources colors/settings on startup
+xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources"
 
 # Ensure that xrdb has finished running before moving on to start the WM/DE.
 [ -n "$xrdbpid" ] && wait "$xrdbpid"

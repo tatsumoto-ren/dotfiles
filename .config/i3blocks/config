@@ -2,7 +2,7 @@
 
 # Global properties
 command=~/.local/bin/statusbar/$BLOCK_NAME
-separator_block_width=10
+separator_block_width=20
 markup=none
 full_text= 
 align=left

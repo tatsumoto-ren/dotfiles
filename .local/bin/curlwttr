@@ -9,7 +9,7 @@ readonly result=$(curl -s \
 	"https://wttr.in/$*" 2>/dev/null
 )
 
-if [[ -n $result ]] && ! [[ ${result,,} =~ sorry|unknow|error|time-out ]]; then
+if [[ -n $result ]] && ! [[ ${result,,} =~ failed|sorry|unknow|error|time-out|already\ being|not\ available ]]; then
 	echo "$result"
 else
 	exit 1

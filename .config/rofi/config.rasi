@@ -1,7 +1,7 @@
 configuration {
 	show-icons:             true;
 	sidebar-mode:           true;
-	font:                   "Hack Nerd Font Mono 10";
+	font:                   "Hack Nerd Font Mono 18";
 	modi:                   "drun,run,combi,window";
 	combi-modi:             "drun,run,ssh";
 	terminal:               "termite";
@@ -49,14 +49,14 @@ configuration {
 window {
 	anchor:   west;
 	location: west;
-	width:    450px;
+	width:    900px;
 	height:   100%;
 	padding:  0px;
 }
 
 scrollbar {
       width:        4px;
-      handle-width: 4px;
+      handle-width: 8px;
       handle-color: @accent-color;
 }
 

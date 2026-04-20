@@ -72,6 +72,7 @@ alias dot='git --git-dir=${XDG_CONFIG_HOME}/dotfiles/ --work-tree=$HOME'
 alias \
 	journal="journalctl --since '3 day ago'" \
 	errors="journalctl -p err..alert -b -e" \
+	prevboot="journalctl -b -1"
 
 # Applications
 alias \

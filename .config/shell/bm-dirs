@@ -8,6 +8,7 @@ syncthing	~/Documents/syncthing
 proj	~/Documents/Projects
 blog	~/Documents/Projects/bashblog/site/blog
 addons  ~/Documents/anki_addons
+subs	~/Documents/Projects/kitsunekko-mirror/subtitles
 
 # Dotfiles
 cf	~/.config
@@ -24,5 +25,4 @@ ongoing	/mnt/d/ongoing
 dvideo	/mnt/d/video
 ytdl	/mnt/archive/video/ytdl
 books	/mnt/archive/books
-subs	/mnt/archive/japanese/kitsunekko-mirror/subtitles
 japanese	/mnt/archive/japanese/
