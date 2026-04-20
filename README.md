@@ -37,11 +37,12 @@ Configuration files and scripts that I use on my computer.
     No gaps, no animations, no transparency, no blur, no rounded borders, no shadows,
     and no unnecessary visual clutter.
 * Multi-monitor:
-  - [autorandr](https://github.com/phillipberndt/autorandr)
+  - [autorandr](https://github.com/phillipberndt/autorandr) + [libinput-tools](https://archlinux.org/packages/?q=libinput-tools)
   - [xrandr](https://wiki.archlinux.org/title/Xrandr)
   - [arandr](https://archlinux.org/packages/?name=arandr)
 * Status bar
   - [i3blocks](https://archlinux.org/packages/community/x86_64/i3blocks/)
+  - [nm-applet](https://manpages.ubuntu.com/manpages/noble/man1/nm-applet.1.html)
 * Launcher
   - [rofi](https://archlinux.org/packages/community/x86_64/rofi/)
 * File Manager
@@ -60,6 +61,7 @@ Configuration files and scripts that I use on my computer.
   - [xwallpaper](https://archlinux.org/packages/extra/x86_64/xwallpaper/)
   - [xdotool](https://archlinux.org/packages/extra/x86_64/xdotool/)
   - [xbacklight](https://archlinux.org/packages/extra/x86_64/xorg-xbacklight/)
+  - [xss-lock](https://wiki.archlinux.org/title/Session_lock#xss-lock)
 * brightness
   - brightnessctl.
     To use without sudo,
