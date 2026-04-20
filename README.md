@@ -1,4 +1,4 @@
-# Dotfiles for ajatters
+# Dotfiles for everybody
 
 > https://tatsumoto.neocities.org/
 
@@ -67,7 +67,7 @@ Configuration files and scripts that I use on my computer.
     To use without sudo,
     add yourself to the video group: `sudo usermod -a -G video $USER`
 * Manga OCR
-  - [transformers-ocr](https://github.com/Ajatt-Tools/transformers_ocr)
+  - [Lancet](https://github.com/Ajatt-Tools/lancet)
 * Video player
   - [mpv](https://wiki.archlinux.org/title/Mpv)
   - [mpv scripts](https://github.com/search?q=topic%3Ampv+org%3AAjatt-Tools+fork%3Atrue&type=repositories)
