@@ -64,7 +64,6 @@ main() {
 	case ${*:-$(ask_action)} in
 	*lock*)
 		lock_screen
-		silence_all
 		;;
 	*leave*)
 		cleanup
@@ -74,12 +73,12 @@ main() {
 		i3-msg -q restart
 		;;
 	*hibernate*)
-		lock_screen ee4b2b
 		$(ctl) hibernate
+		lock_screen ee4b2b
 		;;
 	*sleep* | *suspend*)
-		lock_screen ee4b2b
 		$(ctl) suspend
+		lock_screen ee4b2b
 		;;
 	*reboot*)
 		cleanup
