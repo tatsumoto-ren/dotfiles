@@ -146,27 +146,29 @@ exec --no-startup-id	i3-msg 'workspace $ws10;\
 # More color schemes: https://github.com/khamer/base16-i3
 ###############################################################################
 
-# Set Xresources colors:
-set_from_resource $black	color0  #222D32
-set_from_resource $darkgray	color8  #465463
-set_from_resource $darkred	color1  #DB86BA
-set_from_resource $red		color9  #D04E9D
-set_from_resource $darkgreen	color2  #74DD91
-set_from_resource $green	color10 #4BC66D
-set_from_resource $darkyellow	color3  #E49186
-set_from_resource $yellow	color11 #DB695B
-set_from_resource $darkblue	color4  #75DBE1
-set_from_resource $blue		color12 #3DBAC2
-set_from_resource $darkmagenta	color5  #B4A1DB
-set_from_resource $magenta	color13 #825ECE
-set_from_resource $darkcyan	color6  #9EE9EA
-set_from_resource $cyan		color14 #62CDCD
-set_from_resource $lightgray	color7  #F1FCF9
-set_from_resource $white	color15 #E0E5E5
+set $black                   #3c3836
+set $darkred                 #cc241d
+set $darkgreen               #98971a
+set $darkyellow              #d79921
+set $darkblue                #458588
+set $darkmagenta             #b16286
+set $darkcyan                #689d6a
+set $lightgray               #a89984
+set $darkgray                #928374
+set $red                     #fb4934
+set $green                   #b8bb26
+set $yellow                  #fabd2f
+set $blue                    #83a598
+set $magenta                 #d3869b
+set $cyan                    #8ec07c
+set $white                   #fbf1c7
+
+set $bg                      #2f343f
+set $fg                      #f1fcf9
 
 #                       BORDER		BACKGROUND	TEXT		INDICATOR       CHILD_BORDER
-client.focused		$blue		$blue		$black		$white		$blue
-client.unfocused	$black		$black		$white		$darkblue	$black
+client.focused		$blue		$blue		$black		$yellow		$blue
+client.unfocused	$bg		$bg		$white		$darkblue	$black
 client.focused_inactive	$darkgray	$darkgray	$white		$darkblue	$darkgray
 client.urgent		$darkred	$darkred	$darkgray	$darkred	$darkred
 client.background	$darkgray
@@ -178,7 +180,7 @@ client.background	$darkgray
 # Start i3bar to display a workspace bar
 bar {
 	colors {
-		background $black
+		background $bg
 		statusline $lightgray
 		separator  $blue
 
