@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Full system backup
+# https://wiki.archlinux.org/title/Rsync#Full_system_backup
+
+if ! mount -l | grep -F '/mnt/newroot'; then
+	echo "abort."
+	exit 1
+fi
+
+#--delete
+rsync -aAXHv -S --info=progress2 \
+	--exclude='/dev/*' --exclude='/proc/*' --exclude='/sys/*' --exclude='/tmp/*' \
+	--exclude='/run/*' --exclude='/mnt/*' --exclude='/media/*' \
+	--exclude='/lost+found/' \
+	--exclude='/home/lost+found/' \
+	--exclude='/home/*/.thumbnails/*' \
+	--exclude='/home/*/.cache/mozilla/*' \
+	--exclude='/home/*/.cache/chromium/*' \
+	--exclude='/home/*/.local/share/Trash/*' \
+	--exclude='/home/*/.gvfs' \
+	--exclude='/var/lib/dhcpcd/*' \
+	--exclude='/var/cache/pacman/pkg/*' \
+	/ /mnt/newroot
