@@ -1,4 +1,6 @@
-#!/usr/bin/sh -e
+#!/bin/sh
+
+set -euo pipefail
 
 grep -F MHz /proc/cpuinfo | cut -d: -f2 | awk '
 {

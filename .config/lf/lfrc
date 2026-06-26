@@ -75,7 +75,9 @@ cmd open ${{
 cmd mkdir $mkdir -p -- "$@"
 
 cmd extract !{{
-	if [[ $(file -b --mime-type -- "$f") == application/* ]]; then
+	if [[ $file == *.cbz ]]; then
+		unzip "$file"
+	elif [[ $(file -b --mime-type -- "$f") == application/* ]]; then
 		clear
 		set -f
 		tmp_file=$(mktemp -- /tmp/aunpack.XXXXXXXXXX)

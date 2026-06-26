@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 list_cpu_hogs() {
 	ps axch -o cmd,%cpu |

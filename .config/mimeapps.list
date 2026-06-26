@@ -1,6 +1,6 @@
 [Added Associations]
 application/epub+zip=org.pwmt.zathura.desktop;
-application/json=nvim.desktop;vscodium.desktop;geany.desktop;codium.desktop;
+application/json=vscodium.desktop;nvim.desktop;geany.desktop;codium.desktop;
 application/ogg=mpv.desktop;
 application/pdf=libreoffice-draw.desktop;gimp.desktop;org.inkscape.Inkscape.desktop;org.pwmt.zathura.desktop;
 application/postscript=org.pwmt.zathura.desktop;geany.desktop;
@@ -13,7 +13,7 @@ application/x-extension-shtml=linkhandler.desktop;
 application/x-extension-xht=linkhandler.desktop;
 application/x-extension-xhtml=linkhandler.desktop;
 application/x-extension-xhtml=linkhandler.desktop;geany.desktop;
-application/xhtml+xml=linkhandler.desktop;geany.desktop;linkhandler.desktop;
+application/xhtml+xml=nvim.desktop;linkhandler.desktop;geany.desktop;linkhandler.desktop;
 application/xml=geany.desktop;org.kde.kdenlive.desktop;
 application/x-shellscript=nvim.desktop;geany.desktop;org.gnome.gedit.desktop;
 application/x-xdg-protocol-tg=telegramdesktop.desktop;
@@ -119,3 +119,4 @@ application/x-shellscript=org.gnome.gedit.desktop
 video/quicktime=mpv.desktop
 application/x-zerosize=nvim.desktop
 video/webm=mpv.desktop
+x-scheme-handler/throne=throne-url-handler.desktop

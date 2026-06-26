@@ -83,6 +83,7 @@ alias \
 	gm="offlineimap && notmuch new" \
 	nf="clear && neofetch" \
 	kakasi_reading="kakasi -i utf8 -o utf8 -u -JH -KH" \
+	opencode="HTTP_PROXY=localhost:9099 HTTPS_PROXY=localhost:9099 opencode" \
 
 # Morphological analysis
 

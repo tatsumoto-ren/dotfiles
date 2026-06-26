@@ -43,7 +43,7 @@ display_off() {
 lock_screen() {
 	fcitx-remote -s fcitx-keyboard-us-altgr-intl
 	silence_all
-	i3lock -e -f -c "${1:-$(background_color)}"
+	i3lock -e -f -c "${1:-$(background_color)}" --nofork
 }
 
 cleanup() {

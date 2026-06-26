@@ -328,6 +328,9 @@ duckduckgo_images() {
 google_images() {
 	"$BROWSER" "https://www.google.co.jp/search?q=$*&tbm=isch"
 }
+youtube() {
+	"$BROWSER" "https://www.youtube.com/results?search_query=$*&gl=JP"
+}
 wikipedia() {
 	"$BROWSER" "https://${locale}.wikipedia.org/w/index.php?search=$*"
 }

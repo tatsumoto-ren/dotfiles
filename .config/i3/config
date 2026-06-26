@@ -243,8 +243,8 @@ bindsym $mod+backslash		splitv
 
 # Sticky floating windows (stay on screen even if you switch to another workspace)
 bindsym $mod+o			sticky toggle
-#bindsym $alt+o
-#bindsym $alt+Shift+o
+bindsym $alt+o			exec --no-startup-id lancet ocr
+bindsym $alt+Shift+o		exec --no-startup-id lancet ocr --detect
 
 # Toggle music pause
 bindsym $mod+p			exec --no-startup-id mpc toggle
@@ -344,7 +344,7 @@ bindsym $mod+F3		exec --no-startup-id $calc
 bindsym $mod+F4		exec --no-startup-id $browser
 bindsym $mod+F6		exec --no-startup-id (pavucontrol || $term -e pulsemixer)
 bindsym $mod+F7		exec --no-startup-id (qbittorrent || transmission-gtk)
-bindsym $mod+F8		exec --no-startup-id mailsync
+bindsym $mod+F8		exec --no-startup-id Telegram
 bindsym $mod+F9		exec --no-startup-id somesearch
 bindsym $mod+F10	exec --no-startup-id anki
 bindsym $mod+F12	exec --no-startup-id displayselect

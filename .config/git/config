@@ -13,7 +13,7 @@
 	s    = status -s
 	br   = branch
 	dfs  = diff --staged
-	dwc  = diff --word-diff=color
+	dwc  = diff --word-diff=color --word-diff-regex=.
 	type = cat-file -t
 	dump = cat-file -p
 	last = log -1 HEAD
