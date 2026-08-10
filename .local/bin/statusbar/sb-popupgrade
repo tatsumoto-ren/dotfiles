@@ -6,8 +6,13 @@ notify_pacman_i3_block() {
 	pkill -RTMIN+8 "${STATUSBAR:-i3blocks}"
 }
 
+is_installed() {
+    [[ -x "$(command -v "$1")" ]]
+}
+
 pac_upgrade() {
-	if command -v pacapt >/dev/null 2>&1; then
+	# Pacman and AUR-helpers.
+	if is_installed pacapt; then
 		# On Ubuntu, pacapt can be used to upgrade system packages.
 		# Snap is heavily utilized on Ubuntu. Upgrade snap packages as well.
 		sudo pacapt -Syu
@@ -19,16 +24,21 @@ pac_upgrade() {
 	else
 		sudo pacman -Syu
 	fi
+
+	# Pacstall
+	if is_installed pacstall; then
+		pacstall -Up
+	fi
 }
 
 pipx_upgrade() {
-	if command -v pipx >/dev/null 2>&1; then
+	if is_installed pipx; then
 		pipx upgrade-all
 	fi
 }
 
 main() {
-	if ! command -v pacapt >/dev/null 2>&1; then
+	if ! is_installed pacapt; then
 		archnews || exit 1
 	fi
 
