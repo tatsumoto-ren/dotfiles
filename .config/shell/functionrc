@@ -4,8 +4,12 @@ p() { sudo pacman "$@"; notify-pacman-block; }
 se_() {
 	# quickly select and edit files in base dir
 	local -r base_dir=${1:?}
-	choice="$( find "$base_dir" -mindepth 1 -type f -printf '%P\n' | fzf )"
-	[ -f "$base_dir/$choice" ] && "$EDITOR" "$base_dir/$choice"
+	local choice="" target=""
+	choice=$( find "$base_dir" -mindepth 1 \( -type f -o -type l \) -printf '%P\n' | fzf)
+	target=$( readlink -f -- "$base_dir/$choice" ) || return
+	if [[ -f "$target" ]]; then
+		"$EDITOR" "$target"
+	fi
 }
 see() { se_ ~/.local/bin; }
 seconf() { se_ ~/.config; }
