@@ -75,8 +75,8 @@ cmd open ${{
 cmd mkdir $mkdir -p -- "$@"
 
 cmd extract !{{
-	if [[ $file == *.cbz ]]; then
-		unzip "$file"
+	if [[ $f == *.cbz ]]; then
+		unzip "$f"
 	elif [[ $(file -b --mime-type -- "$f") == application/* ]]; then
 		clear
 		set -f
