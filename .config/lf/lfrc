@@ -198,7 +198,7 @@ cmd bulkrename ${{
 }}
 
 cmd telegram ${{
-	telegram-desktop -sendpath "$(readlink -f "$fx")"
+	Telegram -sendpath "$(readlink -f "$fx")"
 }}
 
 cmd lossless ${{
