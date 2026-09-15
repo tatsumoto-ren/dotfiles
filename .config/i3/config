@@ -99,7 +99,7 @@ exec --no-startup-id	thunar --daemon
 exec --no-startup-id	pgrep NetworkManager && nm-applet
 
 # Monitoring
-exec --no-startup-id	$term --title htop -e htop
+exec --no-startup-id	$term --title htop -e btop
 exec --no-startup-id	$term --title journalctl -e journalctl -f
 exec --no-startup-id	$term --title terminal
 
@@ -423,7 +423,7 @@ bindsym --release Shift+Print	exec maimpick area
 bindsym --release Ctrl+Shift+Print	exec maimpick area-clipboard
 
 # Alt + i takes the given area and adds the image to the selected Anki card.
-bindsym --release $alt+i		exec maimpick area-Anki
+bindsym --release $alt+i		exec lancet screenshot --add-to-anki
 
 # Super+Print shows the dialog window
 bindsym $mod+Print		exec maimpick
