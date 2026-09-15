@@ -30,6 +30,14 @@ down() {
 	pamixer --decrease "${1:-5}"
 }
 
+inc() {
+	brightnessctl --min-value=1% s "+${1:-5}%" || xbacklight -inc "${1:-5}"
+}
+
+dec() {
+	brightnessctl --min-value=1% s "${1:-5}%-" || xbacklight -dec "${1:-5}"
+}
+
 control() {
 	pulsemixer
 }
