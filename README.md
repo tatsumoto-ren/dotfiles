@@ -84,6 +84,8 @@ Configuration files and scripts that I use on my computer.
   - [newsboat](https://wiki.archlinux.org/title/Newsboat)
 * Archives
   - atool
+* System monitor
+  - [btop](https://archlinux.org/packages/extra/x86_64/btop/)
 * Various scripts in [~/.local/bin/](.local/bin)
 * Handy
   - [aliases](.config/shell/aliasrc)
