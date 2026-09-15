@@ -27,7 +27,7 @@ pac_upgrade() {
 
 	# Pacstall
 	if is_installed pacstall; then
-		pacstall -Up
+		pacstall -Up || true
 	fi
 }
 
