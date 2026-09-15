@@ -13,9 +13,14 @@
 
 set -euo pipefail
 
-die() {
+notify() {
+	echo "$*"
 	setsid -f notify-send "${0##*/}" "$*" &
+}
+
+die() {
 	echo "$*" >&2
+	setsid -f notify-send "${0##*/}" "$*" &
 	exit 1
 }
 
@@ -36,7 +41,9 @@ screen_resolution() {
 
 getdim() { xrandr | grep -oP '(?<=current ).*(?=,)' | tr -d ' ' ;}
 
-notify_end() { notify-send "$(basename -- "$0")" "Stopped recording."; }
+notify_end() {
+	notify "Stopped recording."
+}
 
 updateicon() {
 	echo "$1" >/tmp/recordingicon
@@ -74,37 +81,82 @@ find_monitor() {
 		trim_spaces
 }
 
-find_microphone() {
-	pactl list sources |
-		grep -i -B 1 -P 'Description:.*digital microphone' |
+find_pa_source() {
+	local -r regex=${1:?}
+	local result
+	result=$(pactl list sources |
+		grep -i -B 1 -P "$regex" |
 		cut -d: -f2 |
 		head -1 |
-		trim_spaces
+		trim_spaces)
+	printf '%s' "$result"
+	[[ -n $result ]]
+}
+
+find_microphone() {
+	find_pa_source 'Description:.*digital.*microphone' || \
+	find_pa_source 'Description:.*mic'
+}
+
+add_audio_sources() {
+	local -n inputs_ref=${1:?}
+	local -n maps_ref=${2:?}
+	local next_input_index=${3:?}
+	local pa_monitor="" pa_mic=""
+
+	pa_monitor=$(find_monitor || true)
+	pa_mic=$(find_microphone || true)
+
+	if [[ -n $pa_monitor ]]; then
+		# -ar 48000 pins the capture rate; aresample=async=1 (below) then locks the
+		# stream to a monotonic clock so it can be drift-corrected against the mic.
+		inputs_ref+=( -f pulse -thread_queue_size 4096 -ar 48000 -i "$pa_monitor" )
+		maps_ref+=( "$next_input_index:a" )
+		next_input_index=$((next_input_index + 1))
+	fi
+	if [[ -n $pa_mic ]]; then
+		inputs_ref+=( -f pulse -thread_queue_size 4096 -ar 48000 -i "$pa_mic" )
+		maps_ref+=( "$next_input_index:a" )
+	fi
+
+	if ((${#maps_ref[@]} == 0)); then
+		die "No audio sources found."
+	fi
+}
+
+add_audio_output_map() {
+	local -n inputs_ref=${1:?}
+	local -n maps_ref=${2:?}
+
+	if ((${#maps_ref[@]} == 1)); then
+		# Clock-stabilize even the single-source path for consistency.
+		inputs_ref+=(
+			-filter_complex "[${maps_ref[0]}]aresample=async=1:first_pts=0[aout]"
+			-map "[aout]"
+		)
+		return
+	fi
+
+	# The mic and the desktop monitor run on independent hardware clocks. Mixing
+	# them directly with amix accumulates drift that grows over the recording.
+	# aresample=async=1 continuously resamples each stream to a common continuous
+	# timeline, canceling the drift, before we mix them into a single track.
+	inputs_ref+=(
+		-filter_complex "[${maps_ref[0]}]aresample=async=1:first_pts=0[a1];[${maps_ref[1]}]aresample=async=1:first_pts=0[a2];[a1][a2]amix=inputs=2:duration=longest:dropout_transition=0[aout]"
+		-map "[aout]"
+	)
 }
 
 __ffmpeg() {
 	local -r input=${1:?}
 	local -r video_resolution=${2:?}
 	local -r output=${3:?}
-
-	# Run `pactl list sources`
-	local -r PA_MONITOR=$(find_monitor)
-	local -r PA_MIC=$(find_microphone)
+	local -r first_audio_input_index=1
 
 	local -a inputs=()
-	if [[ -n $PA_MONITOR ]]; then
-		inputs+=(  -f pulse -thread_queue_size 1024 -i "$PA_MONITOR"  )
-
-	else
-		die "Monitor wasn't found."
-	fi
-	if [[ -n $PA_MIC ]]; then
-		inputs+=(  -f pulse -thread_queue_size 1024 -i "$PA_MIC"  )
-		inputs+=(  -filter_complex "[1:a][2:a]amix=inputs=2:duration=longest:dropout_transition=0[aout]"   )
-		inputs+=( -map "[aout]"  )
-	else
-		inputs+=( -map "1:a"  )
-	fi
+	local -a audio_maps=()
+	add_audio_sources inputs audio_maps "$first_audio_input_index"
+	add_audio_output_map inputs audio_maps
 
 	exec ffmpeg -y \
 		-f x11grab \
@@ -187,8 +239,14 @@ webcam() {
 
 audio() {
 	FILE_PATH="$dest_dir/audio-$(timestamp).flac"
+	local -r first_audio_input_index=0
+	local -a inputs=()
+	local -a audio_maps=()
+	add_audio_sources inputs audio_maps "$first_audio_input_index"
+	add_audio_output_map inputs audio_maps
+
 	ffmpeg \
-		-f alsa -i default \
+		"${inputs[@]}" \
 		-c:a flac \
 		"${FILE_PATH:?}" &
 	echo $! >/tmp/recordingpid
@@ -221,23 +279,29 @@ audio_anki() {
 	audio
 
 	# While ffmpeg is running...
-	wait
+	wait || die "Audio recording failed."
 
 	audacity "${FILE_PATH:?}"
 
-	if ! ls ./*.*; then return; fi
+	if ! ls ./*.*; then
+		die "No audio files found."
+	fi
 	cm ftogg
 
-	local audiofiles bn path
+	local audiofiles="" bn="" path=""
 	for file in ./*.ogg; do
-		bn=$(basename -- "$file")
+		bn=$(basename -- "${file,,}")
 		path=$(readlink -f -- "$file")
 		audiofiles="${audiofiles}[sound:$bn]"
 		store_file "$path" "$bn"
 	done
+	if [[ -z $audiofiles ]]; then
+		die "No audio files to copy."
+	fi
 	rm -rf -- "$workdir"
-	printf "%s" "$audiofiles" | xclip -selection clipboard
+	printf -- "%s" "$audiofiles" | xclip -selection clipboard
 	rm -- "${FILE_PATH:?}"
+	notify "Copied link to the clipboard"
 }
 
 dmenu_recording_style() {
