@@ -13,11 +13,15 @@ base="${file%.*}"
 
 cd -- "${dir}" || exit "1"
 
+is_installed() {
+	[[ -x "$(command -v "$1")" ]]
+}
+
 _md2html() {
-	if [[ -x $(command -v md2html) ]]; then
+	if is_installed md2html; then
 		md2html -f --github "$file" |
 		sed '/^<meta .*>$/a <meta charset="utf-8">' > "${base}.html"
-	elif [[ -x $(command -v mkd2html) ]]; then
+	elif is_installed mkd2html; then
 		mkd2html "$file" "${base}.html"
 	else
 		echo "Install md2html (md4c) or mkd2html (discount)." >&2
@@ -38,16 +42,18 @@ case "${ext}" in
 	java) javac -d classes "${file}" && java -cp classes "${base}" ;;
 	m) octave "${file}" ;;
 	md)
-		if [ -x "$(command -v wkhtmltopdf)" ]; then
+		if is_installed wkhtmltopdf; then
 			_md2html
 			# note: image files can be placed in the 'img' directory on in the same directory as $file
 			wkhtmltopdf --allow "${dir}" --allow "${dir}/img" "${base}.html" "${base}.pdf"
-		elif [ -x "$(command -v groffdown)" ]; then
-			groffdown -i "${file}" | groff -T pdf > "${base}.pdf"
-		elif [ -x "$(command -v lowdown)" ]; then
-			lowdown --parse-no-intraemph "${file}" -Tms | groff -mpdfmark -ms -kept -T pdf > "${base}.pdf"
-		else
+		elif is_installed pandoc; then
 			pandoc -t ms --highlight-style="kate" -s -o "${base}.pdf" "${file}"
+		elif is_installed lowdown; then
+			lowdown --parse-no-intraemph "${file}" -Tms | groff -mpdfmark -ms -kept -T pdf > "${base}.pdf"
+		elif is_installed groffdown; then
+			groffdown -i "${file}" | groff -T pdf > "${base}.pdf"
+		else
+			echo "no program to convert md to pdf found." >&2
 		fi ; ;;
 	org) emacs "${file}" --batch -u "${USER}" -f org-latex-export-to-pdf ;;
 	py) python "${file}" ;;
