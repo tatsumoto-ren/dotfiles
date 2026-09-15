@@ -1,6 +1,11 @@
 #!/bin/bash
 
-# This script is called on startup to remap keys.
+# This script is called on startup to remap keys,
+# and re-run by remapd whenever a USB input device is plugged in.
+# Xkb layout+options are managed by ~/.config/x11/keyboard_layouts.
+
+# Map the caps lock key to super, and map the menu key to right super.
+setxkbmap -option terminate:ctrl_alt_bksp,caps:super,altwin:menu_win,lv3:ralt_switch
 
 # Map right Super key to Menu
 xmodmap -e "keysym Super_R = Menu"
@@ -22,15 +27,7 @@ xset \
 	r rate 300 50 \
 	b off
 
-# Note that setxkbmap adds  options  specified in the command line to the options that were set before
-# (as saved in root window properties).
-# If you want to replace all previously specified options,
-# use the -option flag with an empty argument first.
-setxkbmap -option
-
-# Map the caps lock key to super, and map the menu key to right super.
-setxkbmap -option terminate:ctrl_alt_bksp,caps:super,altwin:menu_win
-
+# Caps = Super (set by ~/.config/x11/keyboard_layouts); tap = Escape via xcape
 # When caps lock is pressed only once, treat it as escape.
 killall xcape 2>/dev/null || true
 xcape -e 'Super_L=Escape'
