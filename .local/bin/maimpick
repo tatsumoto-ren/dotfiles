@@ -16,7 +16,6 @@ ask_command() {
 		selected area → gimp
 		selected area → Anki
 		selected area → Tesseract OCR
-		selected area → Transformers OCR
 		current window
 		current window → clipboard
 		full screen
@@ -201,13 +200,6 @@ main() {
 			exec maimocr
 		else
 			notify "Can't find maimocr."
-		fi
-		;;
-	*area*Transformers*)
-		if which transformers_ocr; then
-			exec transformers_ocr recognize
-		else
-			notify "Can't find transformers-ocr."
 		fi
 		;;
 	*area)
