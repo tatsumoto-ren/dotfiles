@@ -41,18 +41,15 @@ display_off() {
 }
 
 lock_screen() {
-	fcitx-remote -s fcitx-keyboard-us-altgr-intl
 	silence_all
-	i3lock -e -f -c "${1:-$(background_color)}" --nofork
+	i3lock -e -f -c "${1:-$(background_color)}" --pointer=default
 }
 
-cleanup() {
+leave_cleanup() {
 	dmenurecord kill
-	fcitx-remote -e
+	fcitx5-remote -e
 	ibus exit
-	local -ra apps=(
-		qbittorrent goldendict keepassxc telegram-desktop Throne simplex-desktop Telegram
-	)
+	local -ra apps=( qbittorrent goldendict keepassxc Telegram Throne simplex-desktop Telegram )
 	for app in "${apps[@]}"; do
 		killall "$app"
 	done
@@ -66,26 +63,26 @@ main() {
 		lock_screen
 		;;
 	*leave*)
-		cleanup
+		leave_cleanup
 		i3-msg -q exit
 		;;
 	*renew*)
 		i3-msg -q restart
 		;;
 	*hibernate*)
-		$(ctl) hibernate
 		lock_screen ee4b2b
+		$(ctl) hibernate
 		;;
 	*sleep* | *suspend*)
-		$(ctl) suspend
 		lock_screen ee4b2b
+		$(ctl) suspend
 		;;
 	*reboot*)
-		cleanup
+		leave_cleanup
 		$(ctl) reboot -i
 		;;
 	*shutdown* | *poweroff*)
-		cleanup
+		leave_cleanup
 		$(ctl) poweroff -i
 		;;
 	*'display off'*)
